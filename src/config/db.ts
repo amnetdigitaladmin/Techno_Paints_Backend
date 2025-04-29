@@ -5,6 +5,7 @@ import { userSessions } from '../models/schemas/user-sessions';
 import { ImportEntity } from '../models/schemas/import';
 // import { superAdmin } from '../models/schemas/superAdmin';
 import { Role } from '../models/schemas/role';
+import { Request } from '../models/schemas/request';
 // import { UserRole } from '../models/schemas/user_role';
 dotenv.config();
  
@@ -22,7 +23,7 @@ dotenv.config();
                 database: process.env.TYPEORM_DATABASE,
                 synchronize: true,
                 logging: false,
-                entities: [User, userSessions, ImportEntity,Role]
+                entities: [User, userSessions, ImportEntity,Role, Request]
             });
             AppDataSource.initialize()
                 .then(() => {
