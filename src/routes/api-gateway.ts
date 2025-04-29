@@ -156,5 +156,9 @@ export class APIGATEWAY {
         this.router.delete("/request/:id", vefiryToken, (req: Request, res: Response) => {
             requestService.deleteRequestById(req, res);
         });
+
+        this.router.put("/status/update/:id", vefiryToken, ValidateJoi(schema.acceptRejectSchema), (req: Request, res: Response) => {
+            requestService.requestStatusUpdate(req, res);
+        });
     }
 }

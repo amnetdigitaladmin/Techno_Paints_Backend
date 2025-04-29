@@ -54,7 +54,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date',
+                        'req.comments as comments',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -75,7 +76,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date',   
+                        'req.comments as comments',                    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -109,7 +111,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date', 
+                        'req.comments as comments',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -127,7 +130,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date',   
+                        'req.comments as comments',                    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -163,7 +167,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date',  
+                        'req.comments as comments',                     
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -185,7 +190,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date',  
+                        'req.comments as comments',                     
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -220,7 +226,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date', 
+                        'req.comments as comments',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -239,7 +246,8 @@ class RequestRepository {
                         'req.quantity as quantity',
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
-                        'req.required_date as required_date',                      
+                        'req.required_date as required_date', 
+                        'req.comments as comments',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
