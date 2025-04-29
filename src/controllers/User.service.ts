@@ -7,6 +7,7 @@ import { Messages } from "../helpers/utils/messages";
 import moment from "moment";
 import bcrypt from "bcrypt-nodejs";
 import UserRepository from '../models/repositories/user.repo';
+import RoleRepository from '../models/repositories/roles.repo';
 import UserSessionsRepository  from '../models/repositories/userSessions.repo';
 import EmailService from './notification.service';
 import jwt from 'jsonwebtoken';
@@ -15,15 +16,19 @@ class UserService {
     try {
       logger.info({ params: '', init: "AddUser" }, "add user method called");
       let params: any = req.body;
-      params.created_by = req.meta.userId;
+      params.created_by = req.meta.userId;      
       let userInfo: any = await UserRepository.getUserByemail(req.body.email);
       if (userInfo && userInfo.email) {
         return res.status(400).json({ status: 'Failed', message: "Email already exists" });       
       }
+      params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
+      let userPassword =password;
       params.password = password;
       params.EncryptPassword = await common.stringToBinary64(password);
       await UserRepository.save(params);
+      params.userPassword = userPassword
+      await EmailService.sendInvitation(params);
       res.status(200).json({ status: 'success', message: 'User Created Successfully' });
     } catch (error) {
       logger.error({ params: '', error: "AddUser" }, "add user method error: " + JSON.stringify(error));
@@ -38,6 +43,7 @@ class UserService {
       logger.info({ params: '', init: "updateUser" }, "updateUser method called");
       let userId: any = +req.params.id;
       let params: any = req.body;
+      params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let usersInfo: any = await UserRepository.getById(userId);
       usersInfo = { ...usersInfo, ...params };
       await UserRepository.userSave(usersInfo);
@@ -101,6 +107,44 @@ class UserService {
       }
     } catch (error) {
       logger.error({ params: '', error: "getAllUsers" }, "getAllUsers method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async getBPAllClients(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getBPAllClients" }, "getBPAllClients method called");      
+      let usersInfo: any = await UserRepository.getBPAllClients(req);
+      let count: any = await UserRepository.getBPAllClientsCount(req);
+      if (usersInfo && usersInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: usersInfo, total_count: count.length });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getBPAllClients" }, "getBPAllClients method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async getAllBusinessPartners(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getAllBusinessPartners" }, "getAllBusinessPartners method called");  
+      let roleInfo:any = await RoleRepository.getRoleByName('Business Partner');
+      let roleId:any = roleInfo.id ? roleInfo.id : 0;
+      let usersInfo: any = await UserRepository.getAllBusinessPartners(req, roleId);
+      let count: any = await UserRepository.getAllBusinessPartnersCount(req, roleId);
+      if (usersInfo && usersInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: usersInfo, total_count: count.length });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getAllBusinessPartners" }, "getAllBusinessPartners method error: " + JSON.stringify(error));
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });

@@ -39,7 +39,7 @@ class EmailService {
         <p>OTP: <strong>${req.OTP}</strong></p>
         <p>Thank you for your time and support. If you have any immediate questions or concerns, please feel free to reach out to me directly.</p>
         <p>Warm Regards,</p>
-        <p>Levata Sales IQ</p>
+        <p>Technopaints</p>
         </body>
         </html>`,
                 headers: {
@@ -67,18 +67,18 @@ class EmailService {
             const mailOptions = {
                 from: process.env.FROM_MAIL,
                 to: `${req.email}`,
-                subject: `Welcome to Levata Sales IQ`,
+                subject: `Welcome to Technopaints`,
                 html: `<html>
             <body style="font-family:'Verdana'; font-size: 16px; color: #333;">
             <p>Dear <strong>${req.full_name}</strong>,</p>
             <p>I hope this message finds you well!</p>
-            <p>Thank you for registering with Levata Sales IQ! We're excited to have you on board.</p>   
+            <p>Thank you for registering with Technopaints! We're excited to have you on board.</p>   
             <p>To get started, here are your login credentials:</p>
             <p>Email: <strong style="text-decoration: none; color: inherit;">${req.email}</strong></p>
             <p>Password: <strong>${req.userPassword}</strong></p>
             <p>URL:<a href = ${process.env.FRONTEND_URL}/login><i> Click here to Continue ..</i></a></p><br/>
             <p>Warm Regards,</p>
-        <p>Levata Sales IQ</p>
+        <p>Technopaints</p>
         </body>
         </html>`,
                 headers: {
@@ -125,7 +125,7 @@ class EmailService {
             <p>We Received a Request Related to Forgot Password. Please use the following OTP to gain Access to your Account</p>
             <p>OTP: <strong>${otp}</strong></p>
             <p>Best Regards,</p>
-            <p>Levata Sales IQ</p>
+            <p>Technopaints</p>
         </body>
         </html>`,
                     headers: {
@@ -177,7 +177,7 @@ class EmailService {
             <p>We Received a Request Related to Forgot Password. Please use the following OTP to gain Access to your Account</p>
             <p>OTP: <strong>${otp}</strong></p>
             <p>Best Regards,</p>
-            <p>Levata Sales IQ</p>
+            <p>Technopaints</p>
         </body>
         </html>`,
                     headers: {
@@ -225,7 +225,7 @@ class EmailService {
             <p>New Password: <strong>${pass}</strong></p>
             <p>URL:<a href = ${process.env.FRONTEND_URL}/login><i> Click here to Continue ..</i></a></p>
             <p>Regards,</p>
-            <p>Levata Sales IQ</p>
+            <p>Technopaints</p>
             </body>
             </html>`,
                 headers: {

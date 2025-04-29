@@ -89,14 +89,23 @@ class UserRepository {
             if (await common.containsSpecialCharacters(obj.last_name)) {
                 error.push('Special characters not Allowed in Last name column')
             }  
-            if(obj.type == userType.client){                
-                if (obj && obj.bp_name && obj.bp_name.length < 3) {
-                    error.push('Business Partner Name cannot be lessthan 3 letters')
-                }                
-                
-                if (await common.containsSpecialCharacters(obj.bp_name)) {
-                    error.push('Special charactors not Allowed in Business Partner Name column')
-                }                
+            if(obj.type == userType.client){
+                if (obj && obj.contract_start_date && obj.contract_end_date) {
+                    const startDate = new Date(obj.contract_start_date);
+                    const endDate = new Date(obj.contract_end_date);                    
+                    if (startDate > endDate) {
+                        error.push('Contract start date cannot be after contract end date');
+                    }
+                }    
+                if (obj && obj.contract_start_date && obj.contract_end_date) {
+                    const startDate = new Date(obj.contract_start_date);
+                    const endDate = new Date(obj.contract_end_date);
+                    
+                    if (endDate < startDate) {
+                        error.push('Contract end date cannot be before contract start date');
+                    }
+                }                          
+
                 let managerInfo: any =  await userRepository
                 .createQueryBuilder('user')
                 .where('user.full_name =:full_name', { full_name:obj.business_partner})
@@ -121,9 +130,9 @@ class UserRepository {
             let Result:any = await userRepository.save(obj)
             if (Result) {
                 obj.userPassword = userPassword;
-                // if (obj.type == userType.sales_rep) {
-                //     await EmailService.sendInvitation(obj);
-                // }
+                if (obj.type != userType.client) {
+                    await EmailService.sendInvitation(obj);
+                }
                 return Result;
             }
         }catch(err){
@@ -314,6 +323,242 @@ class UserRepository {
                     .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
+                    .getRawMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async getAllBusinessPartners(query: any, roleId:any) {
+        try {
+            let params: any = query.query
+            let role_id:any = roleId;
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            const startYear = moment().subtract(10, 'year').format('YYYY-MM-DD');
+            const endYear = moment().endOf('year').format('YYYY-MM-DD');
+            let order_by = params.order_by ? params.order_by : 'updated_at';
+            let sort_order = params.sort_order ? params.sort_order : 'DESC';
+            if (params.search_text) {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where(
+                        `(LOWER(user.full_name) LIKE :searchText or 
+                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('user.roleId = :roleId', { roleId: role_id })
+                    .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',  
+                        'user.company as company',                      
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .orderBy(`user.${order_by}`, sort_order)
+                    .skip(offSet - 1) // Assuming `offSet` is zero-based
+                    .take(Limit)
+                    .getRawMany();
+            } else {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('user.roleId = :roleId', { roleId: role_id })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',    
+                        'user.full_name as full_name',   
+                        'user.company as company',                     
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
+                    .skip(offSet - 1)
+                    .take(Limit)
+                    .getRawMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async getAllBusinessPartnersCount(query: any, roleId:any) {
+        try {
+            let params: any = query.query
+            let role_id:any = roleId;
+            if (params.search_text) {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where(
+                        `(LOWER(user.full_name) LIKE :searchText or 
+                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('user.roleId = :roleId', { roleId: role_id })
+                    .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',  
+                        'user.company as company',                      
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .getRawMany();
+            } else {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('user.roleId = :roleId', { roleId: role_id })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',    
+                        'user.full_name as full_name',   
+                        'user.company as company',                     
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .getRawMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async getBPAllClients(query: any) {
+        try {
+            let params: any = query.query
+            let bp_id:any = query.params.id;
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            const startYear = moment().subtract(10, 'year').format('YYYY-MM-DD');
+            const endYear = moment().endOf('year').format('YYYY-MM-DD');
+            let order_by = params.order_by ? params.order_by : 'updated_at';
+            let sort_order = params.sort_order ? params.sort_order : 'DESC';
+            if (params.search_text) {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where(
+                        `(LOWER(user.full_name) LIKE :searchText or 
+                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',  
+                        'user.company as company',                      
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .orderBy(`user.${order_by}`, sort_order)
+                    .skip(offSet - 1) // Assuming `offSet` is zero-based
+                    .take(Limit)
+                    .getRawMany();
+            } else {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',    
+                        'user.full_name as full_name',   
+                        'user.company as company',                     
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
+                    .skip(offSet - 1)
+                    .take(Limit)
+                    .getRawMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async getBPAllClientsCount(query: any) {
+        try {
+            let params: any = query.query
+            let bp_id:any = query.params.id;
+            if (params.search_text) {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where(
+                        `(LOWER(user.full_name) LIKE :searchText or 
+                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',  
+                        'user.company as company',                      
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
+                    .getRawMany();
+            } else {
+                return await userRepository
+                    .createQueryBuilder('user')
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',  
+                        'user.company as company',                      
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',                        
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             }
         } catch (error) {

@@ -88,6 +88,14 @@ export class APIGATEWAY {
         this.router.delete("/user/:id", vefiryToken, (req: Request, res: Response) => {
             userService.deleteUserById(req, res);
         });
+
+        this.router.get("/clients/:id", vefiryToken, (req: Request, res: Response) => {
+            userService.getBPAllClients(req, res);
+        });
+
+        this.router.get("/business/partners", vefiryToken, (req: Request, res: Response) => {
+            userService.getAllBusinessPartners(req, res);
+        });
    
         // // dont use
         this.router.get("/role",vefiryToken,(req: Request, res: Response) => {
