@@ -10,7 +10,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import 'moment-timezone';
 
-import { ImportStatusType,ImportType,userType } from "../../helpers/utils/enum";
+import { ImportStatusType, ImportType, userType } from "../../helpers/utils/enum";
 
 import EmailService from '../../controllers/notification.service';
 import RoleRepo from '../repositories/roles.repo';
@@ -18,34 +18,34 @@ import RoleRepo from '../repositories/roles.repo';
 const userRepository = AppDataSource.getRepository(User);
 const importRepository = AppDataSource.getRepository(ImportEntity);
 // const superAdminRepository = AppDataSource.getRepository(superAdmin);
-const RoleRepository = AppDataSource.getRepository(Role); 
-const otpRepository = AppDataSource.getRepository(Otps); 
+const RoleRepository = AppDataSource.getRepository(Role);
+const otpRepository = AppDataSource.getRepository(Otps);
 // const userRoleRepository = AppDataSource.getRepository(UserRole); 
 
 class UserRepository {
 
     public async save(obj: any) {
-        try{
+        try {
             let password = await common.hashPassword(obj.password)
             obj.password = await password
             return await userRepository.save(obj)
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            
+
         }
     }
 
     public async userSave(obj: any) {
-        try{
+        try {
             return await userRepository.save(obj)
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            
+
         }
     }
 
     public async ImportUser(obj: any) {
-        try{
+        try {
             let error = []
             if (obj && obj.mobile && obj.mobile.toString().length != 10) {
                 error.push('Mobile Number must be 10 Digits')
@@ -53,12 +53,12 @@ class UserRepository {
             if (!await common.validateEmail(obj.email)) {
                 error.push("Invalid email address");
             }
-            let userInfo:any = await this.getUserByemail(obj.email);
-            if(userInfo && userInfo.email){
+            let userInfo: any = await this.getUserByemail(obj.email);
+            if (userInfo && userInfo.email) {
                 error.push("Email already exists");
             }
-            let mobileExist:any = await this.getUserByMobile(obj.mobile);
-            if(mobileExist && mobileExist.mobile){
+            let mobileExist: any = await this.getUserByMobile(obj.mobile);
+            if (mobileExist && mobileExist.mobile) {
                 error.push("Mobile Number already exists");
             }
             const regex2 = /^[a-zA-Z\s]+$/;
@@ -81,53 +81,53 @@ class UserRepository {
             let LastResult: any = regex.test(obj.last_name);
             if (!LastResult) {
                 error.push('Special characters and numbers not allowed in last name')
-            }     
+            }
 
             if (await common.containsSpecialCharacters(obj.first_name)) {
                 error.push('Special characters not Allowed in First name column')
             }
             if (await common.containsSpecialCharacters(obj.last_name)) {
                 error.push('Special characters not Allowed in Last name column')
-            }  
-            if(obj.type == userType.client){
-                if (obj && obj.contract_start_date && obj.contract_end_date) {
-                    const startDate = new Date(obj.contract_start_date);
-                    const endDate = new Date(obj.contract_end_date);                    
-                    if (startDate > endDate) {
-                        error.push('Contract start date cannot be after contract end date');
-                    }
-                }    
+            }
+            if (obj.type == userType.client) {
                 if (obj && obj.contract_start_date && obj.contract_end_date) {
                     const startDate = new Date(obj.contract_start_date);
                     const endDate = new Date(obj.contract_end_date);
-                    
+                    if (startDate > endDate) {
+                        error.push('Contract start date cannot be after contract end date');
+                    }
+                }
+                if (obj && obj.contract_start_date && obj.contract_end_date) {
+                    const startDate = new Date(obj.contract_start_date);
+                    const endDate = new Date(obj.contract_end_date);
+
                     if (endDate < startDate) {
                         error.push('Contract end date cannot be before contract start date');
                     }
-                }                          
+                }
 
-                let managerInfo: any =  await userRepository
-                .createQueryBuilder('user')
-                .where('user.full_name =:full_name', { full_name:obj.business_partner})
-                .andWhere('user.roleId=:roleId', { roleId:+obj.Bp_role_id })
-                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
-                .getOne();
-                 if(!managerInfo) {
+                let managerInfo: any = await userRepository
+                    .createQueryBuilder('user')
+                    .where('user.full_name =:full_name', { full_name: obj.business_partner })
+                    .andWhere('user.roleId=:roleId', { roleId: +obj.Bp_role_id })
+                    .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                    .getOne();
+                if (!managerInfo) {
                     error.push(`Business Partner with name (${obj.business_partner}) doesn't Exists`);
-                }else{
+                } else {
                     obj.bp_id = managerInfo.id
-                    obj.bp_name = managerInfo.full_name                    
-                }             
+                    obj.bp_name = managerInfo.full_name
+                }
             }
-           
-            if(error && error.length > 0){
-                return{status:'error',message:error,code:422}
-            }   
+
+            if (error && error.length > 0) {
+                return { status: 'error', message: error, code: 422 }
+            }
             obj.full_name = `${obj.first_name || ''} ${obj.last_name || ''}`.trim();
             let userPassword = obj.password;
             let password = await common.hashPassword(obj.password)
             obj.password = await password
-            let Result:any = await userRepository.save(obj)
+            let Result: any = await userRepository.save(obj)
             if (Result) {
                 obj.userPassword = userPassword;
                 if (obj.type != userType.client) {
@@ -135,9 +135,9 @@ class UserRepository {
                 }
                 return Result;
             }
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            
+
         }
     }
 
@@ -227,38 +227,49 @@ class UserRepository {
             console.log(err);
         }
     }
-
+    public async assignClients(obj: any, clients: number[]) {
+       return  await userRepository
+          .createQueryBuilder()
+          .update('users') // explicitly specify the table
+          .set({
+            bp_id: obj.id,
+            bp_name: obj.full_name,
+            updated_by:obj.updated_by
+          })
+          .where('id IN (:...ids)', { ids: clients })
+          .execute();
+    }
     public async importSave(obj: any) {
-        try{
+        try {
             return await importRepository.save(obj)
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
 
-    public async get(req:any): Promise<any> {
-        try{
-		const params = req.query;
-        let importType:any = +req.params.type;
-        let offSet = params.offset ? params.offset : 1;
-        let Limit = params.limit ? params.limit : 10000;
-        let order_by = params.order_by ? params.order_by : 'created_at';
-        let sort_order = params.sort_order ? params.sort_order : "DESC";
-		return await importRepository
-			.createQueryBuilder('imp')
-			// .leftJoinAndMapOne('imp.created_by', User, 'u', `imp.created_by = u.id`)
-			.where('imp.is_deleted = :is_deleted', {
-				is_deleted: false,
-			})
-            .andWhere('imp.import_type = :import_type', { import_type: importType })
-            .orderBy(`imp.${order_by}`, sort_order)
-			.skip(offSet -1 )
-			.take(Limit)
-			.getManyAndCount();
-        }catch(err){
+    public async get(req: any): Promise<any> {
+        try {
+            const params = req.query;
+            let importType: any = +req.params.type;
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            let order_by = params.order_by ? params.order_by : 'created_at';
+            let sort_order = params.sort_order ? params.sort_order : "DESC";
+            return await importRepository
+                .createQueryBuilder('imp')
+                // .leftJoinAndMapOne('imp.created_by', User, 'u', `imp.created_by = u.id`)
+                .where('imp.is_deleted = :is_deleted', {
+                    is_deleted: false,
+                })
+                .andWhere('imp.import_type = :import_type', { import_type: importType })
+                .orderBy(`imp.${order_by}`, sort_order)
+                .skip(offSet - 1)
+                .take(Limit)
+                .getManyAndCount();
+        } catch (err) {
             console.log(err);
         }
-	}
+    }
 
     public async getAllUsers(query: any) {
         try {
@@ -279,15 +290,15 @@ class UserRepository {
                     //     { searchText: `%${params.search_text.toLowerCase()}%`, type: userType.customer },
                     // )
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.roleId IN (:...roleId)', { roleId:roleId })
+                    .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',                       
+                        'user.last_name as last_name',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -299,7 +310,7 @@ class UserRepository {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.roleId IN (:...roleId)', { roleId:roleId })
+                    .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     // Optional date filter
                     // .andWhere(
                     //     `date_trunc('day', user.created_at) >= :fromDate AND date_trunc('day', user.created_at) <= :toDate`,
@@ -312,11 +323,11 @@ class UserRepository {
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',                       
+                        'user.last_name as last_name',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -330,10 +341,10 @@ class UserRepository {
         }
     }
 
-    public async getAllBusinessPartners(query: any, roleId:any) {
+    public async getAllBusinessPartners(query: any, roleId: any) {
         try {
             let params: any = query.query
-            let role_id:any = roleId;
+            let role_id: any = roleId;
             let offSet = params.offset ? params.offset : 1;
             let Limit = params.limit ? params.limit : 10000;
             const startYear = moment().subtract(10, 'year').format('YYYY-MM-DD');
@@ -354,12 +365,12 @@ class UserRepository {
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',  
-                        'user.company as company',                      
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -375,13 +386,13 @@ class UserRepository {
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',    
-                        'user.full_name as full_name',   
-                        'user.company as company',                     
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -395,10 +406,10 @@ class UserRepository {
         }
     }
 
-    public async getAllBusinessPartnersCount(query: any, roleId:any) {
+    public async getAllBusinessPartnersCount(query: any, roleId: any) {
         try {
             let params: any = query.query
-            let role_id:any = roleId;
+            let role_id: any = roleId;
             if (params.search_text) {
                 return await userRepository
                     .createQueryBuilder('user')
@@ -413,12 +424,12 @@ class UserRepository {
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',  
-                        'user.company as company',                      
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -431,13 +442,13 @@ class UserRepository {
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',    
-                        'user.full_name as full_name',   
-                        'user.company as company',                     
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -451,7 +462,7 @@ class UserRepository {
     public async getBPAllClients(query: any) {
         try {
             let params: any = query.query
-            let bp_id:any = query.params.id;
+            let bp_id: any = query.params.id;
             let offSet = params.offset ? params.offset : 1;
             let Limit = params.limit ? params.limit : 10000;
             const startYear = moment().subtract(10, 'year').format('YYYY-MM-DD');
@@ -472,12 +483,12 @@ class UserRepository {
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',  
-                        'user.company as company',                      
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -493,13 +504,13 @@ class UserRepository {
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',    
-                        'user.full_name as full_name',   
-                        'user.company as company',                     
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -516,7 +527,7 @@ class UserRepository {
     public async getBPAllClientsCount(query: any) {
         try {
             let params: any = query.query
-            let bp_id:any = query.params.id;
+            let bp_id: any = query.params.id;
             if (params.search_text) {
                 return await userRepository
                     .createQueryBuilder('user')
@@ -531,12 +542,12 @@ class UserRepository {
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',  
-                        'user.company as company',                      
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -550,12 +561,12 @@ class UserRepository {
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',  
-                        'user.company as company',                      
+                        'user.full_name as full_name',
+                        'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -579,15 +590,15 @@ class UserRepository {
                     //     { searchText: `%${params.search_text.toLowerCase()}%`, type: userType.customer },
                     // )
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.roleId IN (:...roleId)', { roleId:roleId })
+                    .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     .select([
-                       'user.id as id',
+                        'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',                       
+                        'user.last_name as last_name',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -596,7 +607,7 @@ class UserRepository {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.roleId IN (:...roleId)', { roleId:roleId })
+                    .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     // Optional date filter
                     // .andWhere(
                     //     `date_trunc('day', user.created_at) >= :fromDate AND date_trunc('day', user.created_at) <= :toDate`,
@@ -608,11 +619,11 @@ class UserRepository {
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
-                        'user.last_name as last_name',                       
+                        'user.last_name as last_name',
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
-                        'user.roleId as roleId',                        
+                        'user.roleId as roleId',
                         'user.created_at as created_at',
                         'user.updated_at as updated_at',
                     ])
@@ -666,10 +677,10 @@ class UserRepository {
     // }
 
 
-    public async saveOTP(params:any) {
+    public async saveOTP(params: any) {
         try {
             return await otpRepository.save(params);
-        } catch (error:any) {
+        } catch (error: any) {
             console.log(error)
         }
     }
