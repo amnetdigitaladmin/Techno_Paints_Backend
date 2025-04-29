@@ -4,6 +4,7 @@ import roleService from '../controllers/role.service';
 import AuthService from '../controllers/auth.service';
 import ImportService from '../controllers/import.service';
 import notificationService from '../controllers/notification.service';
+import requestService from '../controllers/request.service';
 // import S3Service from '../controllers/s3.service';
 // import notificationService from '../controllers/notification.service';
 import vefiryToken from  '../middlewares/auth';
@@ -130,6 +131,30 @@ export class APIGATEWAY {
 
         this.router.put("/resend/otp", ValidateJoi(schema.forgotPasswordOTPSchema), (req: Request, res: Response) => {
             notificationService.resendOTP(req, res);
+        });
+
+        this.router.post("/request", vefiryToken, ValidateJoi(schema.requestSchema), (req: Request, res: Response) => {
+            requestService.AddRequest(req, res);
+        });
+
+        this.router.get("/requests", vefiryToken, (req: Request, res: Response) => {
+            requestService.getAllRequests(req, res);
+        });
+
+        this.router.get("/bp/requests", vefiryToken, (req: Request, res: Response) => {
+            requestService.getAllBPRequests(req, res);
+        });
+
+        this.router.put("/request/:id", vefiryToken, ValidateJoi(schema.requestUpdateSchema), (req: Request, res: Response) => {
+            requestService.updateRequest(req, res);
+        });
+
+        this.router.get("/request/:id", vefiryToken, (req: Request, res: Response) => {
+            requestService.getRequestById(req, res);
+        });
+
+        this.router.delete("/request/:id", vefiryToken, (req: Request, res: Response) => {
+            requestService.deleteRequestById(req, res);
         });
     }
 }
