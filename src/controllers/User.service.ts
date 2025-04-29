@@ -20,6 +20,7 @@ class UserService {
       if (userInfo && userInfo.email) {
         return res.status(400).json({ status: 'Failed', message: "Email already exists" });       
       }
+      params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
       params.password = password;
       params.EncryptPassword = await common.stringToBinary64(password);
@@ -38,6 +39,7 @@ class UserService {
       logger.info({ params: '', init: "updateUser" }, "updateUser method called");
       let userId: any = +req.params.id;
       let params: any = req.body;
+      params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let usersInfo: any = await UserRepository.getById(userId);
       usersInfo = { ...usersInfo, ...params };
       await UserRepository.userSave(usersInfo);
