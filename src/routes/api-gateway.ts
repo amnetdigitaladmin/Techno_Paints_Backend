@@ -97,11 +97,17 @@ export class APIGATEWAY {
         this.router.get("/business/partners", vefiryToken, (req: Request, res: Response) => {
             userService.getAllBusinessPartners(req, res);
         });
+
+        this.router.put("/assign-client/:bpid",ValidateJoi(schema.assignClientSchema),vefiryToken, (req: Request, res: Response) => {
+            userService.Assignclients(req, res);
+        });
    
         // // dont use
         this.router.get("/role",vefiryToken,(req: Request, res: Response) => {
             roleService.getAllRoles(req, res);
-        });        
+        });   
+        
+       
     
         // this.router.put("/role",ValidateJoi(schema.roleUpdateSchema),vefiryToken, (req: Request, res: Response) => {
         //     roleService.UpdateRole(req, res);

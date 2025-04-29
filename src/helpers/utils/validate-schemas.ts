@@ -21,6 +21,13 @@ class validateParameters {
         roleId: Joi.number().required(),
       });
 
+      assignClientSchema = Joi.object({       
+        clientsIds: Joi.array()
+          .items(Joi.number().required())
+          .min(1) // optional: ensures at least one ID is provided
+          .required()
+      });
+
       roleSchema = Joi.object({
         name: Joi.string().required(),
         industryId: Joi.number().required(),
