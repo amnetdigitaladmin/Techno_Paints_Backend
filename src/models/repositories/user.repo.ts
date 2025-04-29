@@ -89,14 +89,23 @@ class UserRepository {
             if (await common.containsSpecialCharacters(obj.last_name)) {
                 error.push('Special characters not Allowed in Last name column')
             }  
-            if(obj.type == userType.client){                
-                if (obj && obj.bp_name && obj.bp_name.length < 3) {
-                    error.push('Business Partner Name cannot be lessthan 3 letters')
-                }                
-                
-                if (await common.containsSpecialCharacters(obj.bp_name)) {
-                    error.push('Special charactors not Allowed in Business Partner Name column')
-                }                
+            if(obj.type == userType.client){
+                if (obj && obj.contract_start_date && obj.contract_end_date) {
+                    const startDate = new Date(obj.contract_start_date);
+                    const endDate = new Date(obj.contract_end_date);                    
+                    if (startDate > endDate) {
+                        error.push('Contract start date cannot be after contract end date');
+                    }
+                }    
+                if (obj && obj.contract_start_date && obj.contract_end_date) {
+                    const startDate = new Date(obj.contract_start_date);
+                    const endDate = new Date(obj.contract_end_date);
+                    
+                    if (endDate < startDate) {
+                        error.push('Contract end date cannot be before contract start date');
+                    }
+                }                          
+
                 let managerInfo: any =  await userRepository
                 .createQueryBuilder('user')
                 .where('user.full_name =:full_name', { full_name:obj.business_partner})
@@ -121,9 +130,9 @@ class UserRepository {
             let Result:any = await userRepository.save(obj)
             if (Result) {
                 obj.userPassword = userPassword;
-                // if (obj.type == userType.sales_rep) {
-                //     await EmailService.sendInvitation(obj);
-                // }
+                if (obj.type != userType.client) {
+                    await EmailService.sendInvitation(obj);
+                }
                 return Result;
             }
         }catch(err){

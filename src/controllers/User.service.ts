@@ -15,16 +15,19 @@ class UserService {
     try {
       logger.info({ params: '', init: "AddUser" }, "add user method called");
       let params: any = req.body;
-      params.created_by = req.meta.userId;
+      params.created_by = req.meta.userId;      
       let userInfo: any = await UserRepository.getUserByemail(req.body.email);
       if (userInfo && userInfo.email) {
         return res.status(400).json({ status: 'Failed', message: "Email already exists" });       
       }
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
+      let userPassword =password;
       params.password = password;
       params.EncryptPassword = await common.stringToBinary64(password);
       await UserRepository.save(params);
+      params.userPassword = userPassword
+      await EmailService.sendInvitation(params);
       res.status(200).json({ status: 'success', message: 'User Created Successfully' });
     } catch (error) {
       logger.error({ params: '', error: "AddUser" }, "add user method error: " + JSON.stringify(error));
