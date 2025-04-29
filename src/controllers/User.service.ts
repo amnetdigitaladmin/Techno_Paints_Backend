@@ -7,6 +7,7 @@ import { Messages } from "../helpers/utils/messages";
 import moment from "moment";
 import bcrypt from "bcrypt-nodejs";
 import UserRepository from '../models/repositories/user.repo';
+import RoleRepository from '../models/repositories/roles.repo';
 import UserSessionsRepository  from '../models/repositories/userSessions.repo';
 import EmailService from './notification.service';
 import jwt from 'jsonwebtoken';
@@ -106,6 +107,44 @@ class UserService {
       }
     } catch (error) {
       logger.error({ params: '', error: "getAllUsers" }, "getAllUsers method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async getBPAllClients(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getBPAllClients" }, "getBPAllClients method called");      
+      let usersInfo: any = await UserRepository.getBPAllClients(req);
+      let count: any = await UserRepository.getBPAllClientsCount(req);
+      if (usersInfo && usersInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: usersInfo, total_count: count.length });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getBPAllClients" }, "getBPAllClients method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async getAllBusinessPartners(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getAllBusinessPartners" }, "getAllBusinessPartners method called");  
+      let roleInfo:any = await RoleRepository.getRoleByName('Business Partner');
+      let roleId:any = roleInfo.id ? roleInfo.id : 0;
+      let usersInfo: any = await UserRepository.getAllBusinessPartners(req, roleId);
+      let count: any = await UserRepository.getAllBusinessPartnersCount(req, roleId);
+      if (usersInfo && usersInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: usersInfo, total_count: count.length });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getAllBusinessPartners" }, "getAllBusinessPartners method error: " + JSON.stringify(error));
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });
