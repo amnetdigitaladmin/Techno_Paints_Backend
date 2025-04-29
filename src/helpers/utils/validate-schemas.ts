@@ -59,6 +59,29 @@ class validateParameters {
       otp: Joi.string().required(),
       password: Joi.string().required(),
   });
+
+  requestSchema = Joi.object({
+    client_name: Joi.string().required(),
+    client_id: Joi.number().required(),
+    material_type: Joi.string().required(),
+    description: Joi.string().required(),
+    quantity: Joi.string().required(),
+    bp_id: Joi.number().required(),
+    bp_name: Joi.string().required(),
+    required_date: Joi.string().required()
+  });
+
+  requestUpdateSchema = Joi.object({
+    client_name: Joi.string().required(),
+    client_id: Joi.number().required(),
+    material_type: Joi.string().required(),
+    description: Joi.string().required(),
+    quantity: Joi.string().required(),
+    bp_id: Joi.number().required(),
+    bp_name: Joi.string().required(),
+    required_date: Joi.string().required(),
+    // status: Joi.string().required().valid("Accepted", "Rejected")
+  });
 //     //login validation rules
 //     loginSchema = Joi.object({
 //         email: Joi.string().trim().required().label('email'),
