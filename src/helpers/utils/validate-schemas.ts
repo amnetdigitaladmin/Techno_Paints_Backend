@@ -82,6 +82,10 @@ class validateParameters {
     required_date: Joi.string().required(),
     // status: Joi.string().required().valid("Accepted", "Rejected")
   });
+  acceptRejectSchema = Joi.object({
+    comments: Joi.string().allow('', null).optional(),
+    status: Joi.string().required().valid("Accepted", "Rejected")
+  });
 //     //login validation rules
 //     loginSchema = Joi.object({
 //         email: Joi.string().trim().required().label('email'),

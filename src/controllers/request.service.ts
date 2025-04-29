@@ -37,6 +37,23 @@ class RequestService {
     }
   }
 
+  public async requestStatusUpdate(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "requestStatusUpdate" }, "requestStatusUpdate method called");
+      let requestId: any = +req.params.id;
+      let params: any = req.body;
+      let reqInfo: any = await RequestRepository.getReqById(requestId);
+      reqInfo = { ...reqInfo, ...params };
+      await RequestRepository.save(reqInfo);
+      res.status(200).json({ status: 'success', message: `Request ${params.status} Successfully` });
+    } catch (error) {
+      logger.error({ params: '', error: "requestStatusUpdate" }, "requestStatusUpdate method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
   public async getRequestById(req: Request, res: Response) {
     try {
       logger.info({ params: '', init: "getRequestById" }, "getRequestById method called");

@@ -41,6 +41,9 @@ export class Request extends BaseModel {
     @Column({ nullable: true })
     required_date: string;
 
+    @Column({ nullable: true })
+    comments: string;
+
     @Column({
 		type: 'enum',
 		enum: ['Pending', 'Accepted', 'Rejected'],
@@ -57,7 +60,7 @@ export class Request extends BaseModel {
         bp_id: number,
         bp_name: string,
         required_date: string,
-
+        comments: string,
     ) {
         super();     
         this.client_name = client_name,
@@ -67,7 +70,8 @@ export class Request extends BaseModel {
         this.quantity = quantity,
         this.bp_id = bp_id,
         this.bp_name = bp_name,
-        this.required_date = required_date
+        this.required_date = required_date,
+        this.comments = comments
     }
 }
 
