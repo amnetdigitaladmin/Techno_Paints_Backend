@@ -131,6 +131,18 @@ class RoleRepo {
         }
     }
 
+    public async getRoleByName(name: string) {
+        try {
+             return await roleRepository
+                .createQueryBuilder('role')
+                .where('role.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('role.name = :name', { name: name })
+                .getOne();        
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // // public async getAllRoles(query: any) {
     // //     try {
     // //         let params: any = query
