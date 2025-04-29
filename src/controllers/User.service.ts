@@ -151,6 +151,28 @@ class UserService {
     }
   }
 
+  public async Assignclients(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "Assignclients" }, "Assignclients method called");
+      let BpInfo: any = await UserRepository.getById(+req.params.bpid);
+      if (BpInfo && BpInfo.hasOwnProperty('id')) {
+        BpInfo.updated_by = req.meta.userId
+        let updatedData: any = await UserRepository.assignClients(BpInfo, req.body.clientsIds);
+        if (updatedData && updatedData.affected > 0) {
+          return res.status(200).json({ status: 'success',message: "Client assaignment Success" });
+        } else {
+          return res.status(200).send({ status: 'Failed', message: "Client assaignment Failed" });
+        }
+      } else {
+        return res.status(200).send({ status: 'Failed', message: "Business Partner not found" });
+      }
+    } catch (error: any) {
+      console.log(error)
+      logger.error({ userId: req.meta.userId, error: "Assignclients" }, "Assignclients method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
 }
 
 export default new UserService();
