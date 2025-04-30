@@ -43,6 +43,18 @@ export class User extends BaseModel {
     @Column({ nullable: true })
     address: string;
 
+    @Column({ nullable: true })
+    city: string;
+
+    @Column({ nullable: true })
+    state: string;
+
+    @Column({ nullable: true })
+    country: string;
+
+    @Column({ nullable: true })
+    pincode: string;
+
     @Column({ nullable: true, default: true })
     is_active: boolean;
 
@@ -71,6 +83,10 @@ export class User extends BaseModel {
         bp_id: number,
         bp_name: string,
         address: string,
+        city: string,
+        state: string,
+        country: string,
+        pincode: string,
         is_active: boolean,
         EncryptPassword: string,
         roleId: number,
@@ -91,6 +107,10 @@ export class User extends BaseModel {
         this.bp_id = bp_id,
         this.bp_name = bp_name,
         this.address = address,
+        this.city = city,
+        this.state = state,
+        this.country = country,
+        this.pincode = pincode,
         this.roleId = roleId,
         // this.contract_start_date = contract_start_date,
         // this.contract_end_date = contract_end_date,
