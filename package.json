@@ -1,7 +1,7 @@
 {
-    "name": "cp-organization",
+    "name": "techno-paints",
     "version": "1.0.0",
-    "description": "customerpenaroma",
+    "description": "techno-paints",
     "main": "server.js",
     "scripts": {
         "test": "node dist/server.js",
