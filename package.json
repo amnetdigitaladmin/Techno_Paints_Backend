@@ -4,8 +4,10 @@
     "description": "techno-paints",
     "main": "server.js",
     "scripts": {
+        "build": "tsc -p .",
+        "start": "node dist/server.js"
         "test": "node dist/server.js",
-        "start": "nodemon dist/server.js",
+        "start1": "nodemon dist/server.js",
         "dev": "nodemon src/server.ts",
         "build": "tsc -p ."
     },
