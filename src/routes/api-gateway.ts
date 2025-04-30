@@ -79,7 +79,7 @@ export class APIGATEWAY {
             userService.getAllUsers(req, res);
         });
 
-        this.router.put("/user/:id", vefiryToken, ValidateJoi(schema.userSchema), (req: Request, res: Response) => {
+        this.router.put("/user/:id", vefiryToken, ValidateJoi(schema.userUpdateSchema), (req: Request, res: Response) => {
             userService.updateUser(req, res);
         });
 
