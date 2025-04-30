@@ -52,11 +52,11 @@ export class User extends BaseModel {
     @Column({ nullable: true })
     roleId: number;
 
-    @Column({ nullable: true })
-    contract_start_date: string;
+    // @Column({ nullable: true })
+    // contract_start_date: string;
 
-    @Column({ nullable: true })
-    contract_end_date: string;
+    // @Column({ nullable: true })
+    // contract_end_date: string;
 
     @Column({ nullable: true })
     company: string;
@@ -74,8 +74,8 @@ export class User extends BaseModel {
         is_active: boolean,
         EncryptPassword: string,
         roleId: number,
-        contract_start_date: string,
-        contract_end_date: string,
+        // contract_start_date: string,
+        // contract_end_date: string,
         company: string
 
     ) {
@@ -92,8 +92,8 @@ export class User extends BaseModel {
         this.bp_name = bp_name,
         this.address = address,
         this.roleId = roleId,
-        this.contract_start_date = contract_start_date,
-        this.contract_end_date = contract_end_date,
+        // this.contract_start_date = contract_start_date,
+        // this.contract_end_date = contract_end_date,
         this.company = company
     }
 }
