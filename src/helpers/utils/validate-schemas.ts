@@ -89,6 +89,26 @@ class validateParameters {
     required_date: Joi.string().required(),
     // status: Joi.string().required().valid("Accepted", "Rejected")
   });
+
+  AMCSchema = Joi.object({
+    client_name: Joi.string().required(),
+    client_id: Joi.number().required(),
+    amount: Joi.string().required(),
+    bp_id: Joi.number().required(),
+    bp_name: Joi.string().required(),
+    start_date: Joi.string().required(),
+    end_date: Joi.string().required()
+  });
+  AMCUpdateSchema = Joi.object({
+    client_name: Joi.string().required(),
+    client_id: Joi.number().required(),
+    amount: Joi.string().required(),
+    bp_id: Joi.number().required(),
+    bp_name: Joi.string().required(),
+    start_date: Joi.string().required(),
+    end_date: Joi.string().required(),
+    status: Joi.string().required().valid("Active", "InActive")
+  });
   acceptRejectSchema = Joi.object({
     comments: Joi.string().allow('', null).optional(),
     status: Joi.string().required().valid("Accepted", "Rejected")
