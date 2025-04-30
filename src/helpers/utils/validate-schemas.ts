@@ -17,8 +17,28 @@ class validateParameters {
         mobile: Joi.string().regex(/^[0-9]{10}$/).messages({'string.pattern.base': `Phone number must have 10 digits.`}).required(),    
         bp_id:Joi.number(),
         bp_name:Joi.string(),
-        address:Joi.string(),
+        address:Joi.string().required(),
+        city:Joi.string().required(),
+        state:Joi.string().required(),
+        country:Joi.string().required(),
+        pincode: Joi.string().pattern(/^\d{6}$/).required(),
         roleId: Joi.number().required(),
+      });
+
+      userUpdateSchema = Joi.object({
+        email: Joi.string().email().required(),
+        first_name: Joi.string().alphanum().min(3).max(30).required(),
+        last_name: Joi.string().alphanum().min(3).max(30).required(),
+        mobile: Joi.string().regex(/^[0-9]{10}$/).messages({'string.pattern.base': `Phone number must have 10 digits.`}).required(),    
+        bp_id:Joi.number(),
+        bp_name:Joi.string(),
+        address:Joi.string().required(),
+        city:Joi.string().required(),
+        state:Joi.string().required(),
+        country:Joi.string().required(),
+        pincode: Joi.string().pattern(/^\d{6}$/).required(),
+        roleId: Joi.number().required(),
+        is_active: Joi.boolean().required()
       });
 
       assignClientSchema = Joi.object({       
