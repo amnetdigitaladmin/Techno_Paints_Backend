@@ -90,21 +90,21 @@ class UserRepository {
                 error.push('Special characters not Allowed in Last name column')
             }
             if (obj.type == userType.client) {
-                if (obj && obj.contract_start_date && obj.contract_end_date) {
-                    const startDate = new Date(obj.contract_start_date);
-                    const endDate = new Date(obj.contract_end_date);
-                    if (startDate > endDate) {
-                        error.push('Contract start date cannot be after contract end date');
-                    }
-                }
-                if (obj && obj.contract_start_date && obj.contract_end_date) {
-                    const startDate = new Date(obj.contract_start_date);
-                    const endDate = new Date(obj.contract_end_date);
+                // if (obj && obj.contract_start_date && obj.contract_end_date) {
+                //     const startDate = new Date(obj.contract_start_date);
+                //     const endDate = new Date(obj.contract_end_date);
+                //     if (startDate > endDate) {
+                //         error.push('Contract start date cannot be after contract end date');
+                //     }
+                // }
+                // if (obj && obj.contract_start_date && obj.contract_end_date) {
+                //     const startDate = new Date(obj.contract_start_date);
+                //     const endDate = new Date(obj.contract_end_date);
 
-                    if (endDate < startDate) {
-                        error.push('Contract end date cannot be before contract start date');
-                    }
-                }
+                //     if (endDate < startDate) {
+                //         error.push('Contract end date cannot be before contract start date');
+                //     }
+                // }
 
                 let managerInfo: any = await userRepository
                     .createQueryBuilder('user')
