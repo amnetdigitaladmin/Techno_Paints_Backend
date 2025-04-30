@@ -9,7 +9,7 @@
         "test": "node dist/server.js",
         "start1": "nodemon dist/server.js",
         "dev": "nodemon src/server.ts",
-        "build": "tsc -p ."
+    
     },
     "author": "Amnet Digital",
     "license": "ISC",
