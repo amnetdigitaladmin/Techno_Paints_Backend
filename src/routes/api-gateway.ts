@@ -5,6 +5,7 @@ import AuthService from '../controllers/auth.service';
 import ImportService from '../controllers/import.service';
 import notificationService from '../controllers/notification.service';
 import requestService from '../controllers/request.service';
+import AMCService from '../controllers/AMC.service';
 // import S3Service from '../controllers/s3.service';
 // import notificationService from '../controllers/notification.service';
 import vefiryToken from  '../middlewares/auth';
@@ -160,5 +161,31 @@ export class APIGATEWAY {
         this.router.put("/status/update/:id", vefiryToken, ValidateJoi(schema.acceptRejectSchema), (req: Request, res: Response) => {
             requestService.requestStatusUpdate(req, res);
         });
+
+
+        this.router.post("/AMC", vefiryToken, ValidateJoi(schema.AMCSchema), (req: Request, res: Response) => {
+            AMCService.createAMC(req, res);
+        });
+
+        this.router.get("/AMCs", vefiryToken, (req: Request, res: Response) => {
+            AMCService.getAllAMCs(req, res);
+        });
+
+        this.router.get("/bp/AMCs", vefiryToken, (req: Request, res: Response) => {
+            AMCService.getAllBPAMCs(req, res);
+        });
+
+        this.router.put("/AMC/:id", vefiryToken, ValidateJoi(schema.AMCUpdateSchema), (req: Request, res: Response) => {
+            AMCService.updateAMC(req, res);
+        });
+
+        this.router.get("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
+            AMCService.getAMCById(req, res);
+        });
+
+        this.router.delete("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
+            AMCService.deleteAMCById(req, res);
+        });
+
     }
 }
