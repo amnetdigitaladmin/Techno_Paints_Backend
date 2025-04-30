@@ -21,8 +21,6 @@ class ImportColumns {
     {display_name: "Mobile Number",column_name: "mobile", is_optional: false},
     {display_name: "Address",column_name: "address", is_optional: true},
     {display_name: "Business Partner",column_name: "business_partner", is_optional: true},
-    {display_name: "Contract Start Date",column_name: "contract_start_date", is_optional: true},
-    {display_name: "Contract End Date",column_name: "contract_end_date", is_optional: true},
   ];
 }
 export default new ImportColumns()
