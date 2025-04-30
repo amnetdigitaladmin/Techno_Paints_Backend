@@ -53,7 +53,7 @@ class Application {
         this.app.use(morgan('dev'));
         this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
             res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
+            res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
             res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');            
             next();
         });
