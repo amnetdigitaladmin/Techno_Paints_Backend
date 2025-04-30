@@ -51,18 +51,24 @@ class Application {
 
     middlewares() {
         this.app.use(morgan('dev'));
-        this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
-            res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');            
-            next();
-        });
+        this.app.use(cors({
+            origin: '*', // Replace with actual frontend origin in production
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt'],
+            credentials: true
+        }));
+        // this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
+        //     res.header('Access-Control-Allow-Origin', '*');
+        //     res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
+        //     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');            
+        //     next();
+        // });
         // Error handling
         this.app.use((error: any, req: Request, res: Response, next: NextFunction) => {
             res.status(error.statusCode || 500).send({ error: error.message || 'Server Error' })
         });      
 
-        this.app.use(cors());
+        // this.app.use(cors());
         this.app.use(function (req: Request, res: Response, next: NextFunction) {
             res.setTimeout(timeOut, function () {
                 res.status(504).send({ error: 'Gateway Timeout' })
