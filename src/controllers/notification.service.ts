@@ -3,8 +3,10 @@ const fs = require('fs');
 const randomstring = require('randomstring');
 // import tenantRepository from '../models/repositories/tenant.repo';
 import UserRepository from '../models/repositories/user.repo';
+import NotificationsRepository from '../models/repositories/notification.repository';
 // import { Iotp, Otp } from '../models/schemas/otps';
 import common from '../helpers/utils/common';
+import { CONSTANTS } from '../helpers/utils/enum' 
 import mongoose from 'mongoose'
 import logger from '../middlewares/logger';
 import moment from 'moment';
@@ -245,6 +247,102 @@ class EmailService {
             console.log(error)
         }
     };
+
+    //Bell Notifications
+
+    public async sendMessage(req: any) {
+        try {
+            const notifications: any[] = [];
+            req.payload.map(async(params: any) => {        
+                    notifications.push({
+                        type: params.type,
+                        emp_id: params.empId,
+                        is_read: false,
+                        content: params.content,
+                        request_group: params.request_group,
+                        request_id: params.request_id,
+                        created_by: -1,
+                    });
+        
+            });
+            const response = await NotificationsRepository.save(notifications);
+    
+            response.forEach(async (params: any) => {
+                params.message = { empId: params.emp_id, data: params, type: CONSTANTS.SEND };
+                await this.notifyMethod(params); // call notify method
+            });
+            return req.params.message;
+        } catch (error: any) {
+            console.log(error)
+        }
+
+    };
+
+    public async updateMessageStatus(req: any, res: any) {
+        try {	const res = await NotificationsRepository.update(req.params);
+
+            // update all messages as read
+            req.params.isReadAll
+                ? ((req.params.message = { empId: req.meta.userId, isReadAll: true, type: 'READ' }),
+                this.notifyMethod(req)) // call notify method
+                : ((req.params.message = {
+                        empId: req.meta.userId,
+                        isReadAll: false,
+                        data: { id: req.params.id },
+                        type: CONSTANTS.READ,
+                  }),
+                  await this.notifyMethod(req)); // call notify method
+            return res;} catch (error: any) {
+            console.log(error)
+        }
+
+    };
+
+    public async deleteMessage(req: any, res: any) {
+        try {
+            const res = await NotificationsRepository.remove(req.params);
+
+            // update all messages as read
+            req.params.isDeleteAll
+                ? ((req.params.message = { empId: req.params.empId, isDeleteAll: true, type: 'DELETE' }),
+                this.notifyMethod(req)) // call notify method
+                : ((req.params.message = {
+                        empId: req.meta.userId,
+                        data: { id: req.params.id },
+                        isDeleteAll: false,
+                        type: CONSTANTS.DELETE,
+                  }),
+                  await this.notifyMethod(req)); // call notify method
+            return res;
+        } catch (error: any) {
+            console.log(error)
+        }
+
+    };
+
+    public async notify(req: any, res: any) {
+        try {
+            return await this.notifyMethod(req)
+        } catch (error: any) {
+            console.log(error)
+        }
+
+    };
+
+    
+    public async notifyMethod(req: any) {
+        try {
+          // *broadcast to all services
+		const notification:{} = req.params.message;
+		// ctx.broadcast('notification.send', notification);
+		// await req.emit('notification.send', notification);
+		return;
+        } catch (error: any) {
+            console.log(error)
+        }
+
+    };
+
 
 
 

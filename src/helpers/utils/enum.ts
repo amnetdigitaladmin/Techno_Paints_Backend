@@ -69,4 +69,26 @@ export enum ReportColumnDataType {
 	Money = 6,
 }
 
+export enum CONSTANTS {
+	READ = 'READ',
+	DELETE = 'DELETE',
+	SEND = 'SEND',
+}
+
+export enum NotificationRequestType {
+	request_raised = 'request raised',	
+	request_approve = 'request approve',
+	request_reject = 'request reject',
+	request_withdraw = 'request withdraw',
+	reminder = 'reminder',	
+	import = 'import',
+}
+
+export enum RequestGroup {
+	ADMIN = 'Admin',
+    BUSINESS_PARTNER = 'Business Partner',
+    CLIENT = 'Client'
+
+}
+
 
