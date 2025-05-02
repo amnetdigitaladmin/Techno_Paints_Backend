@@ -12,8 +12,9 @@ import * as Joi from 'joi';
 class validateParameters {
      userSchema = Joi.object({
         email: Joi.string().email().required(),
-        first_name: Joi.string().alphanum().min(3).max(30).required(),
-        last_name: Joi.string().alphanum().min(3).max(30).required(),
+        first_name: Joi.string().min(3).max(30),
+        company: Joi.string().min(3).max(30),
+        last_name: Joi.string().min(3).max(30),
         mobile: Joi.string().regex(/^[0-9]{10}$/).messages({'string.pattern.base': `Phone number must have 10 digits.`}).required(),    
         bp_id:Joi.number(),
         bp_name:Joi.string(),
