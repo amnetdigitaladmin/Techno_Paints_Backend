@@ -32,12 +32,13 @@ class Application {
         // Create server and initialize socket.io
         this.server = http.createServer(this.app);
         this.io = new Server(this.server,{
-            cors: {
-                origin: 'https://main.d2eyd9kb6yomsb.amplifyapp.com',  // ✅ 
-                methods: ['GET', 'POST'], // Allowed methods
-                allowedHeaders: ['Content-Type'], // Allowed headers
-                credentials: true // Allow credentials (if needed)
-            }});
+        //     cors: {
+        //         origin: 'https://main.d2eyd9kb6yomsb.amplifyapp.com',  // ✅ 
+        //         methods: ['GET', 'POST'], // Allowed methods
+        //         allowedHeaders: ['Content-Type'], // Allowed headers
+        //         credentials: true // Allow credentials (if needed)
+            // }
+        });
     }
 
     settings() {
@@ -57,12 +58,12 @@ class Application {
             allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt'],
             credentials: true
         }));
-        // this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
-        //     res.header('Access-Control-Allow-Origin', '*');
-        //     res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
-        //     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');            
-        //     next();
-        // });
+        this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
+            res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');            
+            next();
+        });
         // Error handling
         this.app.use((error: any, req: Request, res: Response, next: NextFunction) => {
             res.status(error.statusCode || 500).send({ error: error.message || 'Server Error' })
