@@ -53,9 +53,9 @@ class Application {
     middlewares() {
         this.app.use(morgan('dev'));
         this.app.use(cors({
-            origin: 'https://main.d2eyd9kb6yomsb.amplifyapp.com', // Allow only your Amplify frontend
+            origin: '*', // Allow only your Amplify frontend
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt','Access-Control-Allow-Headers'],
             credentials: true
         }));
         this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
