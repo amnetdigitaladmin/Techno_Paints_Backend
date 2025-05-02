@@ -33,7 +33,7 @@ class Application {
         this.server = http.createServer(this.app);
         this.io = new Server(this.server,{
             cors: {
-                origin: '*', // Allow all origins
+                origin: 'https://main.d2eyd9kb6yomsb.amplifyapp.com',  // ✅ 
                 methods: ['GET', 'POST'], // Allowed methods
                 allowedHeaders: ['Content-Type'], // Allowed headers
                 credentials: true // Allow credentials (if needed)
@@ -51,14 +51,12 @@ class Application {
 
     middlewares() {
         this.app.use(morgan('dev'));
-        this.app.options('*', cors());
-        this.app.use(cors());
-        // this.app.use(cors({
-        //     origin: '*', // Replace with actual frontend origin in production
-        //     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt'],
-        //     credentials: true
-        // }));
+        this.app.use(cors({
+            origin: 'https://main.d2eyd9kb6yomsb.amplifyapp.com', // Allow only your Amplify frontend
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token', 'jwt'],
+            credentials: true
+        }));
         // this.app.all('/*', function (req:Request, res:Response, next:NextFunction) {
         //     res.header('Access-Control-Allow-Origin', '*');
         //     res.header('Access-Control-Allow-Headers', 'Content-Type, jwt, Access-Control-Allow-Headers, Authorization, X-Requested-With, x-access-token');
