@@ -1,29 +1,26 @@
 import { Request, Response } from "express";
-// import UserRepository from "../models/repositories/user.repo";
 import generator from "generate-password";
 import common from "../helpers/utils/common";
-import logger from '../middlewares/logger';
-import { Messages } from "../helpers/utils/messages";
-import moment from "moment";
-import bcrypt from "bcrypt-nodejs";
+import logger from '../middlewares/logger'
 import UserRepository from '../models/repositories/user.repo';
 import RoleRepository from '../models/repositories/roles.repo';
-import UserSessionsRepository  from '../models/repositories/userSessions.repo';
+import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+
 import EmailService from './notification.service';
-import jwt from 'jsonwebtoken';
+
 class UserService {
   public async AddUser(req: Request, res: Response) {
     try {
       logger.info({ params: '', init: "AddUser" }, "add user method called");
       let params: any = req.body;
-      params.created_by = req.meta.userId;      
+      params.created_by = req.meta.userId;
       let userInfo: any = await UserRepository.getUserByemail(req.body.email);
       if (userInfo && userInfo.email) {
-        return res.status(400).json({ status: 'Failed', message: "Email already exists" });       
+        return res.status(400).json({ status: 'Failed', message: "Email already exists" });
       }
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
-      let userPassword =password;
+      let userPassword = password;
       params.password = password;
       params.EncryptPassword = await common.stringToBinary64(password);
       await UserRepository.save(params);
@@ -64,7 +61,7 @@ class UserService {
       if (usersInfo && usersInfo.id) {
         delete usersInfo.password;
         delete usersInfo.EncryptPassword;
-      }else{
+      } else {
         usersInfo = {}
       }
       res.status(200).json({ status: 'success', data: usersInfo });
@@ -115,7 +112,7 @@ class UserService {
 
   public async getBPAllClients(req: Request, res: Response) {
     try {
-      logger.info({ params: '', init: "getBPAllClients" }, "getBPAllClients method called");      
+      logger.info({ params: '', init: "getBPAllClients" }, "getBPAllClients method called");
       let usersInfo: any = await UserRepository.getBPAllClients(req);
       let count: any = await UserRepository.getBPAllClientsCount(req);
       if (usersInfo && usersInfo.length > 0) {
@@ -133,9 +130,9 @@ class UserService {
 
   public async getAllBusinessPartners(req: Request, res: Response) {
     try {
-      logger.info({ params: '', init: "getAllBusinessPartners" }, "getAllBusinessPartners method called");  
-      let roleInfo:any = await RoleRepository.getRoleByName('Business Partner');
-      let roleId:any = roleInfo.id ? roleInfo.id : 0;
+      logger.info({ params: '', init: "getAllBusinessPartners" }, "getAllBusinessPartners method called");
+      let roleInfo: any = await RoleRepository.getRoleByName('Business Partner');
+      let roleId: any = roleInfo.id ? roleInfo.id : 0;
       let usersInfo: any = await UserRepository.getAllBusinessPartners(req, roleId);
       let count: any = await UserRepository.getAllBusinessPartnersCount(req, roleId);
       if (usersInfo && usersInfo.length > 0) {
@@ -159,7 +156,19 @@ class UserService {
         BpInfo.updated_by = req.meta.userId
         let updatedData: any = await UserRepository.assignClients(BpInfo, req.body.clientsIds);
         if (updatedData && updatedData.affected > 0) {
-          return res.status(200).json({ status: 'success',message: "Client assaignment Success" });
+          const notificationPayload: any = [];
+          notificationPayload.push({
+            empId: +req.params.bpid,
+            type: NotificationRequestType.request_raised,
+            request_group: RequestGroup.ADMIN,
+            content: {
+              title: `Clients Assigned`,
+              data: `New clients have been assigned to you. Please check your client list for details.`
+            },
+            employee_type: 'employee',
+          })
+          await EmailService.sendMessage({ payload: notificationPayload }) 
+          return res.status(200).json({ status: 'success', message: "Client assaignment Success" });
         } else {
           return res.status(200).send({ status: 'Failed', message: "Client assaignment Failed" });
         }
