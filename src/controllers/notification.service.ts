@@ -1,15 +1,11 @@
 import nodemailer from 'nodemailer';
 const fs = require('fs');
 const randomstring = require('randomstring');
-// import tenantRepository from '../models/repositories/tenant.repo';
 import UserRepository from '../models/repositories/user.repo';
 import NotificationsRepository from '../models/repositories/notification.repository';
-// import { Iotp, Otp } from '../models/schemas/otps';
 import common from '../helpers/utils/common';
 import { CONSTANTS } from '../helpers/utils/enum' 
-import mongoose from 'mongoose'
-import logger from '../middlewares/logger';
-import moment from 'moment';
+
 class EmailService {
     public transporter;
 
@@ -271,7 +267,7 @@ class EmailService {
                 params.message = { empId: params.emp_id, data: params, type: CONSTANTS.SEND };
                 await this.notifyMethod(params); // call notify method
             });
-            return req.params.message;
+            return req.message;
         } catch (error: any) {
             console.log(error)
         }
@@ -333,7 +329,7 @@ class EmailService {
     public async notifyMethod(req: any) {
         try {
           // *broadcast to all services
-		const notification:{} = req.params.message;
+		const notification:{} = req.message;
 		// ctx.broadcast('notification.send', notification);
 		// await req.emit('notification.send', notification);
 		return;
