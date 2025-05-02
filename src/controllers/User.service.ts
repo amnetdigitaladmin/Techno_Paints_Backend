@@ -4,7 +4,9 @@ import common from "../helpers/utils/common";
 import logger from '../middlewares/logger'
 import UserRepository from '../models/repositories/user.repo';
 import RoleRepository from '../models/repositories/roles.repo';
-import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+import { contextType, NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+
+
 
 import EmailService from './notification.service';
 
@@ -17,6 +19,14 @@ class UserService {
       let userInfo: any = await UserRepository.getUserByemail(req.body.email);
       if (userInfo && userInfo.email) {
         return res.status(400).json({ status: 'Failed', message: "Email already exists" });
+      }
+      let roles = await RoleRepository.getRolesForImport()
+      let Role = (roles.find((item:any)=>{return item.id == params.roleId})).hasOwnProperty('id') ?  
+          (roles.find((item:any)=>{return item.id == params.roleId})).name : 3    
+       if (Role == contextType.CLIENT) {
+        let Bp_details = await UserRepository.getBusinessPartnerById(params)             
+        params.bp_id = Bp_details && Bp_details.id ? Bp_details.id : ''
+        params.bp_name = Bp_details && Bp_details.full_name ? Bp_details.full_name : ''        
       }
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
@@ -43,6 +53,14 @@ class UserService {
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let usersInfo: any = await UserRepository.getById(userId);
       usersInfo = { ...usersInfo, ...params };
+      let roles = await RoleRepository.getRolesForImport()
+      let Role = (roles.find((item:any)=>{return item.id == params.roleId})).hasOwnProperty('id') ?  
+          (roles.find((item:any)=>{return item.id == params.roleId})).name : 3    
+       if (Role == contextType.CLIENT) {
+        let Bp_details = await UserRepository.getBusinessPartnerById(usersInfo)             
+        usersInfo.bp_id = Bp_details && Bp_details.id ? Bp_details.id : ''
+        usersInfo.bp_name = Bp_details && Bp_details.full_name ? Bp_details.full_name : ''        
+      }
       await UserRepository.userSave(usersInfo);
       res.status(200).json({ status: 'success', message: 'User Details Updated Successfully' });
     } catch (error) {
