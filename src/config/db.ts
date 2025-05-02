@@ -7,7 +7,7 @@ import { ImportEntity } from '../models/schemas/import';
 import { Role } from '../models/schemas/role';
 import { Request } from '../models/schemas/request';
 import { AMC } from '../models/schemas/AMC';
-// import { UserRole } from '../models/schemas/user_role';
+import { Notifications } from '../models/schemas/notifications';
 dotenv.config();
  
 
@@ -24,7 +24,7 @@ dotenv.config();
                 database: process.env.TYPEORM_DATABASE,
                 synchronize: true,
                 logging: false,
-                entities: [User, userSessions, ImportEntity,Role, Request, AMC]
+                entities: [User, userSessions, ImportEntity,Role, Request,Notifications,AMC]
             });
             AppDataSource.initialize()
                 .then(() => {
