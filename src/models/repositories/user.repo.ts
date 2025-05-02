@@ -165,6 +165,14 @@ class UserRepository {
         }
     }
 
+    public async getBusinessPartnerById(obj: any) {
+        return await userRepository
+            .createQueryBuilder('user')
+            .where('user.id =:id', { id: obj.bp_id })            
+            .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+            .getOne();
+    }
+
     public async getSalesRepById(employee_id: number) {
         try {
             let data = await userRepository
