@@ -25,6 +25,7 @@ jobs:
       - name: Set up environment file
         run: |
           cp /home/ubuntu/env/techno /home/ubuntu/Techno_Paints_Backend/.env
+          npm install
 
       - name: Restart application with PM2
         run: |
