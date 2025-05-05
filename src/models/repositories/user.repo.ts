@@ -269,7 +269,7 @@ class UserRepository {
                 .where('imp.is_deleted = :is_deleted', {
                     is_deleted: false,
                 })
-                .andWhere('imp.import_type = :import_type', { import_type: importType })
+                // .andWhere('imp.import_type = :import_type', { import_type: importType })
                 .orderBy(`imp.${order_by}`, sort_order)
                 .skip(offSet - 1)
                 .take(Limit)

@@ -67,7 +67,7 @@ export class APIGATEWAY {
             ImportService.ImportClient(req, res);
         });
 
-        this.router.get("/import/logs/:type", (req: Request, res: Response) => {
+        this.router.get("/import/logs", (req: Request, res: Response) => {
             ImportService.getImports(req, res);
         });
 
@@ -181,6 +181,10 @@ export class APIGATEWAY {
 
         this.router.get("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
             AMCService.getAMCById(req, res);
+        });
+
+        this.router.delete("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
+            AMCService.deleteAMCById(req, res);
         });
 
         this.router.delete("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
