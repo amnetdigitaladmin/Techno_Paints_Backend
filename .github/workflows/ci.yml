@@ -34,3 +34,21 @@ jobs:
           pm2 stop techno-paints || true
           pm2 delete techno-paints || true
           pm2 start npm --name "techno-paints" -- run dev
+      
+      - name: Notify Microsoft Teams
+        if: always()  # Runs whether build succeeds or fails
+        run: |
+          curl -H 'Content-Type: application/json' \
+          -d "{
+                \"text\": \"🚀 *GitHub Build Notification*\n
+                          📁 Repo: ${{ github.repository }}\n
+                          🌿 Branch: ${{ github.ref_name }}\n
+                          🔍 Commit: ${{ github.sha }}\n
+                          👤 Triggered by: ${{ github.actor }}\n
+                          📊 Status: ${{ job.status }}\"
+              }" \
+          ${{ secrets.TEAMS_WEBHOOK_URL }}  
+
+
+
+    
