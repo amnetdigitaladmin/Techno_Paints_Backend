@@ -299,18 +299,21 @@ class UserRepository {
                     // )
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.company as company',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.company as company',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)
                     .skip(offSet - 1) // Assuming `offSet` is zero-based
                     .take(Limit)
@@ -329,18 +332,21 @@ class UserRepository {
                     //    : params.to_date || endYear,
                     //     }
                     // )
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.company as company',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.company as company',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
@@ -371,19 +377,19 @@ class UserRepository {
                     )
                     .andWhere('user.roleId = :roleId', { roleId: role_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)
                     .skip(offSet - 1) // Assuming `offSet` is zero-based
                     .take(Limit)
@@ -393,19 +399,19 @@ class UserRepository {
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.roleId = :roleId', { roleId: role_id })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
@@ -430,38 +436,38 @@ class UserRepository {
                     )
                     .andWhere('user.roleId = :roleId', { roleId: role_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             } else {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.roleId = :roleId', { roleId: role_id })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             }
         } catch (error) {
@@ -490,19 +496,21 @@ class UserRepository {
                     )
                     .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)
                     .skip(offSet - 1) // Assuming `offSet` is zero-based
                     .take(Limit)
@@ -512,19 +520,21 @@ class UserRepository {
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .orderBy(`user.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
@@ -549,38 +559,42 @@ class UserRepository {
                     )
                     .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             } else {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.full_name as full_name',
-                    //     'user.company as company',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.full_name as full_name',
+                        'user.bp_id as bp_id',
+                        'user.bp_name as bp_name',
+                        'user.company as company',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             }
         } catch (error) {
@@ -602,17 +616,17 @@ class UserRepository {
                     // )
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             } else {
                 return await userRepository
@@ -627,17 +641,17 @@ class UserRepository {
                     //         toDate: params.to_date || endYear,
                     //     }
                     // )
-                    // .select([
-                    //     'user.id as id',
-                    //     'user.first_name as first_name',
-                    //     'user.last_name as last_name',
-                    //     'user.email as email',
-                    //     'user.mobile as mobile',
-                    //     'user.is_active as is_active',
-                    //     'user.roleId as roleId',
-                    //     'user.created_at as created_at',
-                    //     'user.updated_at as updated_at',
-                    // ])
+                    .select([
+                        'user.id as id',
+                        'user.first_name as first_name',
+                        'user.last_name as last_name',
+                        'user.email as email',
+                        'user.mobile as mobile',
+                        'user.is_active as is_active',
+                        'user.roleId as roleId',
+                        'user.created_at as created_at',
+                        'user.updated_at as updated_at',
+                    ])
                     .getRawMany();
             }
         } catch (error) {
