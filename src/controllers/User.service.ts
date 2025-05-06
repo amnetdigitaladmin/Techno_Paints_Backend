@@ -4,6 +4,7 @@ import common from "../helpers/utils/common";
 import logger from '../middlewares/logger'
 import UserRepository from '../models/repositories/user.repo';
 import RoleRepository from '../models/repositories/roles.repo';
+import amcRepository from '../models/repositories/AMC.repo';
 import { contextType, NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 
 
@@ -196,6 +197,102 @@ class UserService {
     } catch (error: any) {
       console.log(error)
       logger.error({ userId: req.meta.userId, error: "Assignclients" }, "Assignclients method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
+  public async dashboardKpis(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "dashboard" }, "dashboard method called");
+      let roles = await RoleRepository.getRolesForImport()
+      let KPIs: any = []
+      let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+      if (Role == contextType.ADMIN) {
+        let ClientRole = (roles.find((item: any) => { return item.name == contextType.CLIENT })).hasOwnProperty('name') ?
+          (roles.find((item: any) => { return item.name == contextType.CLIENT })).id : 3
+        let BPRole = (roles.find((item: any) => { return item.name == contextType.BUSINESS_PARTNER })).hasOwnProperty('name') ?
+          (roles.find((item: any) => { return item.name == contextType.BUSINESS_PARTNER })).id : 2
+        KPIs.push({
+          name: 'Total Clients',
+          Count: await UserRepository.getCountByRole(ClientRole)
+        }
+        )
+        KPIs.push({
+          name: 'Total Business Partners',
+          Count: await UserRepository.getCountByRole(BPRole)
+        }
+        )
+        KPIs.push({
+          name: 'Total Contract Value',
+          Count: +(await amcRepository.getAmountContracts()).total
+        }
+        )
+        KPIs.push({
+          name: 'Total Contracts',
+          Count: await amcRepository.getTotalContracts()
+        }
+        )
+        KPIs.push({
+          name: 'Active Contracts',
+          Count: await amcRepository.getActiveContracts()
+        }
+        )
+      } else {
+
+        KPIs.push({
+          name: 'Total Clients',
+          Count: await UserRepository.getClientCountByBPId(+req.meta.userId)
+        })
+
+        KPIs.push({
+          name: 'Total Contract Value',
+          Count: +(await amcRepository.getBPAmountContracts(+req.meta.userId)).total
+        })
+
+        KPIs.push({
+          name: 'Total Contracts',
+          Count: await amcRepository.getBPTotalContracts(+req.meta.userId)
+        }
+        )
+
+        KPIs.push({
+          name: 'Active Contracts',
+          Count: await amcRepository.getBPActiveContracts(+req.meta.userId)
+        })
+      }
+
+
+      res.status(200).json({ status: 'success', data: KPIs });
+    } catch (error: any) {
+      console.log(error)
+      logger.error({ userId: req.meta.userId, error: "dashboard" }, "dashboard method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
+  public async dashboardActiveAndInactive(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "dashboardActiveAndInactive" }, "dashboardActiveAndInactive method called");
+      let roles = await RoleRepository.getRolesForImport()    
+      let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+        let resp:any = {};
+        resp.x = ['Active', 'Inactive'];
+        resp.y = [];
+        let ClientRole = (roles.find((item: any) => { return item.name == contextType.CLIENT })).hasOwnProperty('name') ?
+        (roles.find((item: any) => { return item.name == contextType.CLIENT })).id : 3   
+        if (Role == contextType.ADMIN) {           
+          resp.y.push(await UserRepository.getCountByActiveRole(ClientRole))
+          resp.y.push(await UserRepository.getCountByInActiveRole(ClientRole))
+      } else {
+        resp.y.push(await UserRepository.getCountByActiveRoleByBP(ClientRole,+req.meta.userId))
+        resp.y.push(await UserRepository.getCountByInActiveRoleByBP(ClientRole,+req.meta.userId))
+      }
+      res.status(200).json({ status: 'success', data: resp });
+    } catch (error: any) {
+      console.log(error)
+      logger.error({ userId: req.meta.userId, error: "dashboardActiveAndInactive" }, "dashboardActiveAndInactive method error: " + JSON.stringify(error));
       return res.status(500).send({ message: "Internal server error" });
     }
   };

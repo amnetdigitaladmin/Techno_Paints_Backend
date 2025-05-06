@@ -187,8 +187,12 @@ export class APIGATEWAY {
             AMCService.deleteAMCById(req, res);
         });
 
-        this.router.delete("/AMC/:id", vefiryToken, (req: Request, res: Response) => {
-            AMCService.deleteAMCById(req, res);
+        this.router.get("/dashboardkpi", vefiryToken, (req: Request, res: Response) => {
+            userService.dashboardKpis(req, res);
+        });
+
+        this.router.get("/active-inactive", vefiryToken, (req: Request, res: Response) => {
+            userService.dashboardActiveAndInactive(req, res);
         });
 
     }
