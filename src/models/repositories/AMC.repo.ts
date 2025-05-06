@@ -7,7 +7,7 @@ import 'moment-timezone';
 
 const AMCRepository = AppDataSource.getRepository(AMC);
 
-class RequestRepository {
+class amcRepository {
 
     public async save(obj: any) {
         try{
@@ -242,7 +242,84 @@ class RequestRepository {
         }
     }
 
+    public async getActiveContracts() {
+        try {
+            return await AMCRepository
+                .createQueryBuilder('req')               
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .andWhere('req.status =:status', { status: 'Active' })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getTotalContracts() {
+        try {
+            return await AMCRepository
+                .createQueryBuilder('req')               
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })                
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getAmountContracts() {
+        try {
+            return await AMCRepository
+            .createQueryBuilder('req')
+            .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })
+            .andWhere('req.status = :status', { status: 'Active' })
+            .getRawOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getBPActiveContracts(bpId:any) {
+        try {
+            return await AMCRepository
+                .createQueryBuilder('req')               
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .andWhere('req.status =:status', { status: 'Active' })
+                .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getBPTotalContracts(bpId:any) {
+        try {
+            return await AMCRepository
+                .createQueryBuilder('req')               
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })  
+                .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })              
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getBPAmountContracts(bpId:any) {
+        try {
+            return await AMCRepository
+            .createQueryBuilder('req')
+            .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })
+            .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
+            .andWhere('req.status = :status', { status: 'Active' })
+            .getRawOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    
+
 
 }
 
-export default new RequestRepository()
+export default new amcRepository()

@@ -301,6 +301,7 @@ class UserRepository {
                     .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     .select([
                         'user.id as id',
+                        'user.company as company',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
                         'user.email as email',
@@ -330,6 +331,7 @@ class UserRepository {
                     // )
                     .select([
                         'user.id as id',
+                        'user.company as company',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
                         'user.email as email',
@@ -466,6 +468,7 @@ class UserRepository {
             console.log(error);
         }
     }
+    
 
     public async getBPAllClients(query: any) {
         try {
@@ -704,6 +707,85 @@ class UserRepository {
                 .getOne();
         } catch (error: any) {
             console.log(error)
+        }
+    }
+    //dashboardAPIS
+    
+    public async getCountByRole(role: number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getClientCountByBPId(bpId: number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.bp_id IN (:...bp)', { bp: [bpId] })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getCountByActiveRole(role: number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .andWhere('user.is_active=:is_active', { is_active: true })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getCountByInActiveRole(role: number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .andWhere('user.is_active=:is_active', { is_active: false })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getCountByActiveRoleByBP(role: number,bp_id:number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })
+                .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .andWhere('user.is_active=:is_active', { is_active: true })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getCountByInActiveRoleByBP(role: number,bp_id:number) {        
+        try {
+            return await userRepository
+                .createQueryBuilder('user')
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })
+                .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .andWhere('user.is_active=:is_active', { is_active: false })
+                .getCount();
+        } catch (err) {
+            console.log(err);
         }
     }
 
