@@ -11,7 +11,8 @@ const Router = express.Router();
     namespace Express {
         interface Request {
             meta:{
-                userId:string              
+                userId:string ,
+                roleId:number             
             };
         }
     }
@@ -23,6 +24,7 @@ Router.use(async (req:Request, res:Response, next:NextFunction) => {
             let verifiedUser:any = await jwt.verify(token, process.env.JWT_SECRET_KEY!);
             if(verifiedUser){
                 req.meta = verifiedUser
+                req.meta.roleId = verifiedUser.roleId
                 // req.params = verifiedUser;
                 let verfiySession:any = await UserSessionsRepository.isSessionActive(verifiedUser.userId);
                 if(!verfiySession){
