@@ -1,0 +1,54 @@
+name: Deploy to Self-Hosted Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Clean old code
+        run: |
+          sudo rm -rf /home/ubuntu/Techno_Paints_Backend
+          mkdir -p /home/ubuntu/Techno_Paints_Backend
+
+      - name: Move new code to deployment directory
+        run: |
+          cp -r . /home/ubuntu/Techno_Paints_Backend
+
+      - name: Set up environment file
+        run: |
+          cp /home/ubuntu/env/techno /home/ubuntu/Techno_Paints_Backend/.env
+          
+
+      - name: Restart application with PM2
+        run: |
+          cd /home/ubuntu/Techno_Paints_Backend
+          npm install
+          pm2 stop techno-paints || true
+          pm2 delete techno-paints || true
+          pm2 start npm --name "techno-paints" -- run dev
+      
+      - name: Notify Microsoft Teams
+        if: always()  # Runs whether build succeeds or fails
+        run: |
+          curl -H 'Content-Type: application/json' \
+          -d "{
+                \"text\": \"🚀 *GitHub Build Notification*\n
+                          📁 Repo: ${{ github.repository }}\n
+                          🌿 Branch: ${{ github.ref_name }}\n
+                          🔍 Commit: ${{ github.sha }}\n
+                          👤 Triggered by: ${{ github.actor }}\n
+                          📊 Status: ${{ job.status }}\"
+              }" \
+          ${{ secrets.TEAMS_WEBHOOK_URL }}  
+
+
+
+    

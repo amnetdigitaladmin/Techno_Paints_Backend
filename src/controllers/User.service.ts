@@ -95,6 +95,17 @@ class UserService {
     try {
       logger.info({ params: '', init: "deleteUserById" }, "deleteUserById method called");
       let userId: any = +req.params.id;
+      let roles = await RoleRepository.getRolesForImport()
+      let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+      if (Role == contextType.ADMIN) {
+        let usersCout: any = await UserRepository.getCountByRole(req.meta.roleId)
+        if (usersCout == 1) {
+          return res
+            .status(400)
+            .json({ status: "failed", message: "Your not allowed to delete this final admin user" });
+        }
+      }
       let usersInfo: any = await UserRepository.getById(userId);
       usersInfo.id = +usersInfo.id;
       usersInfo.updated_by = req.meta.userId || 0;
