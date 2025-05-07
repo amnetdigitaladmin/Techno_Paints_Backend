@@ -266,6 +266,45 @@ class RequestRepository {
         }
     }
 
+    public async getAllRequestsDownload(query: any) {
+        try {
+            let params: any = query;
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            let order_by = params.order_by ? params.order_by : 'updated_at';
+            let sort_order = params.sort_order ? params.sort_order : 'DESC';
+    
+            const qb = requestRepository
+                .createQueryBuilder('req')               
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .select([                   
+                    `req.client_name AS "Client Name"`,                  
+                    `req.material_type AS "Material Type"`,
+                    `req.description AS "Description"`,
+                    `req.quantity AS "Quantity"`,                  
+                    `req.bp_name AS "Business Partner Name"`,
+                    `req.status AS "Status"`,
+                    `req.required_date AS "Required Date"`,                    
+                    `req.comments AS "Comments"`,             
+                ])
+                .orderBy(`req.${order_by}`, sort_order)
+                .skip(offSet - 1)
+                .take(Limit);
+    
+            // Optional date range filter
+            if (params.from_date && params.to_date) {
+                qb.andWhere('req.required_date BETWEEN :from AND :to', {
+                    from: params.from_date,
+                    to: params.to_date,
+                });
+            }    
+            return await qb.getRawMany();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+
 
 }
 

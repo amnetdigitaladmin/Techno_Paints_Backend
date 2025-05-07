@@ -5,7 +5,9 @@ import logger from '../middlewares/logger'
 import UserRepository from '../models/repositories/user.repo';
 import RoleRepository from '../models/repositories/roles.repo';
 import amcRepository from '../models/repositories/AMC.repo';
+import requestRepository from '../models/repositories/request.repo';
 import { contextType, NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+import { Parser } from 'json2csv';
 
 
 
@@ -296,6 +298,31 @@ class UserService {
       return res.status(500).send({ message: "Internal server error" });
     }
   };
+
+  public async downloadReports(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "downloadReports" }, "downloadReports method called");
+      try {
+        let data = {}
+        if (req.query.type == 'AMC') {
+          data = await amcRepository.getAllAMCsForDownload(req.query)
+        } else if (req.query.type == 'Material Requests') {
+          data = await requestRepository.getAllRequestsDownload(req.query)
+        }
+        const parser = new Parser();
+        const csv = parser.parse(data);
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        res.setHeader('Content-Type', 'text/csv');
+        res.status(200).send(csv);
+      } catch (error) {
+        res.status(500).send('Error generating CSV');
+      }
+    } catch (error: any) {     
+      logger.error({ userId: req.meta.userId, error: "downloadReports" }, "downloadReports method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
 
 }
 
