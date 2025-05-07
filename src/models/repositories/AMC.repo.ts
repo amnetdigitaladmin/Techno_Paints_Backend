@@ -316,6 +316,49 @@ class amcRepository {
             console.log(err);
         }
     }
+    
+   // Reports
+public async getAllAMCsForDownload(query: any) {
+    try {
+        let params: any = query;
+        let offSet = params.offset ? params.offset : 1;
+        let Limit = params.limit ? params.limit : 10000;
+        let order_by = params.order_by ? params.order_by : 'updated_at';
+        let sort_order = params.sort_order ? params.sort_order : 'DESC';
+        let fromDate = params.from_date;
+        let toDate = params.to_date;
+
+        const qb = AMCRepository
+            .createQueryBuilder('req')
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })
+            .select([  
+                `req.created_at AS "Created Date"`,            
+                `req.client_name AS "Client Name"`,
+                `req.bp_name AS "Business Partner"`,
+                `req.start_date AS "Start Date"`, 
+                `req.end_date AS "End Date"`,  
+                `req.status AS "Status"`,       
+                `req.amount AS "Amount"`, 
+            ]);
+            
+
+        if (fromDate && toDate) {
+            qb.andWhere('req.start_date >= :fromDate AND req.end_date <= :toDate', {
+                fromDate,
+                toDate
+            });
+        }
+        return await qb
+            .orderBy(`req.${order_by}`, sort_order)
+            .skip(offSet - 1)
+            .take(Limit)
+            .getRawMany();
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
     
 
