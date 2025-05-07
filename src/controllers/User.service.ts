@@ -304,11 +304,23 @@ class UserService {
       logger.info({ userId: req.meta.userId, init: "downloadReports" }, "downloadReports method called");
       try {
         let data = {}
+        let roles = await RoleRepository.getRolesForImport()
+        let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+      if (Role == contextType.ADMIN) {
         if (req.query.type == 'AMC') {
           data = await amcRepository.getAllAMCsForDownload(req.query)
         } else if (req.query.type == 'Material Requests') {
           data = await requestRepository.getAllRequestsDownload(req.query)
-        }
+        } 
+      }else{
+        req.query.userId = req.meta.userId
+        if (req.query.type == 'AMC') {        
+          data = await amcRepository.getAllAMCsBPForDownload(req.query)
+        } else if (req.query.type == 'Material Requests') {
+          data = await requestRepository.getAllBPRequestsDownload(req.query)
+        } 
+      }    
         const parser = new Parser();
         const csv = parser.parse(data);
         res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
