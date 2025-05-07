@@ -195,6 +195,10 @@ export class APIGATEWAY {
             userService.dashboardActiveAndInactive(req, res);
         });
 
+        this.router.get("/status-count", vefiryToken, (req: Request, res: Response) => {
+            userService.dashboardStatusCount(req, res);
+        });
+
         this.router.get("/download", vefiryToken, (req: Request, res: Response) => {
             userService.downloadReports(req, res);
         });
