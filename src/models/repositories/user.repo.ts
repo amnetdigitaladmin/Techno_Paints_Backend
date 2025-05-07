@@ -265,7 +265,7 @@ class UserRepository {
             let sort_order = params.sort_order ? params.sort_order : "DESC";
             return await importRepository
                 .createQueryBuilder('imp')
-                // .leftJoinAndMapOne('imp.created_by', User, 'u', `imp.created_by = u.id`)
+                .leftJoinAndMapOne('imp.created_by', User, 'u', `imp.created_by = u.id`)
                 .where('imp.is_deleted = :is_deleted', {
                     is_deleted: false,
                 })
@@ -292,11 +292,12 @@ class UserRepository {
             if (params.search_text) {
                 return await userRepository
                     .createQueryBuilder('user')
-                    // .where(
-                    //     `(LOWER(user.first_name) LIKE :searchText or 
-                    //     LOWER(user.email) LIKE :searchText) and user.type = :type `,
-                    //     { searchText: `%${params.search_text.toLowerCase()}%`, type: userType.customer },
-                    // )
+                    .where(
+                        `(LOWER(user.full_name) LIKE :searchText or 
+                        LOWER(user.mobile) LIKE :searchText) or 
+                        LOWER(user.company) LIKE :searchText)`,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .andWhere('user.roleId IN (:...roleId)', { roleId: roleId })
                     .select([
