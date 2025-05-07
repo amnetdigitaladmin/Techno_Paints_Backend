@@ -342,6 +342,80 @@ class RequestRepository {
             console.log(error);
         }
     }
+
+    public async getRequestStatusCounts(): Promise<any> {
+        try {
+            // Define expected statuses
+            const expectedStatuses = ['Pending', 'Accepted', 'Rejected'];
+
+            // Initialize counts to 0
+            const statusMap: Record<string, number> = {};
+            expectedStatuses.forEach(status => statusMap[status] = 0);
+
+            // Fetch actual counts from DB
+            const result = await requestRepository
+                .createQueryBuilder('req')
+                .select(`req.status`, 'status')
+                .addSelect('COUNT(*)', 'count')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })                
+                .groupBy('req.status')
+                .getRawMany();
+
+            // Overwrite counts where data exists
+            for (const row of result) {
+                if (statusMap.hasOwnProperty(row.status)) {
+                    statusMap[row.status] = parseInt(row.count);
+                }
+            }
+
+            // Construct x and y arrays
+            const x = expectedStatuses;
+            const y = expectedStatuses.map(status => statusMap[status]);
+
+            return { x, y };
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to get status counts');
+        }
+    }
+    public async getRequestBPStatusCounts(user: number): Promise<any> {
+        try {
+            // Define expected statuses
+            const expectedStatuses = ['Pending', 'Accepted', 'Rejected'];
+
+            // Initialize counts to 0
+            const statusMap: Record<string, number> = {};
+            expectedStatuses.forEach(status => statusMap[status] = 0);
+
+            // Fetch actual counts from DB
+            const result = await requestRepository
+                .createQueryBuilder('req')
+                .select(`req.status`, 'status')
+                .addSelect('COUNT(*)', 'count')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.bp_id = :bp_id', { bp_id: user })
+                .groupBy('req.status')
+                .getRawMany();
+
+            // Overwrite counts where data exists
+            for (const row of result) {
+                if (statusMap.hasOwnProperty(row.status)) {
+                    statusMap[row.status] = parseInt(row.count);
+                }
+            }
+
+            // Construct x and y arrays
+            const x = expectedStatuses;
+            const y = expectedStatuses.map(status => statusMap[status]);
+
+            return { x, y };
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to get status counts');
+        }
+    }
+    
+    
     
 
 

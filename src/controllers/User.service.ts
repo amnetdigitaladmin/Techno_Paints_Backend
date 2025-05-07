@@ -8,9 +8,6 @@ import amcRepository from '../models/repositories/AMC.repo';
 import requestRepository from '../models/repositories/request.repo';
 import { contextType, NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import { Parser } from 'json2csv';
-
-
-
 import EmailService from './notification.service';
 
 class UserService {
@@ -295,6 +292,28 @@ class UserService {
     } catch (error: any) {
       console.log(error)
       logger.error({ userId: req.meta.userId, error: "dashboardActiveAndInactive" }, "dashboardActiveAndInactive method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
+  public async dashboardStatusCount(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "dashboardStatusCount" }, "dashboardStatusCount method called");
+      let roles = await RoleRepository.getRolesForImport()
+      let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+      let resp: any = {};
+      if (Role == contextType.ADMIN) {
+        resp = await requestRepository.getRequestStatusCounts()
+
+      } else {
+        resp = await requestRepository.getRequestBPStatusCounts(+req.meta.userId)
+      }
+
+      res.status(200).json({ status: 'success', data: resp });
+    } catch (error: any) {
+      console.log(error)
+      logger.error({ userId: req.meta.userId, error: "dashboardStatusCount" }, "dashboardStatusCount method error: " + JSON.stringify(error));
       return res.status(500).send({ message: "Internal server error" });
     }
   };
