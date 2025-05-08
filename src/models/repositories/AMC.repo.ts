@@ -54,7 +54,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                  
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -75,6 +76,7 @@ class amcRepository {
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
                         'req.end_date as end_date',                   
+                        'req.status as status',    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -107,7 +109,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',   
+                        'req.status as status',                    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -124,7 +127,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -160,6 +164,7 @@ class amcRepository {
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
                         'req.end_date as end_date',                   
+                        'req.status as status',    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -180,7 +185,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',
+                        'req.status as status',                       
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -214,7 +220,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',
+                        'req.status as status',                       
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -232,7 +239,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
