@@ -41,7 +41,8 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `(LOWER(req.client_name) LIKE :searchText or
+                        (LOWER(req.bp_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
