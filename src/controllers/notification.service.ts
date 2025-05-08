@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 const fs = require('fs');
+import _ from 'lodash'
 const randomstring = require('randomstring');
 import UserRepository from '../models/repositories/user.repo';
 import NotificationsRepository from '../models/repositories/notification.repository';
@@ -246,6 +247,17 @@ class EmailService {
 
     //Bell Notifications
 
+    public async getMessages(req: any,res:any): Promise<any> {
+		if (!_.isUndefined(req.query.offset) && !_.isUndefined(req.query.limit)) {
+			req.query.offset = +req.query.offset < 1 ? 1 : +req.query.offset;
+			req.query.limit = +req.params.limit < 1 ? 0 : +req.query.limit;
+		}
+        req.query.empId = req.meta.userId
+		const data = await NotificationsRepository.get(req);
+        return res.status(200).json({ status: 'Success', message: 'success' ,data: data[0], count: data[1] });
+	
+	}
+
     public async sendMessage(req: any) {
         try {
             const notifications: any[] = [];
@@ -275,8 +287,8 @@ class EmailService {
     };
 
     public async updateMessageStatus(req: any, res: any) {
-        try {	const res = await NotificationsRepository.update(req.params);
-
+        try {	
+            await NotificationsRepository.update(req.query);
             // update all messages as read
             req.params.isReadAll
                 ? ((req.params.message = { empId: req.meta.userId, isReadAll: true, type: 'READ' }),
@@ -284,32 +296,32 @@ class EmailService {
                 : ((req.params.message = {
                         empId: req.meta.userId,
                         isReadAll: false,
-                        data: { id: req.params.id },
+                        data: { id: req.query.id },
                         type: CONSTANTS.READ,
                   }),
                   await this.notifyMethod(req)); // call notify method
-            return res;} catch (error: any) {
+                  return res.status(200).json({ status: 'Success', message: 'updated'});
+        } catch (error: any) {
             console.log(error)
         }
-
     };
 
     public async deleteMessage(req: any, res: any) {
         try {
-            const res = await NotificationsRepository.remove(req.params);
+             await NotificationsRepository.remove(req.query);
 
             // update all messages as read
-            req.params.isDeleteAll
-                ? ((req.params.message = { empId: req.params.empId, isDeleteAll: true, type: 'DELETE' }),
+            req.query.isDeleteAll
+                ? ((req.query.message = { empId: req.query.empId, isDeleteAll: true, type: 'DELETE' }),
                 this.notifyMethod(req)) // call notify method
-                : ((req.params.message = {
+                : ((req.query.message = {
                         empId: req.meta.userId,
-                        data: { id: req.params.id },
+                        data: { id: req.query.id },
                         isDeleteAll: false,
                         type: CONSTANTS.DELETE,
                   }),
                   await this.notifyMethod(req)); // call notify method
-            return res;
+                  return res.status(200).json({ status: 'Success', message: 'Deleted'});
         } catch (error: any) {
             console.log(error)
         }
