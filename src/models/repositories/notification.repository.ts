@@ -7,7 +7,7 @@ import dateFormat from 'dateformat';
 
 class NotificationsRepository {
  public async get(req:any) {
-  let params = req.params;
+  let params = req.query;
   return _.isUndefined(params.limit) // to skip pagination
     ? await notificationRepository
         .createQueryBuilder()
@@ -25,7 +25,9 @@ class NotificationsRepository {
 public async update(params:any) {
   var data: any;
   if (!params.isReadAll) {
-    data = await notificationRepository.findOne({ id: params.id });
+    data = await notificationRepository.findOne({
+      where: { id: params.id }
+    });
     data.is_read = true;
   }
 
@@ -60,7 +62,7 @@ public async remove(params:any) {
         .from(Notifications)
         .where({ emp_id: params.empId, created_at: this.LessThanDate(new Date()) }) // delete all historical messages
         .execute()
-    : await notificationRepository.delete(params.id); // delete based on id
+    : await notificationRepository.delete({ id: params.id }); // delete based on id
 };
 
 public LessThanDate = (date: Date) => LessThan(dateFormat(date, 'isoDateTime'));

@@ -199,9 +199,27 @@ export class APIGATEWAY {
             userService.dashboardStatusCount(req, res);
         });
 
+        this.router.get('/revenue-chart', vefiryToken, (req: Request, res: Response) => {
+            // userService.revenueChart(req, res);
+        });
+
         this.router.get("/download", vefiryToken, (req: Request, res: Response) => {
             userService.downloadReports(req, res);
         });
+
+        this.router.get("/notifications", vefiryToken, (req: Request, res: Response) => {
+            notificationService.getMessages(req, res);
+        });
+
+        this.router.put("/notification", vefiryToken, (req: Request, res: Response) => {
+            notificationService.updateMessageStatus(req, res);
+        });
+
+        this.router.delete("/notification", vefiryToken, (req: Request, res: Response) => {
+            notificationService.deleteMessage(req, res);
+        });
+
+
 
 
     }
