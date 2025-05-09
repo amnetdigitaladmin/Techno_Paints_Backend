@@ -365,6 +365,8 @@ export class ImportService {
     // console.log('---------->', ImportData)
     if (ImportData && ImportData[0].length > 0) {
       await common.asyncForEach(ImportData[0], async (item: any, index: any) => {
+        item.created_by = await UserRepository.getById(+item.created_by);
+        item.updated_by = await UserRepository.getById(+item.updated_by);
         let request_file_url_filePath: any =
           item && item.request_file_url
             ? item.request_file_url.split("/").pop()
