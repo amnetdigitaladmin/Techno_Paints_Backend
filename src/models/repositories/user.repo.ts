@@ -265,7 +265,8 @@ class UserRepository {
             let sort_order = params.sort_order ? params.sort_order : "DESC";
             return await importRepository
                 .createQueryBuilder('imp')
-                .leftJoinAndMapOne('imp.created_by', User, 'u', `CAST("imp"."created_by" AS integer) = u.id`)
+                // .leftJoinAndMapOne('imp.created_by', User, 'u', `CAST("imp"."created_by" AS integer) = u.id`)
+                // .leftJoinAndMapOne('imp.updated_by', User, 'usr', `CAST("imp"."updated_by" AS integer) = usr.id`)
                 .where('imp.is_deleted = :is_deleted', {
                     is_deleted: false,
                 })

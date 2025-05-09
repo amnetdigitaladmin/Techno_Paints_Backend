@@ -8,7 +8,7 @@ import {
 } from 'typeorm';  
 
 export abstract class Model0 {  
-    jsonIgnore: string[] = ['logicalDelete', 'is_deleted', 'created_by', 'updated_by', 'jsonIgnore'];  
+    jsonIgnore: string[] = ['logicalDelete', 'is_deleted', 'jsonIgnore'];  
 
     @Column({ nullable: false })  
     created_by?: string = '';  
