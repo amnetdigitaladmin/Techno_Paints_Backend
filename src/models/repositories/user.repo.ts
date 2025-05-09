@@ -371,31 +371,34 @@ class UserRepository {
             let sort_order = params.sort_order ? params.sort_order : 'DESC';
             if (params.search_text) {
                 return await userRepository
-                    .createQueryBuilder('user')
-                    .where(
-                        `(LOWER(user.full_name) LIKE :searchText or 
-                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
-                        { searchText: `%${params.search_text.toLowerCase()}%` },
-                    )
-                    .andWhere('user.roleId = :roleId', { roleId: role_id })
-                    .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .select([
-                        'user.id as id',
-                        'user.first_name as first_name',
-                        'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.company as company',
-                        'user.email as email',
-                        'user.mobile as mobile',
-                        'user.is_active as is_active',
-                        'user.roleId as roleId',
-                        'user.created_at as created_at',
-                        'user.updated_at as updated_at',
-                    ])
-                    .orderBy(`user.${order_by}`, sort_order)
-                    .skip(offSet - 1) // Assuming `offSet` is zero-based
-                    .take(Limit)
-                    .getRawMany();
+                .createQueryBuilder('user')
+                .where(
+                    `(
+                        LOWER(user.full_name) LIKE :searchText OR 
+                        LOWER(user.email) LIKE :searchText OR 
+                        LOWER(user.mobile) LIKE :searchText
+                    )`,
+                    { searchText: `%${params.search_text.toLowerCase()}%` }
+                )
+                .andWhere('user.roleId = :roleId', { roleId: role_id })
+                .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
+                .select([
+                    'user.id as id',
+                    'user.first_name as first_name',
+                    'user.last_name as last_name',
+                    'user.full_name as full_name',
+                    'user.company as company',
+                    'user.email as email',
+                    'user.mobile as mobile',
+                    'user.is_active as is_active',
+                    'user.roleId as roleId',
+                    'user.created_at as created_at',
+                    'user.updated_at as updated_at',
+                ])
+                .orderBy(`user.${order_by}`, sort_order)
+                .skip(offSet - 1)
+                .take(Limit)
+                .getRawMany();            
             } else {
                 return await userRepository
                     .createQueryBuilder('user')
@@ -432,9 +435,12 @@ class UserRepository {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where(
-                        `(LOWER(user.full_name) LIKE :searchText or 
-                        LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
-                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                        `(
+                            LOWER(user.full_name) LIKE :searchText OR 
+                            LOWER(user.email) LIKE :searchText OR 
+                            LOWER(user.mobile) LIKE :searchText
+                        )`,
+                        { searchText: `%${params.search_text.toLowerCase()}%` }
                     )
                     .andWhere('user.roleId = :roleId', { roleId: role_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
