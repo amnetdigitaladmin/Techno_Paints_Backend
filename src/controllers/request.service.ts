@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import logger from '../middlewares/logger';
 import RequestRepository from '../models/repositories/request.repo';
+import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+import EmailService from './notification.service';
 
 
 class RequestService {
@@ -10,6 +12,18 @@ class RequestService {
       logger.info({ params: req.body, init: "AddRequest" }, "AddRequest method called");
       let params: any = req.body;
       params.created_by = req.meta.userId;
+                // const notificationPayload: any = [];
+                // notificationPayload.push({
+                //   empId: +req.params.bpid,
+                //   type: NotificationRequestType.request_raised,
+                //   request_group: RequestGroup.ADMIN,
+                //   content: {
+                //     title: `Clients Assigned`,
+                //     data: `New clients have been assigned to you. Please check your client list for details.`
+                //   },
+                //   employee_type: 'employee',
+                // })
+                // await EmailService.sendMessage({ payload: notificationPayload }) 
       await RequestRepository.save(params);
       res.status(200).json({ status: 'success', message: 'Request Created Successfully' });
     } catch (error) {
