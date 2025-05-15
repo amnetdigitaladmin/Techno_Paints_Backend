@@ -41,8 +41,8 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText or
-                        (LOWER(req.bp_name) LIKE :searchText`,
+                        `LOWER(req.client_name) LIKE :searchText or
+                        LOWER(req.bp_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -54,7 +54,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                  
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -75,6 +76,7 @@ class amcRepository {
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
                         'req.end_date as end_date',                   
+                        'req.status as status',    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -95,7 +97,7 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -107,7 +109,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',   
+                        'req.status as status',                    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -124,7 +127,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -146,7 +150,7 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
@@ -160,6 +164,7 @@ class amcRepository {
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
                         'req.end_date as end_date',                   
+                        'req.status as status',    
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -180,7 +185,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',
+                        'req.status as status',                       
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -201,7 +207,7 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
@@ -214,7 +220,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date',
+                        'req.status as status',                       
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])
@@ -232,7 +239,8 @@ class amcRepository {
                         'req.bp_id as bp_id',
                         'req.bp_name as bp_name',  
                         'req.start_date as start_date',
-                        'req.end_date as end_date',                   
+                        'req.end_date as end_date', 
+                        'req.status as status',                      
                         'req.created_at as created_at',
                         'req.updated_at as updated_at',
                     ])

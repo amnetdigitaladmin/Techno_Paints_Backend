@@ -41,7 +41,7 @@ class RequestRepository {
                 return await requestRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -100,7 +100,7 @@ class RequestRepository {
                 return await requestRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -157,7 +157,7 @@ class RequestRepository {
                 return await requestRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
@@ -218,7 +218,7 @@ class RequestRepository {
                 return await requestRepository
                     .createQueryBuilder('req')
                     .where(
-                        `(LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
