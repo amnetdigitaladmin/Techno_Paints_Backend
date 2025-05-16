@@ -497,7 +497,7 @@ public async getAMCChartData(filter: any) {
         .select('COALESCE(SUM(CAST(amc.amount AS NUMERIC)), 0)::int', 'value')
         .where('amc.amount IS NOT NULL')
         .andWhere('amc.is_deleted = false')
-        .andWhere('req.bp_id = :bp_id', { bp_id: filter.user })
+        .andWhere('amc.bp_id = :bp_id', { bp_id: filter.user })
   
       let groupBy = '';
       let labelExpr = '';
