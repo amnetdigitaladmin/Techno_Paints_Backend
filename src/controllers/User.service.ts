@@ -329,6 +329,28 @@ class UserService {
     }
   };
 
+  public async revenueChart(req: Request, res: Response) {
+    try {
+      logger.info({ userId: req.meta.userId, init: "revenueChart" }, "revenueChart method called");
+      let roles = await RoleRepository.getRolesForImport()
+      let Role = (roles.find((item: any) => { return item.id == req.meta.roleId })).hasOwnProperty('id') ?
+        (roles.find((item: any) => { return item.id == req.meta.roleId })).name : 3
+      let resp: any = {};
+      if (Role == contextType.ADMIN) {
+        resp = await amcRepository.getAMCChartData(req.query)
+      } else {
+        req.query.user =  req.meta.userId
+        resp = await amcRepository.getBPAMCChartData(req.query)
+      }
+
+      res.status(200).json({ status: 'success', data: resp });
+    } catch (error: any) {
+      console.log(error)
+      logger.error({ userId: req.meta.userId, error: "revenueChart" }, "revenueChart method error: " + JSON.stringify(error));
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
   public async downloadReports(req: Request, res: Response) {
     try {
       logger.info({ userId: req.meta.userId, init: "downloadReports" }, "downloadReports method called");
