@@ -411,6 +411,165 @@ public async getAllAMCsBPForDownload(query: any) {
     }
 } 
 
+public async getAMCChartData(filter: any) {
+    try {
+      const { filterType, date, startDate, endDate } = filter;
+  
+      const query = AMCRepository.createQueryBuilder('amc')
+        .select('COALESCE(SUM(CAST(amc.amount AS NUMERIC)), 0)::int', 'value')
+        .where('amc.amount IS NOT NULL')
+        .andWhere('amc.is_deleted = false');
+  
+      let groupBy = '';
+      let labelExpr = '';
+  
+      switch (filterType) {
+        case 'year':
+          labelExpr = `TO_CHAR(amc.created_at, 'Mon')`;
+          query.andWhere(
+            `DATE_TRUNC('year', amc.created_at) = DATE_TRUNC('year', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'month':
+          labelExpr = `TO_CHAR(amc.created_at, 'DD')`;
+          query.andWhere(
+            `DATE_TRUNC('month', amc.created_at) = DATE_TRUNC('month', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'week':
+          labelExpr = `TO_CHAR(amc.created_at, 'Dy')`;
+          query.andWhere(
+            `DATE_TRUNC('week', amc.created_at) = DATE_TRUNC('week', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'day':
+          labelExpr = `TO_CHAR(amc.created_at, 'HH24:00')`;
+          query.andWhere(
+            `DATE_TRUNC('day', amc.created_at) = DATE_TRUNC('day', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'custom':
+          labelExpr = `TO_CHAR(amc.created_at, 'YYYY-MM-DD')`;
+          query.andWhere(
+            `amc.created_at::date BETWEEN :startDate AND :endDate`,
+            { startDate, endDate }
+          );
+          break;
+  
+        default:
+          throw new Error('Invalid filter type');
+      }
+  
+      // Add label select and group/order
+      query.addSelect(labelExpr, 'label');
+      query.groupBy(labelExpr);
+      query.orderBy(labelExpr, 'ASC');
+  
+      const result = await query.getRawMany();
+  
+      const xAxis: string[] = result.map((row: any) => row.label);
+      const yAxis: number[] = result.map((row: any) => parseInt(row.value, 10));
+  
+      return {
+        x: xAxis,
+        y: yAxis
+      };
+  
+    } catch (err) {
+      console.error(err);
+      throw new Error('Failed to generate chart data');
+    }
+  }
+
+  public async getBPAMCChartData(filter: any) {
+    try {
+      const { filterType, date, startDate, endDate } = filter;
+  
+      const query = AMCRepository.createQueryBuilder('amc')
+        .select('COALESCE(SUM(CAST(amc.amount AS NUMERIC)), 0)::int', 'value')
+        .where('amc.amount IS NOT NULL')
+        .andWhere('amc.is_deleted = false')
+        .andWhere('req.bp_id = :bp_id', { bp_id: filter.user })
+  
+      let groupBy = '';
+      let labelExpr = '';
+  
+      switch (filterType) {
+        case 'year':
+          labelExpr = `TO_CHAR(amc.created_at, 'Mon')`;
+          query.andWhere(
+            `DATE_TRUNC('year', amc.created_at) = DATE_TRUNC('year', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'month':
+          labelExpr = `TO_CHAR(amc.created_at, 'DD')`;
+          query.andWhere(
+            `DATE_TRUNC('month', amc.created_at) = DATE_TRUNC('month', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'week':
+          labelExpr = `TO_CHAR(amc.created_at, 'Dy')`;
+          query.andWhere(
+            `DATE_TRUNC('week', amc.created_at) = DATE_TRUNC('week', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'day':
+          labelExpr = `TO_CHAR(amc.created_at, 'HH24:00')`;
+          query.andWhere(
+            `DATE_TRUNC('day', amc.created_at) = DATE_TRUNC('day', TO_DATE(:date, 'YYYY-MM-DD'))`,
+            { date }
+          );
+          break;
+  
+        case 'custom':
+          labelExpr = `TO_CHAR(amc.created_at, 'YYYY-MM-DD')`;
+          query.andWhere(
+            `amc.created_at::date BETWEEN :startDate AND :endDate`,
+            { startDate, endDate }
+          );
+          break;
+  
+        default:
+          throw new Error('Invalid filter type');
+      }
+  
+      // Add label select and group/order
+      query.addSelect(labelExpr, 'label');
+      query.groupBy(labelExpr);
+      query.orderBy(labelExpr, 'ASC');
+  
+      const result = await query.getRawMany();
+  
+      const xAxis: string[] = result.map((row: any) => row.label);
+      const yAxis: number[] = result.map((row: any) => parseInt(row.value, 10));
+  
+      return {
+        x: xAxis,
+        y: yAxis
+      };
+  
+    } catch (err) {
+      console.error(err);
+      throw new Error('Failed to generate chart data');
+    }
+  }
+  
+
+
 }
 
 export default new amcRepository()

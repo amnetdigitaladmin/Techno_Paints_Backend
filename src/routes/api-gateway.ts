@@ -200,7 +200,7 @@ export class APIGATEWAY {
         });
 
         this.router.get('/revenue-chart', vefiryToken, (req: Request, res: Response) => {
-            // userService.revenueChart(req, res);
+            userService.revenueChart(req, res);
         });
 
         this.router.get("/download", vefiryToken, (req: Request, res: Response) => {
