@@ -23,6 +23,7 @@ class EmailService {
 
     public async sendLinkToCustomer(req: any, res: any) {
         try {           
+            console.log('test')
             // Setup email data
             const mailOptions = {
                 from: process.env.FROM_MAIL,
