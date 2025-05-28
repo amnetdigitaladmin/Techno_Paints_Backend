@@ -68,6 +68,18 @@ class serviceRepository {
         }
     }
 
+    public async getAllCategoriesListing() {
+        try {
+            return await categoryRepository
+                .createQueryBuilder('req')
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.id`)
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .getMany();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     public async getAllCategories() {
         try {
             return await categoryRepository
