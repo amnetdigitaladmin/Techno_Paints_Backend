@@ -68,6 +68,18 @@ class serviceRepository {
         }
     }
 
+    public async getAllCategoriesListing() {
+        try {
+            return await categoryRepository
+                .createQueryBuilder('req')
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.id`)
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .getMany();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     public async getAllCategories() {
         try {
             return await categoryRepository
@@ -87,6 +99,20 @@ class serviceRepository {
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
                 .andWhere('req.category_id =:category_id', { category_id: id })
                 .getMany();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    
+    public async findAllSubCategoriesByCategoryId(id: number) {
+        try {
+            return await categoryRepository
+                .createQueryBuilder('req')
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.id`)
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .andWhere('req.id =:id', { id: id })
+                .getOne();
         } catch (err) {
             console.log(err);
         }
