@@ -10,6 +10,10 @@ class RequestService {
       logger.info({ params: req.body, init: "createAMC" }, "createAMC method called");
       let params: any = req.body;
       params.created_by = req.meta.userId;
+      let amcInfo: any = await AMCRepository.getAMCByName(req.body.amc_name);
+      if (amcInfo && amcInfo.amc_name) {
+        return res.status(400).json({ status: 'Failed', message: "AMC Name already exists" });
+      }
       await AMCRepository.save(params);
       res.status(200).json({ status: 'success', message: 'AMC Created Successfully' });
     } catch (error) {
