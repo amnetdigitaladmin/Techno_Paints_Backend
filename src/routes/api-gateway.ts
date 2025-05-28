@@ -237,6 +237,10 @@ export class APIGATEWAY {
             categoryService.getAllCategories(req, res);
         });
 
+        this.router.get("/categories/listing", vefiryToken, (req: Request, res: Response) => {
+            categoryService.getAllCategoriesListing(req, res);
+        });
+
         this.router.get("/subcategories/:id", vefiryToken, (req: Request, res: Response) => {
             categoryService.getAllSubCategoriesByCategoryId(req, res);
         });
