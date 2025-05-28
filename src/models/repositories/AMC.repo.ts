@@ -4,6 +4,8 @@ import common from "../../helpers/utils/common";
 import moment from 'moment';
 import _ from 'lodash';
 import 'moment-timezone';
+import { Category } from '../schemas/categories';
+import { SubCategory } from '../schemas/subcategories';
 
 const AMCRepository = AppDataSource.getRepository(AMC);
 
@@ -22,7 +24,21 @@ class amcRepository {
         try {
             return await AMCRepository
                 .createQueryBuilder('req')
+                .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
+                .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
                 .where('req.id=:id', { id: id })
+                .andWhere('req.is_deleted =:is_deleted', { is_deleted: false })
+                .getOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getAMCByName(name: string) {
+        try {
+            return await AMCRepository
+                .createQueryBuilder('req')
+                .where('req.amc_name=:amc_name', { amc_name: name })
                 .andWhere('req.is_deleted =:is_deleted', { is_deleted: false })
                 .getOne();
         } catch (err) {

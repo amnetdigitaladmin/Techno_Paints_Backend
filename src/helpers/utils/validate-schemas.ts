@@ -113,22 +113,26 @@ class validateParameters {
   });
 
   AMCSchema = Joi.object({
+    amc_name: Joi.string().required(),
     client_name: Joi.string().required(),
     client_id: Joi.number().required(),
-    amount: Joi.string().required(),
-    bp_id: Joi.number().required(),
-    bp_name: Joi.string().required(),
-    start_date: Joi.string().required(),
-    end_date: Joi.string().required()
-  });
-  AMCUpdateSchema = Joi.object({
-    client_name: Joi.string().required(),
-    client_id: Joi.number().required(),
-    amount: Joi.string().required(),
-    bp_id: Joi.number().required(),
-    bp_name: Joi.string().required(),
     start_date: Joi.string().required(),
     end_date: Joi.string().required(),
+    area_in_sqft: Joi.number().required(),
+    category_id: Joi.number().required(),
+    sub_category_id: Joi.number().required(),
+    utilisation_per_year: Joi.number().required(),
+  });
+  AMCUpdateSchema = Joi.object({
+    amc_name: Joi.string().required(),
+    client_name: Joi.string().required(),
+    client_id: Joi.number().required(),
+    start_date: Joi.string().required(),
+    end_date: Joi.string().required(),
+    area_in_sqft: Joi.number().required(),
+    category_id: Joi.number().required(),
+    sub_category_id: Joi.number().required(),
+    utilisation_per_year: Joi.number().required(),
     status: Joi.string().required().valid("Active", "InActive")
   });
   acceptRejectSchema = Joi.object({
