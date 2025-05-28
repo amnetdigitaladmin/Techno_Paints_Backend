@@ -59,7 +59,7 @@ class amcRepository {
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
                     .where(
-                        `LOWER(req.client_name) LIKE :searchText`,
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -122,7 +122,7 @@ class amcRepository {
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
                     .where(
-                        `LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
@@ -183,7 +183,7 @@ class amcRepository {
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
                     .where(
-                        `LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
@@ -248,7 +248,7 @@ class amcRepository {
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
                     .where(
-                        `LOWER(req.client_name) LIKE :searchText `,
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
                     .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
