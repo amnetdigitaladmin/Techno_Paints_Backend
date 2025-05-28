@@ -135,6 +135,21 @@ class validateParameters {
     comments: Joi.string().allow('', null).optional(),
     status: Joi.string().required().valid("Accepted", "Rejected")
   });
+
+  categorySchema = Joi.object({
+    category: Joi.string().required(),
+  });
+
+  subCategorySchema = Joi.object({
+    subcategory: Joi.string().required(),
+    category_id: Joi.number().required(),
+  });
+
+  updateSubCategorySchema = Joi.object({
+    new_subcatogires: Joi.array().required(),
+    removed_subcatogires: Joi.array().required(),
+    category_id: Joi.number().required(),
+  });
 //     //login validation rules
 //     loginSchema = Joi.object({
 //         email: Joi.string().trim().required().label('email'),

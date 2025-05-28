@@ -6,6 +6,7 @@ import ImportService from '../controllers/import.service';
 import notificationService from '../controllers/notification.service';
 import requestService from '../controllers/request.service';
 import AMCService from '../controllers/AMC.service';
+import categoryService from '../controllers/services.service';
 // import S3Service from '../controllers/s3.service';
 // import notificationService from '../controllers/notification.service';
 import vefiryToken from  '../middlewares/auth';
@@ -220,7 +221,25 @@ export class APIGATEWAY {
         });
 
 
+        this.router.post("/category", vefiryToken, ValidateJoi(schema.categorySchema), (req: Request, res: Response) => {
+            categoryService.createCategory(req, res);
+        });
 
+        this.router.post("/subcategory", vefiryToken, ValidateJoi(schema.subCategorySchema), (req: Request, res: Response) => {
+            categoryService.createSubCategory(req, res);
+        });
+
+        this.router.put("/subcategory", vefiryToken, ValidateJoi(schema.updateSubCategorySchema), (req: Request, res: Response) => {
+            categoryService.updateSubCategory(req, res);
+        });
+
+        this.router.get("/categories", vefiryToken, (req: Request, res: Response) => {
+            categoryService.getAllCategories(req, res);
+        });
+
+        this.router.get("/subcategories/:id", vefiryToken, (req: Request, res: Response) => {
+            categoryService.getAllSubCategoriesByCategoryId(req, res);
+        });
 
     }
 }
