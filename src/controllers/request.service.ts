@@ -3,6 +3,7 @@ import logger from '../middlewares/logger';
 import RequestRepository from '../models/repositories/request.repo';
 import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import EmailService from './notification.service';
+import moment from "moment";
 
 
 class RequestService {
@@ -12,6 +13,8 @@ class RequestService {
       logger.info({ params: req.body, init: "AddRequest" }, "AddRequest method called");
       let params: any = req.body;
       params.created_by = req.meta.userId;
+      params.client_id = req.meta.userId;
+      params.required_date = moment().format('YYYY-MM-DD');
                 // const notificationPayload: any = [];
                 // notificationPayload.push({
                 //   empId: +req.params.bpid,
@@ -56,6 +59,8 @@ class RequestService {
       logger.info({ params: '', init: "requestStatusUpdate" }, "requestStatusUpdate method called");
       let requestId: any = +req.params.id;
       let params: any = req.body;
+      params.approved_by = req.meta.userId;
+      params.approved_at = moment().format('YYYY-MM-DD');
       let reqInfo: any = await RequestRepository.getReqById(requestId);
       reqInfo = { ...reqInfo, ...params };
       await RequestRepository.save(reqInfo);
@@ -118,11 +123,11 @@ class RequestService {
     }
   }
 
-  public async getAllBPRequests(req: Request, res: Response) {
+  public async getAllClientRequests(req: Request, res: Response) {
     try {
       logger.info({ params: '', init: "getAllBPRequests" }, "getAllBPRequests method called");
-      let reqInfo: any = await RequestRepository.getAllRequestsByBPId(req);
-      let count: any = await RequestRepository.getAllRequestsByBPIdCount(req);
+      let reqInfo: any = await RequestRepository.getAllRequestsByClientId(req);
+      let count: any = await RequestRepository.getAllRequestsByClientIdCount(req);
       if (reqInfo && reqInfo.length > 0) {
         res.status(200).json({ status: 'success', data: reqInfo, total_count: count.length });
       } else {

@@ -15,28 +15,22 @@ export type status_Type = "Pending" | "Accepted" | "Rejected";
 // import bcrypt from "bcrypt-nodejs";
 
 @Entity({ name: 'requests' })
-export class Request extends BaseModel {
-  
-    @Column({ nullable: true })
-    client_name: string;
-
+export class Request extends BaseModel {  
+    
     @Column({ nullable: true })
     client_id: number;
 
     @Column({ nullable: true })
-    material_type: string;
+    amc_id: number;  
 
     @Column({ nullable: true })
-    description: string;
+    requestAreaInsqft: string;
 
     @Column({ nullable: true })
-    quantity: string;
+    approved_by: number;
 
     @Column({ nullable: true })
-    bp_id: number;
-
-    @Column({ nullable: true })
-    bp_name: string;
+    approved_at: string;
 
     @Column({ nullable: true })
     required_date: string;
@@ -51,25 +45,21 @@ export class Request extends BaseModel {
 	})
 	status?: status_Type;
 
-    constructor(     
-        client_name: string,
+    constructor(  
         client_id: number, 
-        material_type: string,       
-        description: string,
-        quantity: string,
-        bp_id: number,
-        bp_name: string,
+        amc_id:number,
+        requestAreaInsqft:string,
+        approved_by:number,
+        approved_at:string,
         required_date: string,
         comments: string,
     ) {
-        super();     
-        this.client_name = client_name,
+        super(); 
         this.client_id = client_id,
-        this.material_type = material_type ,
-        this.description = description,
-        this.quantity = quantity,
-        this.bp_id = bp_id,
-        this.bp_name = bp_name,
+        this.amc_id = amc_id,
+        this.requestAreaInsqft = requestAreaInsqft,
+        this.approved_by = approved_by,
+        this.approved_at = approved_at,
         this.required_date = required_date,
         this.comments = comments
     }
