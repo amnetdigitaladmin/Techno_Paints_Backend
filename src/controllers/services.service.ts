@@ -135,7 +135,33 @@ class RequestService {
                 .json({ status: "failed", message: "Internal Server Error" });
         }
     }
-
+    public async deleteCategoryByCategoryId(req: Request, res: Response) {
+        try {
+            logger.info({ params: '', init: "deleteCategoryByCategoryId" }, "deleteCategoryByCategoryId method called");
+            let category: any = +req.params.id;
+            let categories: any = await ServiceRepository.findAllSubCategoriesByCategoryId(category);
+            if (categories && categories.id) {
+                if (categories.subcategories && categories.subcategories.length > 0) {
+                    await common.asyncForEach(categories.subcategories, async (item: any) => {
+                        item.updated_by = req.meta.userId;
+                        item.is_deleted = true;
+                        item.id = +item.id;
+                        await ServiceRepository.subCategorySave(item);
+                    })
+                }
+                categories.updated_by = req.meta.userId;
+                categories.is_deleted = true;
+                categories.id = +categories.id;
+                await ServiceRepository.categorySave(categories);
+                res.status(200).json({ status: 'success', message: 'Service deleted successfully' });
+            }
+        } catch (error) {
+            logger.error({ params: '', error: "deleteCategoryByCategoryId" }, "deleteCategoryByCategoryId method error: " + JSON.stringify(error));
+            return res
+                .status(500)
+                .json({ status: "failed", message: "Internal Server Error" });
+        }
+    }
 
 }
 
