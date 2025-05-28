@@ -83,6 +83,24 @@ class RequestService {
         }
     }
 
+    public async getAllCategoriesListing(req: Request, res: Response) {
+        try {
+            logger.info({ params: '', init: "getAllCategoriesListing" }, "getAllCategoriesListing method called");
+            let params: any = req.body;
+            let categories: any = await ServiceRepository.getAllCategoriesListing();
+            if (categories && categories.length > 0) {
+                res.status(200).json({ status: 'success', data: categories });
+            } else {
+                res.status(200).json({ status: 'success', data: [] });
+            }
+        } catch (error) {
+            logger.error({ params: '', error: "getAllCategoriesListing" }, "getAllCategoriesListing method error: " + JSON.stringify(error));
+            return res
+                .status(500)
+                .json({ status: "failed", message: "Internal Server Error" });
+        }
+    }
+
     public async getAllCategories(req: Request, res: Response) {
         try {
             logger.info({ params: '', init: "getAllCategories" }, "getAllCategories method called");
