@@ -16,21 +16,15 @@ export type status_Type = "Active" | "InActive";
 
 @Entity({ name: 'AMCs' })
 export class AMC extends BaseModel {
+
+    @Column({ nullable: true })
+    amc_name: string;
   
     @Column({ nullable: true })
     client_name: string;
 
     @Column({ nullable: true })
     client_id: number;
-
-    @Column({ nullable: true })
-    amount: string;
-
-    @Column({ nullable: true })
-    bp_id: number;
-
-    @Column({ nullable: true })
-    bp_name: string;
 
     @Column({ nullable: true })
     start_date: string;
@@ -45,23 +39,39 @@ export class AMC extends BaseModel {
     })
     status?: status_Type;
 
-    constructor(     
+    @Column({ nullable: true })
+    area_in_sqft: string;
+
+    @Column({ nullable: true })
+    category_id: number;
+
+    @Column({ nullable: true })
+    sub_category_id: number;
+
+    @Column({ nullable: true })
+    utilisation_per_year: number;
+
+    constructor(  
+        amc_name: string,   
         client_name: string,
         client_id: number, 
-        amount: string,       
-        bp_id: number,
-        bp_name: string,
         start_date: string,
         end_date: string,
+        area_in_sqft: string,
+        category_id: number,
+        sub_category_id: number,
+        utilisation_per_year: number,
     ) {
         super();     
+        this.amc_name = amc_name,
         this.client_name = client_name,
         this.client_id = client_id,
-        this.amount = amount ,
         this.start_date = start_date,
         this.end_date = end_date,
-        this.bp_id = bp_id,
-        this.bp_name = bp_name
+        this.area_in_sqft = area_in_sqft,
+        this.category_id = category_id,
+        this.sub_category_id = sub_category_id,
+        this.utilisation_per_year = utilisation_per_year
     }
 }
 
