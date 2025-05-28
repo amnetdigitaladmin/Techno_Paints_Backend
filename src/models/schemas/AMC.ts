@@ -9,7 +9,9 @@ Role
 Roles Information will store 
 */
 
-import { Column, Entity ,BeforeInsert,BeforeUpdate } from "typeorm";
+import { Column, Entity ,ManyToOne,JoinColumn } from "typeorm";
+import { Category } from './categories';
+import { SubCategory } from './subcategories';
 import { BaseModel } from './BaseModel';
 export type status_Type = "Active" | "InActive";
 // import bcrypt from "bcrypt-nodejs";
@@ -42,11 +44,14 @@ export class AMC extends BaseModel {
     @Column({ nullable: true })
     area_in_sqft: string;
 
-    @Column({ nullable: true })
-    category_id: number;
+//    relationships
+    @ManyToOne(() => Category)
+    @JoinColumn({ name: 'category_id' })
+    category_id: Category;
 
-    @Column({ nullable: true })
-    sub_category_id: number;
+    @ManyToOne(() => SubCategory)
+    @JoinColumn({ name: 'sub_category_id' })
+    sub_category_id: SubCategory;
 
     @Column({ nullable: true })
     utilisation_per_year: number;
@@ -58,8 +63,8 @@ export class AMC extends BaseModel {
         start_date: string,
         end_date: string,
         area_in_sqft: string,
-        category_id: number,
-        sub_category_id: number,
+        category_id: Category,
+        sub_category_id: SubCategory,
         utilisation_per_year: number,
     ) {
         super();     

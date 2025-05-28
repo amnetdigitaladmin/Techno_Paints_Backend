@@ -107,25 +107,7 @@ export class APIGATEWAY {
         // // dont use
         this.router.get("/role",vefiryToken,(req: Request, res: Response) => {
             roleService.getAllRoles(req, res);
-        });   
-        
-       
-    
-        // this.router.put("/role",ValidateJoi(schema.roleUpdateSchema),vefiryToken, (req: Request, res: Response) => {
-        //     roleService.UpdateRole(req, res);
-        // });
-
-        // this.router.get("/role/:id",vefiryToken,(req: Request, res: Response) => {
-        //     roleService.getRoleById(req, res);
-        // });
-
-        // this.router.get("/role/:name/:customerId",vefiryToken,(req: Request, res: Response) => {
-        //     roleService.getRoleByNameAndUser(req, res);
-        // });
-
-        // this.router.delete("/role/:id",vefiryToken,(req: Request, res: Response) => {
-        //     // roleService.deleteRole(req, res);
-        // }); 
+        });
 
         this.router.put("/forgot/password/otp/mail", ValidateJoi(schema.forgotPasswordOTPSchema), (req: Request, res: Response) => {
             notificationService.forgotPasswordOTPEmail(req, res);
@@ -143,8 +125,8 @@ export class APIGATEWAY {
             requestService.getAllRequests(req, res);
         });
 
-        this.router.get("/bp/requests", vefiryToken, (req: Request, res: Response) => {
-            requestService.getAllBPRequests(req, res);
+        this.router.get("/client/requests", vefiryToken, (req: Request, res: Response) => {
+            requestService.getAllClientRequests(req, res);
         });
 
         this.router.put("/request/:id", vefiryToken, ValidateJoi(schema.requestUpdateSchema), (req: Request, res: Response) => {
