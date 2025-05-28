@@ -89,27 +89,17 @@ class validateParameters {
       password: Joi.string().required(),
   });
 
-  requestSchema = Joi.object({
-    client_name: Joi.string().required(),
-    client_id: Joi.number().required(),
-    material_type: Joi.string().required(),
-    description: Joi.string().required(),
-    quantity: Joi.string().required(),
-    bp_id: Joi.number().required(),
-    bp_name: Joi.string().required(),
-    required_date: Joi.string().required()
+  requestSchema = Joi.object({     
+   amc_id: Joi.number().integer().positive().required(),
+  requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
+    'string.pattern.base': 'requestAreaInsqft must be a number in string format',
+  }),
   });
 
   requestUpdateSchema = Joi.object({
-    client_name: Joi.string().required(),
-    client_id: Joi.number().required(),
-    material_type: Joi.string().required(),
-    description: Joi.string().required(),
-    quantity: Joi.string().required(),
-    bp_id: Joi.number().required(),
-    bp_name: Joi.string().required(),
-    required_date: Joi.string().required(),
-    // status: Joi.string().required().valid("Accepted", "Rejected")
+     requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
+    'string.pattern.base': 'requestAreaInsqft must be a number in string format',
+  }),
   });
 
   AMCSchema = Joi.object({
