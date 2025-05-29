@@ -104,20 +104,7 @@ class UserRepository {
                 //     if (endDate < startDate) {
                 //         error.push('Contract end date cannot be before contract start date');
                 //     }
-                // }
-
-                // let managerInfo: any = await userRepository
-                //     .createQueryBuilder('user')
-                //     .where('user.full_name =:full_name', { full_name: obj.business_partner })
-                //     .andWhere('user.roleId=:roleId', { roleId: +obj.Bp_role_id })
-                //     .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
-                //     .getOne();
-                // if (!managerInfo) {
-                //     error.push(`Business Partner with name (${obj.business_partner}) doesn't Exists`);
-                // } else {
-                //     obj.bp_id = managerInfo.id
-                //     obj.bp_name = managerInfo.full_name
-                // }
+                // }              
             }
 
             if (error && error.length > 0) {
@@ -167,8 +154,7 @@ class UserRepository {
 
     public async getBusinessPartnerById(obj: any) {
         return await userRepository
-            .createQueryBuilder('user')
-            // .where('user.id =:id', { id: obj.bp_id })            
+            .createQueryBuilder('user')           
             .where('user.is_deleted=:is_deleted', { is_deleted: false })
             .getOne();
     }
@@ -337,9 +323,7 @@ class UserRepository {
                         'user.company as company',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',                       
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
@@ -484,8 +468,7 @@ class UserRepository {
 
     public async getBPAllClients(query: any) {
         try {
-            let params: any = query.query
-            let bp_id: any = query.params.id;
+            let params: any = query.query          
             let offSet = params.offset ? params.offset : 1;
             let Limit = params.limit ? params.limit : 10000;
             const startYear = moment().subtract(10, 'year').format('YYYY-MM-DD');
@@ -499,8 +482,7 @@ class UserRepository {
                         `(LOWER(user.full_name) LIKE :searchText or 
                         LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
-                    )
-                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    )                
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .select([
                         'user.id as id',
@@ -522,8 +504,7 @@ class UserRepository {
             } else {
                 return await userRepository
                     .createQueryBuilder('user')
-                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })                   
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
@@ -549,8 +530,7 @@ class UserRepository {
 
     public async getBPAllClientsCount(query: any) {
         try {
-            let params: any = query.query
-            let bp_id: any = query.params.id;
+            let params: any = query.query        
             if (params.search_text) {
                 return await userRepository
                     .createQueryBuilder('user')
@@ -558,8 +538,7 @@ class UserRepository {
                         `(LOWER(user.full_name) LIKE :searchText or 
                         LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
-                    )
-                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    )                  
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .select([
                         'user.id as id',
@@ -578,8 +557,7 @@ class UserRepository {
             } else {
                 return await userRepository
                     .createQueryBuilder('user')
-                    .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    .where('user.is_deleted = :is_deleted', { is_deleted: false })                    
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
@@ -738,9 +716,8 @@ class UserRepository {
     public async getClientCountByBPId(bpId: number) {        
         try {
             return await userRepository
-                .createQueryBuilder('user')
-                // .where('user.bp_id IN (:...bp)', { bp: [bpId] })
-                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .createQueryBuilder('user')            
+                .where('user.is_deleted=:is_deleted', { is_deleted: false })
                 .getCount();
         } catch (err) {
             console.log(err);
@@ -777,8 +754,7 @@ class UserRepository {
         try {
             return await userRepository
                 .createQueryBuilder('user')
-                .where('user.roleId IN (:...Roles)', { Roles: [role] })
-                // .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })              
                 .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
                 .andWhere('user.is_active=:is_active', { is_active: true })
                 .getCount();
@@ -791,8 +767,7 @@ class UserRepository {
         try {
             return await userRepository
                 .createQueryBuilder('user')
-                .where('user.roleId IN (:...Roles)', { Roles: [role] })
-                // .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                .where('user.roleId IN (:...Roles)', { Roles: [role] })          
                 .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
                 .andWhere('user.is_active=:is_active', { is_active: false })
                 .getCount();
