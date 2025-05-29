@@ -11,6 +11,7 @@ Roles Information will store
 
 import { Column, Entity ,BeforeInsert,BeforeUpdate } from "typeorm";
 import { BaseModel } from './BaseModel';
+import { float } from "aws-sdk/clients/cloudfront";
 export type status_Type = "Pending" | "Accepted" | "Rejected";
 // import bcrypt from "bcrypt-nodejs";
 
@@ -45,6 +46,16 @@ export class Request extends BaseModel {
 	})
 	status?: status_Type;
 
+    @Column({ nullable: true })
+    client_comments: string;
+
+    @Column({ nullable: true })
+    client_rating: float;
+
+     @Column({ nullable: true })
+    completed_on: string;
+
+
     constructor(  
         client_id: number, 
         amc_id:number,
@@ -53,6 +64,9 @@ export class Request extends BaseModel {
         approved_at:string,
         required_date: string,
         comments: string,
+        client_comments:string,
+        client_rating:float,
+        completed_on:string
     ) {
         super(); 
         this.client_id = client_id,
@@ -61,7 +75,10 @@ export class Request extends BaseModel {
         this.approved_by = approved_by,
         this.approved_at = approved_at,
         this.required_date = required_date,
-        this.comments = comments
+        this.comments = comments,
+        this.client_comments = client_comments,
+        this.client_rating = client_rating,
+        this.completed_on = completed_on
     }
 }
 
