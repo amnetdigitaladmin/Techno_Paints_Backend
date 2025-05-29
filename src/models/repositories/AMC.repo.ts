@@ -583,6 +583,20 @@ public async getAMCChartData(filter: any) {
       throw new Error('Failed to generate chart data');
     }
   }
+
+  public async getAllAMCsByClientId(query: any) {
+        try {
+            let params: any = query.query          
+                return await AMCRepository
+                    .createQueryBuilder('req')
+                    .where('req.client_id = :client_id', { client_id: query.meta.userId })
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })                               
+                    .getMany();
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
   
 
 
