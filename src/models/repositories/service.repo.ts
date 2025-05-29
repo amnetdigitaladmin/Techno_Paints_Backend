@@ -72,7 +72,7 @@ class serviceRepository {
         try {
             return await categoryRepository
                 .createQueryBuilder('req')
-                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.id`)
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.category_id and sc.is_deleted = false`)
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
                 .getMany();
         } catch (err) {
@@ -109,7 +109,7 @@ class serviceRepository {
         try {
             return await categoryRepository
                 .createQueryBuilder('req')
-                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.id`)
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.category_id and sc.is_deleted = false`)
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
                 .andWhere('req.id =:id', { id: id })
                 .getOne();
