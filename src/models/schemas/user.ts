@@ -35,12 +35,6 @@ export class User extends BaseModel {
     email: string;
 
     @Column({ nullable: true })
-    bp_id: number;
-
-    @Column({ nullable: true })
-    bp_name: string;
-
-    @Column({ nullable: true })
     address: string;
 
     @Column({ nullable: true })
@@ -79,9 +73,7 @@ export class User extends BaseModel {
         full_name: string,       
         password: string,
         mobile: string,
-        email: string,
-        bp_id: number,
-        bp_name: string,
+        email: string, 
         address: string,
         city: string,
         state: string,
@@ -103,9 +95,7 @@ export class User extends BaseModel {
         this.EncryptPassword = EncryptPassword,
         this.mobile = mobile,
         this.email = email,
-        this.is_active = is_active,
-        this.bp_id = bp_id,
-        this.bp_name = bp_name,
+        this.is_active = is_active,       
         this.address = address,
         this.city = city,
         this.state = state,
