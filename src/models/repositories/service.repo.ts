@@ -68,6 +68,19 @@ class serviceRepository {
         }
     }
 
+    public async findSubCategoryByNameAndCategoryId(name: string, categoryId:number) {
+        try {
+            return await subcategoryRepository
+                .createQueryBuilder('req')
+                .where('req.subcategory=:subcategory', { subcategory: name })
+                .andWhere('req.category_id =:category_id', { category_id: categoryId })
+                .andWhere('req.is_deleted =:is_deleted', { is_deleted: false })
+                .getOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     public async getAllCategoriesListing() {
         try {
             return await categoryRepository
