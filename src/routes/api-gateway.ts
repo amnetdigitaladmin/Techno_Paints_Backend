@@ -145,6 +145,9 @@ export class APIGATEWAY {
             requestService.requestStatusUpdate(req, res);
         });
 
+          this.router.get("/client/AMCs", vefiryToken, (req: Request, res: Response) => {
+            AMCService.getAllClientAMCs(req, res);
+        });
 
         this.router.post("/AMC", vefiryToken, ValidateJoi(schema.AMCSchema), (req: Request, res: Response) => {
             AMCService.createAMC(req, res);
@@ -219,15 +222,15 @@ export class APIGATEWAY {
             categoryService.getAllCategories(req, res);
         });
 
-        this.router.get("/categories/listing", vefiryToken, (req: Request, res: Response) => {
-            categoryService.getAllCategoriesListing(req, res);
-        });
-
         this.router.get("/subcategories/:id", vefiryToken, (req: Request, res: Response) => {
             categoryService.getAllSubCategoriesByCategoryId(req, res);
         });
-        
-        this.router.delete("/category/:id", vefiryToken, (req: Request, res: Response) => {
+
+          this.router.get("/categories/listing", vefiryToken, (req: Request, res: Response) => {
+            categoryService.getAllCategoriesListing(req, res);
+        });
+
+         this.router.delete("/category/:id", vefiryToken, (req: Request, res: Response) => {
             categoryService.deleteCategoryByCategoryId(req, res);
         });
 

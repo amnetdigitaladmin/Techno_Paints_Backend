@@ -110,6 +110,23 @@ class RequestService {
     }
   }
 
+  public async getAllClientAMCs(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getAllClientAMCs" }, "getAllClientAMCs method called");
+      let AMCInfo: any = await AMCRepository.getAllAMCsByClientId(req);     
+      if (AMCInfo && AMCInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: AMCInfo });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getAllClientAMCs" }, "getAllClientAMCs method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
 }
 
 export default new RequestService();
