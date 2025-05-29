@@ -145,6 +145,14 @@ export class APIGATEWAY {
             requestService.requestStatusUpdate(req, res);
         });
 
+        this.router.put("/workflow/update/:id", vefiryToken, ValidateJoi(schema.workflowSchema), (req: Request, res: Response) => {
+            requestService.workflowStatusUpdate(req, res);
+        });
+
+        this.router.get("/workflows/:id", vefiryToken, (req: Request, res: Response) => {
+            requestService.workflowListing(req, res);
+        });
+
           this.router.get("/client/AMCs", vefiryToken, (req: Request, res: Response) => {
             AMCService.getAllClientAMCs(req, res);
         });
