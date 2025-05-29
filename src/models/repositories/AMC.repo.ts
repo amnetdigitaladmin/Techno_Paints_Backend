@@ -185,8 +185,7 @@ class amcRepository {
                     .where(
                         `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
-                    )
-                    // .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    )             
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                     // .select([
                     //     'req.id as id',
@@ -211,24 +210,8 @@ class amcRepository {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
-                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
-                    // .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)             
                     .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'req.id as id',
-                    //     'req.client_name as client_name',
-                    //     'req.client_id as client_id',                       
-                    //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
-                    //     'req.category_id as category_id',  
-                    //     'req.sub_category_id as sub_category_id',  
-                    //     'req.utilisation_per_year as utilisation_per_year',  
-                    //     'req.start_date as start_date',
-                    //     'req.end_date as end_date', 
-                    //     'req.status as status',                  
-                    //     'req.created_at as created_at',
-                    //     'req.updated_at as updated_at',
-                    // ])
                     .orderBy(`req.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
@@ -250,47 +233,15 @@ class amcRepository {
                     .where(
                         `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
-                    )
-                    // .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
-                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'req.id as id',
-                    //     'req.client_name as client_name',
-                    //     'req.client_id as client_id',                       
-                    //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
-                    //     'req.category_id as category_id',  
-                    //     'req.sub_category_id as sub_category_id',  
-                    //     'req.utilisation_per_year as utilisation_per_year',  
-                    //     'req.start_date as start_date',
-                    //     'req.end_date as end_date', 
-                    //     'req.status as status',                  
-                    //     'req.created_at as created_at',
-                    //     'req.updated_at as updated_at',
-                    // ])
+                    )               
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })       
                     .getMany();
             } else {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
-                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
-                    // .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
-                    .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                    // .select([
-                    //     'req.id as id',
-                    //     'req.client_name as client_name',
-                    //     'req.client_id as client_id',                       
-                    //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
-                    //     'req.category_id as category_id',  
-                    //     'req.sub_category_id as sub_category_id',  
-                    //     'req.utilisation_per_year as utilisation_per_year',  
-                    //     'req.start_date as start_date',
-                    //     'req.end_date as end_date', 
-                    //     'req.status as status',                  
-                    //     'req.created_at as created_at',
-                    //     'req.updated_at as updated_at',
-                    // ])
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)                  
+                    .where('req.is_deleted = :is_deleted', { is_deleted: false })                   
                     .getMany();
             }
         } catch (error) {
@@ -340,7 +291,6 @@ class amcRepository {
                 .createQueryBuilder('req')               
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
                 .andWhere('req.status =:status', { status: 'Active' })
-                // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
                 .getCount();
         } catch (err) {
             console.log(err);
@@ -351,8 +301,7 @@ class amcRepository {
         try {
             return await AMCRepository
                 .createQueryBuilder('req')               
-                .where('req.is_deleted =:is_deleted', { is_deleted: false })  
-                // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })              
+                .where('req.is_deleted =:is_deleted', { is_deleted: false }) 
                 .getCount();
         } catch (err) {
             console.log(err);
@@ -364,8 +313,7 @@ class amcRepository {
             return await AMCRepository
             .createQueryBuilder('req')
             .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
-            .where('req.is_deleted = :is_deleted', { is_deleted: false })
-            // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })          
             .andWhere('req.status = :status', { status: 'Active' })
             .getRawOne();
         } catch (err) {
@@ -438,23 +386,7 @@ public async getAllAMCsBPForDownload(query: any) {
             .createQueryBuilder('req')
             .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
             .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
-            .where('req.is_deleted = :is_deleted', { is_deleted: false })
-            // .where('req.bp_id = :bp_id', { bp_id: query.userId })
-            // .select([
-            //     'req.id as id',
-            //     'req.client_name as client_name',
-            //     'req.client_id as client_id',                       
-            //     'req.amc_name as amc_name',
-            //     'req.area_in_sqft as area_in_sqft',
-            //     'req.category_id as category_id',  
-            //     'req.sub_category_id as sub_category_id',  
-            //     'req.utilisation_per_year as utilisation_per_year',  
-            //     'req.start_date as start_date',
-            //     'req.end_date as end_date', 
-            //     'req.status as status',                  
-            //     'req.created_at as created_at',
-            //     'req.updated_at as updated_at',
-            // ])
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })          
             
 
         if (fromDate && toDate) {
@@ -560,7 +492,7 @@ public async getAMCChartData(filter: any) {
         .select('COALESCE(SUM(CAST(amc.amount AS NUMERIC)), 0)::int', 'value')
         .where('amc.amount IS NOT NULL')
         .andWhere('amc.is_deleted = false')
-        // .andWhere('amc.bp_id = :bp_id', { bp_id: filter.user })
+     
   
       let groupBy = '';
       let labelExpr = '';
