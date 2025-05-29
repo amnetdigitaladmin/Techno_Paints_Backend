@@ -65,7 +65,7 @@ class RequestService {
             }
             if (params.removed_subcatogires && params.removed_subcatogires.length > 0) {
                 await common.asyncForEach(params.removed_subcatogires, async (item: any) => {
-                    let subCategoryInfo: any = await ServiceRepository.getSubCategoryByNameAndCategoryId(item.subcategory, req.body.category_id);
+                    let subCategoryInfo: any = await ServiceRepository.findSubCategoryByNameAndCategoryId(item.subcategory, req.body.category_id);
                     if (subCategoryInfo && subCategoryInfo.subcategory) {
                         subCategoryInfo.updated_by = req.meta.userId;
                         subCategoryInfo.is_deleted = true;
