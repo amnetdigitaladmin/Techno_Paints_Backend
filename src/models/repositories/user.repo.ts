@@ -106,18 +106,18 @@ class UserRepository {
                 //     }
                 // }
 
-                let managerInfo: any = await userRepository
-                    .createQueryBuilder('user')
-                    .where('user.full_name =:full_name', { full_name: obj.business_partner })
-                    .andWhere('user.roleId=:roleId', { roleId: +obj.Bp_role_id })
-                    .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
-                    .getOne();
-                if (!managerInfo) {
-                    error.push(`Business Partner with name (${obj.business_partner}) doesn't Exists`);
-                } else {
-                    obj.bp_id = managerInfo.id
-                    obj.bp_name = managerInfo.full_name
-                }
+                // let managerInfo: any = await userRepository
+                //     .createQueryBuilder('user')
+                //     .where('user.full_name =:full_name', { full_name: obj.business_partner })
+                //     .andWhere('user.roleId=:roleId', { roleId: +obj.Bp_role_id })
+                //     .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                //     .getOne();
+                // if (!managerInfo) {
+                //     error.push(`Business Partner with name (${obj.business_partner}) doesn't Exists`);
+                // } else {
+                //     obj.bp_id = managerInfo.id
+                //     obj.bp_name = managerInfo.full_name
+                // }
             }
 
             if (error && error.length > 0) {
@@ -168,8 +168,8 @@ class UserRepository {
     public async getBusinessPartnerById(obj: any) {
         return await userRepository
             .createQueryBuilder('user')
-            .where('user.id =:id', { id: obj.bp_id })            
-            .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+            // .where('user.id =:id', { id: obj.bp_id })            
+            .where('user.is_deleted=:is_deleted', { is_deleted: false })
             .getOne();
     }
 
@@ -306,9 +306,7 @@ class UserRepository {
                         'user.company as company',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',      
                         'user.email as email',
                         'user.mobile as mobile',
                         'user.is_active as is_active',
@@ -502,15 +500,13 @@ class UserRepository {
                         LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
-                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',            
                         'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
@@ -527,14 +523,12 @@ class UserRepository {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',           
                         'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
@@ -565,15 +559,13 @@ class UserRepository {
                         LOWER(user.email) LIKE :searchText) or LOWER(user.mobile) LIKE :searchText) `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
-                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .andWhere('user.is_deleted = :is_deleted', { is_deleted: false })
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',             
                         'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
@@ -587,14 +579,12 @@ class UserRepository {
                 return await userRepository
                     .createQueryBuilder('user')
                     .where('user.is_deleted = :is_deleted', { is_deleted: false })
-                    .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
+                    // .andWhere('user.bp_id = :bp_id', { bp_id: bp_id })
                     .select([
                         'user.id as id',
                         'user.first_name as first_name',
                         'user.last_name as last_name',
-                        'user.full_name as full_name',
-                        'user.bp_id as bp_id',
-                        'user.bp_name as bp_name',
+                        'user.full_name as full_name',      
                         'user.company as company',
                         'user.email as email',
                         'user.mobile as mobile',
@@ -749,7 +739,7 @@ class UserRepository {
         try {
             return await userRepository
                 .createQueryBuilder('user')
-                .where('user.bp_id IN (:...bp)', { bp: [bpId] })
+                // .where('user.bp_id IN (:...bp)', { bp: [bpId] })
                 .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
                 .getCount();
         } catch (err) {
@@ -788,7 +778,7 @@ class UserRepository {
             return await userRepository
                 .createQueryBuilder('user')
                 .where('user.roleId IN (:...Roles)', { Roles: [role] })
-                .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                // .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
                 .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
                 .andWhere('user.is_active=:is_active', { is_active: true })
                 .getCount();
@@ -802,7 +792,7 @@ class UserRepository {
             return await userRepository
                 .createQueryBuilder('user')
                 .where('user.roleId IN (:...Roles)', { Roles: [role] })
-                .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
+                // .andWhere('user.bp_id=:bp_id', { bp_id: bp_id })
                 .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
                 .andWhere('user.is_active=:is_active', { is_active: false })
                 .getCount();
