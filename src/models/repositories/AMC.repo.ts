@@ -186,7 +186,7 @@ class amcRepository {
                         `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
-                    .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    // .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                     // .select([
                     //     'req.id as id',
@@ -212,8 +212,8 @@ class amcRepository {
                     .createQueryBuilder('req')
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
-                    .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
-                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    // .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    .where('req.is_deleted = :is_deleted', { is_deleted: false })
                     // .select([
                     //     'req.id as id',
                     //     'req.client_name as client_name',
@@ -251,7 +251,7 @@ class amcRepository {
                         `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
-                    .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    // .andWhere('req.bp_id = :bp_id', { bp_id: query.meta.userId })
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                     // .select([
                     //     'req.id as id',
@@ -274,8 +274,8 @@ class amcRepository {
                     .createQueryBuilder('req')
                     .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
                     .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
-                    .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
-                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    // .where('req.bp_id = :bp_id', { bp_id: query.meta.userId })
+                    .where('req.is_deleted = :is_deleted', { is_deleted: false })
                     // .select([
                     //     'req.id as id',
                     //     'req.client_name as client_name',
@@ -340,7 +340,7 @@ class amcRepository {
                 .createQueryBuilder('req')               
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
                 .andWhere('req.status =:status', { status: 'Active' })
-                .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
+                // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
                 .getCount();
         } catch (err) {
             console.log(err);
@@ -352,7 +352,7 @@ class amcRepository {
             return await AMCRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })  
-                .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })              
+                // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })              
                 .getCount();
         } catch (err) {
             console.log(err);
@@ -365,7 +365,7 @@ class amcRepository {
             .createQueryBuilder('req')
             .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })
-            .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
+            // .andWhere('req.bp_id IN (:...bp)', { bp: [bpId] })
             .andWhere('req.status = :status', { status: 'Active' })
             .getRawOne();
         } catch (err) {
@@ -439,7 +439,7 @@ public async getAllAMCsBPForDownload(query: any) {
             .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
             .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
             .where('req.is_deleted = :is_deleted', { is_deleted: false })
-            .where('req.bp_id = :bp_id', { bp_id: query.userId })
+            // .where('req.bp_id = :bp_id', { bp_id: query.userId })
             // .select([
             //     'req.id as id',
             //     'req.client_name as client_name',
@@ -560,7 +560,7 @@ public async getAMCChartData(filter: any) {
         .select('COALESCE(SUM(CAST(amc.amount AS NUMERIC)), 0)::int', 'value')
         .where('amc.amount IS NOT NULL')
         .andWhere('amc.is_deleted = false')
-        .andWhere('amc.bp_id = :bp_id', { bp_id: filter.user })
+        // .andWhere('amc.bp_id = :bp_id', { bp_id: filter.user })
   
       let groupBy = '';
       let labelExpr = '';

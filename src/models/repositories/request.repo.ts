@@ -357,7 +357,7 @@ class RequestRepository {
             const qb = requestRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                .where('req.bp_id = :bp_id', { bp_id: query.userId })
+                // .where('req.bp_id = :bp_id', { bp_id: query.userId })
                 .select([                   
                     `req.client_name AS "Client Name"`,
                     `req.status AS "Status"`,
@@ -431,7 +431,7 @@ class RequestRepository {
                 .select(`req.status`, 'status')
                 .addSelect('COUNT(*)', 'count')
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                .andWhere('req.bp_id = :bp_id', { bp_id: user })
+                // .andWhere('req.bp_id = :bp_id', { bp_id: user })
                 .groupBy('req.status')
                 .getRawMany();
 

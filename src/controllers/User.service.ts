@@ -20,14 +20,6 @@ class UserService {
       if (userInfo && userInfo.email) {
         return res.status(400).json({ status: 'Failed', message: "Email already exists" });
       }
-      let roles = await RoleRepository.getRolesForImport()
-      let Role = (roles.find((item:any)=>{return item.id == params.roleId})).hasOwnProperty('id') ?  
-          (roles.find((item:any)=>{return item.id == params.roleId})).name : 3    
-       if (Role == contextType.CLIENT) {
-        let Bp_details = await UserRepository.getBusinessPartnerById(params)             
-        params.bp_id = Bp_details && Bp_details.id ? Bp_details.id : ''
-        params.bp_name = Bp_details && Bp_details.full_name ? Bp_details.full_name : ''        
-      }
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let password: any = generator.generate({ length: 10, numbers: true });
       let userPassword = password;
@@ -52,15 +44,7 @@ class UserService {
       let params: any = req.body;
       params.full_name = `${params.first_name || ''} ${params.last_name || ''}`.trim();
       let usersInfo: any = await UserRepository.getById(userId);
-      usersInfo = { ...usersInfo, ...params };
-      let roles = await RoleRepository.getRolesForImport()
-      let Role = (roles.find((item:any)=>{return item.id == params.roleId})).hasOwnProperty('id') ?  
-          (roles.find((item:any)=>{return item.id == params.roleId})).name : 3    
-       if (Role == contextType.CLIENT) {
-        let Bp_details = await UserRepository.getBusinessPartnerById(usersInfo)             
-        usersInfo.bp_id = Bp_details && Bp_details.id ? Bp_details.id : ''
-        usersInfo.bp_name = Bp_details && Bp_details.full_name ? Bp_details.full_name : ''        
-      }
+      usersInfo = { ...usersInfo, ...params };  
       await UserRepository.userSave(usersInfo);
       res.status(200).json({ status: 'success', message: 'User Details Updated Successfully' });
     } catch (error) {
