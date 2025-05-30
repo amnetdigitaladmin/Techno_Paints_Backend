@@ -1,4 +1,5 @@
 import { Request } from '../schemas/request';
+import { Workflow } from '../schemas/workflow';
 import AppDataSource from "../../config/db";
 import common from "../../helpers/utils/common";
 import moment from 'moment';
@@ -6,12 +7,22 @@ import _ from 'lodash';
 import 'moment-timezone';
 
 const requestRepository = AppDataSource.getRepository(Request);
+const workflowRepository = AppDataSource.getRepository(Workflow);
 
 class RequestRepository {
 
     public async save(obj: any) {
         try{
             return await requestRepository.save(obj)
+        }catch(err){
+            console.log(err);
+            
+        }
+    }
+
+    public async workflowSave(obj: any) {
+        try{
+            return await workflowRepository.save(obj)
         }catch(err){
             console.log(err);
             
@@ -40,6 +51,32 @@ class RequestRepository {
             }
 
             return data;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getWorkflowByReqId(id: number, order: number) {
+        try {
+            return await workflowRepository
+                .createQueryBuilder('req')
+                .where('req.requestId = :requestId', { requestId: id })
+                .andWhere('req.order = :order', { order: order })
+                .andWhere('req.is_deleted = false')
+                .getOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public async getWorkflowListing(id: number) {
+        try {
+            return await workflowRepository
+                .createQueryBuilder('req')
+                .where('req.requestId = :requestId', { requestId: id })
+                .andWhere('req.is_deleted = false')
+                .orderBy(`req.order`, 'ASC')
+                .getMany();
         } catch (err) {
             console.log(err);
         }

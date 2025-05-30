@@ -64,9 +64,135 @@ class RequestService {
       let reqInfo: any = await RequestRepository.getReqById(requestId);
       reqInfo = { ...reqInfo, ...params };
       await RequestRepository.save(reqInfo);
+      if (params.status === 'Accepted') {
+        let myArray: any = [{
+          title: 'Request Accepted',
+          content: `Client Request Accepted`,
+          created_by: 1,
+          status: 'Completed',
+          order: 1,
+          requestId: +req.params.id
+        },
+        {
+          title: 'Assign Execution Team',
+          content: `Execution Team will assign shortly`,
+          created_by: 1,
+          status: 'Pending',
+          order: 2,
+          requestId: +req.params.id
+        },
+        {
+          title: 'Execution Team Site Visit',
+          content: `Execution Team, will Visit Client Site Soon`,
+          created_by: 1,
+          status: 'Pending',
+          order: 3,
+          requestId: +req.params.id
+        },
+        {
+          title: 'Assign Workers',
+          content: `Workers will Assign Shortly`,
+          created_by: 1,
+          status: 'Pending',
+          order: 4,
+          requestId: +req.params.id
+        },
+        {
+          title: 'Work In-Progress',
+          content: `Allocated Work In Progress`,
+          created_by: 1,
+          status: 'Pending',
+          order: 5,
+          requestId: +req.params.id
+        },
+        {
+          title: 'Client Feedback',
+          content: `Client Feedback is Pending`,
+          created_by: 1,
+          status: 'Pending',
+          order: 6,
+          requestId: +req.params.id
+        }]
+        await RequestRepository.workflowSave(myArray);
+      }
       res.status(200).json({ status: 'success', message: `Request ${params.status} Successfully` });
     } catch (error) {
       logger.error({ params: '', error: "requestStatusUpdate" }, "requestStatusUpdate method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async workflowStatusUpdate(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "workflowStatusUpdate" }, "workflowStatusUpdate method called");
+      let requestId: any = +req.params.id;
+      let params: any = req.body;
+      let workflowInfo: any = await RequestRepository.getWorkflowByReqId(requestId, params.order);
+      if (workflowInfo) {
+        const { title } = workflowInfo;
+        workflowInfo.updated_by = req.meta.userId;
+        workflowInfo.id = +workflowInfo.id;
+        workflowInfo.status = 'Completed';
+        switch (title) {
+          case 'Assign Execution Team':
+            workflowInfo.title = 'Execution Team Assigned';
+            workflowInfo.content = 'Execution Team Assigned Successfully';
+            break;
+
+          case 'Execution Team Site Visit':
+            workflowInfo.title = 'Execution Team Visited the Site';
+            workflowInfo.content = 'Execution Team Visited the Site Successfully';
+            break;
+
+          case 'Assign Workers':
+            workflowInfo.title = 'Workers are Assigned';
+            workflowInfo.content = 'Workers are Assigned Successfully';
+            break;
+
+          case 'Work In-Progress':
+            workflowInfo.title = 'Work Completed';
+            workflowInfo.content = 'Allocated Work Completed Successfully';
+            break;
+
+          case 'Client Feedback':
+            workflowInfo.title = 'Client Feedback';
+            workflowInfo.content = 'Client Feedback Completed Successfully';
+            break;
+
+          default:
+            // No action needed
+            return;
+        }
+        await RequestRepository.workflowSave(workflowInfo);
+        res.status(200).json({ status: 'success', message: `Worklow updated Successfully` });
+      } else {
+        return res
+          .status(500)
+          .json({ status: "failed", message: "Workflow Updation Failed" });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "workflowStatusUpdate" }, "workflowStatusUpdate method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async workflowListing(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "workflowListing" }, "workflowListing method called");
+      let requestId: any = +req.params.id;
+      let params: any = req.body;
+      let workflowInfo: any = await RequestRepository.getWorkflowListing(requestId);
+      if (workflowInfo && workflowInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: workflowInfo });
+      } else {
+        res.status(200).json({ status: 'success', data: [] });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "workflowListing" }, "workflowListing method error: " + JSON.stringify(error));
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });

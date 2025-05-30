@@ -125,6 +125,10 @@ class validateParameters {
     status: Joi.string().required().valid("Accepted", "Rejected")
   });
 
+  workflowSchema = Joi.object({
+    order: Joi.number().required()
+  });
+
   categorySchema = Joi.object({
     category: Joi.string().required(),
   });
