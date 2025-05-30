@@ -149,6 +149,10 @@ export class APIGATEWAY {
             requestService.workflowStatusUpdate(req, res);
         });
 
+        this.router.put("/client/feedback/:id", vefiryToken, ValidateJoi(schema.feedbackSchema), (req: Request, res: Response) => {
+            requestService.feedbackUpdate(req, res);
+        });
+
         this.router.get("/workflows/:id", vefiryToken, (req: Request, res: Response) => {
             requestService.workflowListing(req, res);
         });

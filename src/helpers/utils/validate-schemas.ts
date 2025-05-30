@@ -129,6 +129,12 @@ class validateParameters {
     order: Joi.number().required()
   });
 
+  feedbackSchema = Joi.object({
+    order: Joi.number().required(),
+    comments: Joi.string().allow('', null).optional(),
+    rating: Joi.number().precision(1).min(0).max(5).allow(null).optional()
+  });
+
   categorySchema = Joi.object({
     category: Joi.string().required(),
   });
