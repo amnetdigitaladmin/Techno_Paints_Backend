@@ -93,7 +93,7 @@ class serviceRepository {
                 .createQueryBuilder('req')
                 .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.category_id and sc.is_deleted = false`)
                 .where(
-                    `(LOWER(req.category) LIKE :searchText)`,
+                    `(LOWER(req.category) LIKE :searchText or LOWER(sc.subcategory) LIKE :searchText)`,
                     { searchText: `%${params.search_text.toLowerCase()}%` },
                 )
                 .andWhere('req.is_deleted =:is_deleted', { is_deleted: false })
