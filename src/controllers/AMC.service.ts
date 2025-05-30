@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import logger from '../middlewares/logger';
 import AMCRepository from '../models/repositories/AMC.repo';
+import userRepository from '../models/repositories/user.repo';
+import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
+import EmailService from './notification.service';
 
 
 class RequestService {
@@ -15,6 +18,32 @@ class RequestService {
         return res.status(400).json({ status: 'Failed', message: "AMC Name already exists" });
       }
       await AMCRepository.save(params);
+       let ClientDetails: any = await userRepository.getById(+req.body.client_id)
+            let admins: any = await userRepository.getAdminUsers()
+            if (admins && admins.length > 0) {
+              const notificationPayload: any = [];
+              await admins.map((item:any)=>{
+                notificationPayload.push({
+                empId: +item.id,
+                type: NotificationRequestType.request_raised,
+                request_group: RequestGroup.CLIENT,
+                content: {
+                  title: `AMC created `,
+                  data: `Created an AMC named "${req.body.amc_name}" for ${req.body.area_in_sqft} sqft. Duration: ${req.body.start_date} to ${req.body.end_date}. Client: ${ClientDetails?.full_name || 'NA'}.`
+                },         
+              })
+              })    
+                notificationPayload.push({
+                empId: + req.meta.userId,
+                type: NotificationRequestType.request_raised,
+                request_group: RequestGroup.CLIENT,
+                content: {
+                  title: `Raised Request`,
+                  data: `AMC ${req.body.amc_name} created for ${req.body.area_in_sqft} sqft for the duration ${req.body.start_date} - ${req.body.end_date}.`
+                },         
+              }) 
+              await EmailService.sendMessage({ payload: notificationPayload })
+            }
       res.status(200).json({ status: 'success', message: 'AMC Created Successfully' });
     } catch (error) {
       logger.error({ params: req.body, error: "createAMC" }, "createAMC method error: " + JSON.stringify(error));
