@@ -103,6 +103,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
+                        'req.id as id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -129,6 +130,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
+                        'req.id as id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
