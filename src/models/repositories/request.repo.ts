@@ -113,7 +113,10 @@ class RequestRepository {
                     'req.created_by AS created_by',
                     'req.requestAreaInsqft AS request_area_in_sqft',
                     'req.approved_at AS approved_at',
-                    'req.status AS status'
+                    'req.status AS status',
+                    'req.client_comments AS client_comments',
+                    'req.client_rating AS client_rating',
+                    'req.completed_on AS completed_on'
                   ])
                   .orderBy(`req.${order_by}`, sort_order)
                   .skip(offSet - 1)
@@ -140,7 +143,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .orderBy(`req.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
@@ -181,7 +187,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                     .getRawMany();
@@ -207,7 +216,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                     .getRawMany();
@@ -251,7 +263,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .orderBy(`req.${order_by}`, sort_order)
                     .skip(offSet - 1) // Assuming `offSet` is zero-based
@@ -279,7 +294,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])                  
                     .orderBy(`req.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
@@ -320,7 +338,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .getRawMany();
             } else {
@@ -345,7 +366,10 @@ class RequestRepository {
                         'req.created_by AS created_by',
                         'req.requestAreaInsqft AS request_area_in_sqft',
                         'req.approved_at AS approved_at',
-                        'req.status AS status'
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
                     ])
                     .getRawMany();
             }
