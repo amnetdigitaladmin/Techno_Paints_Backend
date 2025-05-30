@@ -87,11 +87,11 @@ class RequestService {
         try {
             logger.info({ params: '', init: "getAllCategoriesListing" }, "getAllCategoriesListing method called");
             let params: any = req.body;
-            let categories: any = await ServiceRepository.getAllCategoriesListing();
-            if (categories && categories.length > 0) {
-                res.status(200).json({ status: 'success', data: categories });
+            let categories: any = await ServiceRepository.getAllCategoriesListing(req);
+            if (categories && categories[0] && categories[0].length > 0) {
+                res.status(200).json({ status: 'success', data: categories[0], total_count: categories[1] });
             } else {
-                res.status(200).json({ status: 'success', data: [] });
+                res.status(200).json({ status: 'success', data: [], total_count: 0 });
             }
         } catch (error) {
             logger.error({ params: '', error: "getAllCategoriesListing" }, "getAllCategoriesListing method error: " + JSON.stringify(error));

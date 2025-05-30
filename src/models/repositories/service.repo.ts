@@ -81,13 +81,36 @@ class serviceRepository {
         }
     }
 
-    public async getAllCategoriesListing() {
+    public async getAllCategoriesListing(query: any) {
         try {
-            return await categoryRepository
+            let params: any = query.query
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            let order_by = params.order_by ? params.order_by : 'updated_at';
+            let sort_order = params.sort_order ? params.sort_order : 'DESC';
+            if (params.search_text) {
+                return await categoryRepository
+                .createQueryBuilder('req')
+                .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.category_id and sc.is_deleted = false`)
+                .where(
+                    `(LOWER(req.category) LIKE :searchText)`,
+                    { searchText: `%${params.search_text.toLowerCase()}%` },
+                )
+                .andWhere('req.is_deleted =:is_deleted', { is_deleted: false })
+                .orderBy(`req.${order_by}`, sort_order)
+                .skip(offSet - 1) 
+                .take(Limit)
+                .getManyAndCount();
+            }else{
+                return await categoryRepository
                 .createQueryBuilder('req')
                 .leftJoinAndMapMany('req.subcategories', SubCategory, 'sc', `req.id = sc.category_id and sc.is_deleted = false`)
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
-                .getMany();
+                .orderBy(`req.${order_by}`, sort_order)
+                .skip(offSet - 1) 
+                .take(Limit)
+                .getManyAndCount();
+            }
         } catch (err) {
             console.log(err);
         }
