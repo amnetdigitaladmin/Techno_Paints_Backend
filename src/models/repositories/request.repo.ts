@@ -84,6 +84,7 @@ class RequestRepository {
 
     public async getAllRequests(query: any) {
         try {
+            console.log('testssss')
             let params: any = query.query
             let offSet = params.offset ? params.offset : 1;
             let Limit = params.limit ? params.limit : 10000;
