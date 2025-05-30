@@ -115,9 +115,71 @@ class RequestService {
         }]
         await RequestRepository.workflowSave(myArray);
       }
+      const notificationPayload: any = [];
+      notificationPayload.push({
+        empId: reqInfo.client_id,
+        type: NotificationRequestType.request_raised,
+        request_group: RequestGroup.CLIENT,
+        request_id: requestId,
+        content: {
+          title: `Request ${params.status}`,
+          data: `Your Request ${params.status} by the admin`
+        },
+        employee_type: 'Client',
+      })
+      await EmailService.sendMessage({ payload: notificationPayload }) 
       res.status(200).json({ status: 'success', message: `Request ${params.status} Successfully` });
     } catch (error) {
       logger.error({ params: '', error: "requestStatusUpdate" }, "requestStatusUpdate method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async feedbackUpdate(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "feedbackUpdate" }, "feedbackUpdate method called");
+      let requestId: any = +req.params.id;
+      let params: any = req.body;
+      let reqInfo: any = await RequestRepository.getReqById(requestId);
+      let workflowInfo: any = await RequestRepository.getWorkflowByReqId(requestId, params.order);
+      if (workflowInfo) {
+        const { title } = workflowInfo;
+        workflowInfo.updated_by = req.meta.userId;
+        workflowInfo.id = +workflowInfo.id;
+        workflowInfo.status = 'Completed';
+        if(title === 'Client Feedback'){
+          workflowInfo.title = 'Client Feedback';
+          workflowInfo.content = 'Client Feedback Completed Successfully';
+          await RequestRepository.workflowSave(workflowInfo);
+          reqInfo.client_comments = params.comments;
+          reqInfo.client_rating = params.rating;
+          reqInfo.updated_by = req.meta.userId;
+          reqInfo.id = +reqInfo.id;
+          await RequestRepository.save(reqInfo);
+        }
+        const notificationPayload: any = [];
+        notificationPayload.push({
+          empId: reqInfo.client_id,
+          type: NotificationRequestType.request_raised,
+          request_group: RequestGroup.CLIENT,
+          request_id: requestId,
+          content: {
+            title: workflowInfo.title,
+            data: workflowInfo.content
+          },
+          employee_type: 'Client',
+        })
+        await EmailService.sendMessage({ payload: notificationPayload }) 
+        res.status(200).json({ status: 'success', message: `Client Feedback updated Successfully` });
+      } else {
+        return res
+          .status(500)
+          .json({ status: "failed", message: "Client Feedback Updation Failed" });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "feedbackUpdate" }, "feedbackUpdate method error: " + JSON.stringify(error));
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });
@@ -129,6 +191,7 @@ class RequestService {
       logger.info({ params: '', init: "workflowStatusUpdate" }, "workflowStatusUpdate method called");
       let requestId: any = +req.params.id;
       let params: any = req.body;
+      let reqInfo: any = await RequestRepository.getReqById(requestId);
       let workflowInfo: any = await RequestRepository.getWorkflowByReqId(requestId, params.order);
       if (workflowInfo) {
         const { title } = workflowInfo;
@@ -166,6 +229,25 @@ class RequestService {
             return;
         }
         await RequestRepository.workflowSave(workflowInfo);
+        if (workflowInfo.title === 'Work Completed') {
+          reqInfo.completed_on = moment().format('YYYY-MM-DD');
+          reqInfo.updated_by = req.meta.userId;
+          reqInfo.id = +reqInfo.id;
+          await RequestRepository.save(reqInfo);
+        }
+        const notificationPayload: any = [];
+        notificationPayload.push({
+          empId: reqInfo.client_id,
+          type: NotificationRequestType.request_raised,
+          request_group: RequestGroup.CLIENT,
+          request_id: requestId,
+          content: {
+            title: workflowInfo.title,
+            data: workflowInfo.content
+          },
+          employee_type: 'Client',
+        })
+        await EmailService.sendMessage({ payload: notificationPayload }) 
         res.status(200).json({ status: 'success', message: `Worklow updated Successfully` });
       } else {
         return res
