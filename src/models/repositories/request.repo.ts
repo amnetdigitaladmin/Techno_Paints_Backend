@@ -103,7 +103,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
-                        'req.id as id',
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -130,7 +130,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
-                        'req.id as id',
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -171,6 +171,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -196,6 +197,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .andWhere('req.is_deleted = false')
                     .select([
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -308,6 +310,7 @@ class RequestRepository {
                     .andWhere('req.is_deleted = false')
                     .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
                     .select([
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -332,6 +335,7 @@ class RequestRepository {
                     .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')                   
                     .select([
+                        'req.id AS id',
                         'client.first_name AS client_first_name',
                         'client.last_name AS client_last_name',
                         'client.full_name AS client_full_name',
@@ -364,7 +368,8 @@ class RequestRepository {
             const qb = requestRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                .select([                   
+                .select([   
+                    'req.id AS id',                
                     `req.client_name AS "Client Name"`, 
                     `req.status AS "Status"`,
                     `req.required_date AS "Required Date"`,                    
@@ -398,7 +403,8 @@ class RequestRepository {
             const qb = requestRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })              
-                .select([                   
+                .select([  
+                    'req.id AS id',                 
                     `req.client_name AS "Client Name"`,
                     `req.status AS "Status"`,
                     `req.required_date AS "Required Date"`,                    
