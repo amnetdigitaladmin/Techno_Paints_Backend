@@ -77,6 +77,10 @@ class RequestService {
       params.approved_by = req.meta.userId;
       params.approved_at = moment().format('YYYY-MM-DD');
       let reqInfo: any = await RequestRepository.getReqById(requestId);
+      if (reqInfo && reqInfo.status !== 'Pending') {
+        let statusText: any = reqInfo.status === 'Accepted' ? 'Approved' : 'Rejected';
+        return res.status(500).json({ status: "failed", message: `Request Already ${statusText}` });
+      }
       reqInfo = { ...reqInfo, ...params };
       await RequestRepository.save(reqInfo);
       if (params.status === 'Accepted') {
