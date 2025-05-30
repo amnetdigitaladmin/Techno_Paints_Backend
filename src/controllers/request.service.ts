@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import logger from '../middlewares/logger';
 import RequestRepository from '../models/repositories/request.repo';
+import userRepository from '../models/repositories/user.repo';
 import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import EmailService from './notification.service';
 import moment from "moment";
@@ -15,19 +16,33 @@ class RequestService {
       params.created_by = req.meta.userId;
       params.client_id = req.meta.userId;
       params.required_date = moment().format('YYYY-MM-DD');
-                // const notificationPayload: any = [];
-                // notificationPayload.push({
-                //   empId: +req.params.bpid,
-                //   type: NotificationRequestType.request_raised,
-                //   request_group: RequestGroup.ADMIN,
-                //   content: {
-                //     title: `Clients Assigned`,
-                //     data: `New clients have been assigned to you. Please check your client list for details.`
-                //   },
-                //   employee_type: 'employee',
-                // })
-                // await EmailService.sendMessage({ payload: notificationPayload }) 
       await RequestRepository.save(params);
+       let userDetails: any = await userRepository.getById(+req.meta.userId)
+      let admins: any = await userRepository.getAdminUsers()
+      if (admins && admins.length > 0) {
+        const notificationPayload: any = [];
+        await admins.map((item:any)=>{
+          notificationPayload.push({
+          empId: +item.id,
+          type: NotificationRequestType.request_raised,
+          request_group: RequestGroup.CLIENT,
+          content: {
+            title: `Raised Request`,
+            data: `${userDetails && userDetails.full_name ? userDetails.full_name : 'NA'} created a service request for ${params.requestAreaInsqft}sqft on ${ params.required_date}.`
+          },         
+        })
+        })    
+          notificationPayload.push({
+          empId: + req.meta.userId,
+          type: NotificationRequestType.request_raised,
+          request_group: RequestGroup.CLIENT,
+          content: {
+            title: `Raised Request`,
+            data: `created a service request for ${params.requestAreaInsqft} sqft on ${ params.required_date} .`
+          },         
+        }) 
+        await EmailService.sendMessage({ payload: notificationPayload })
+      }
       res.status(200).json({ status: 'success', message: 'Request Created Successfully' });
     } catch (error) {
       logger.error({ params: req.body, error: "AddRequest" }, "AddRequest method error: " + JSON.stringify(error));

@@ -778,6 +778,21 @@ class UserRepository {
         }
     }
 
+    public async getAdminUsers() {
+        try {
+            let data = await userRepository
+                .createQueryBuilder('user')
+                .leftJoinAndMapOne('user.role', Role, 'role', 'user.roleId = role.id')                
+                .where('role.name =:name', { name: 'Admin' })
+                .andWhere('user.is_active=:is_active', { is_active: true })
+                .andWhere('user.is_deleted=:is_deleted', { is_deleted: false })
+                .getMany();
+            return data
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }
 
 export default new UserRepository()
