@@ -72,11 +72,11 @@ class RequestRepository {
     public async findWorkflowByReqId(id: number) {
         try {
             return await workflowRepository
-                .createQueryBuilder('req')
-                .where('req.requestId = :requestId', { requestId: id })
-                .andWhere('req.title != Client Feedback')
-                .andWhere('req.is_deleted = false')
-                .getMany();
+            .createQueryBuilder('req')
+            .where('req.requestId = :requestId', { requestId: id })
+            .andWhere('req.title != :excludedTitle', { excludedTitle: 'Client Feedback' })
+            .andWhere('req.is_deleted = false')
+            .getMany();        
         } catch (err) {
             console.log(err);
         }

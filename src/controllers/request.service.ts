@@ -170,6 +170,11 @@ class RequestService {
             .status(500)
             .json({ status: "failed", message: "Feedback submission is not allowed until the workflow is completed." });
         }
+      } else {
+        return res
+          .status(500)
+          .json({ status: "failed", message: "Workflow is not configured for this request. Please contact the admin to proceed." });
+
       }
       let workflowInfo: any = await RequestRepository.getWorkflowByReqId(requestId, params.order);
       if (workflowInfo) {
