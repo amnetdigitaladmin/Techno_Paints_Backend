@@ -231,6 +231,11 @@ class RequestService {
         workflowInfo.updated_by = req.meta.userId;
         workflowInfo.id = +workflowInfo.id;
         workflowInfo.status = 'Completed';
+        if(title === 'Client Feedback' && reqInfo.client_rating === null){
+          return res
+          .status(500)
+          .json({ status: "failed", message: "Client feedback is required to proceed with marking this stage as completed." });
+        }
         switch (title) {
           case 'Assign Execution Team':
             workflowInfo.title = 'Execution Team Assigned';
