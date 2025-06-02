@@ -339,22 +339,20 @@ public async getAllAMCsForDownload(query: any) {
             .createQueryBuilder('req')
             .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
             .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+            .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })
-            // .select([
-            //     'req.id as id',
-            //     'req.client_name as client_name',
-            //     'req.client_id as client_id',                       
-            //     'req.amc_name as amc_name',
-            //     'req.area_in_sqft as area_in_sqft',
-            //     'req.category_id as category_id',  
-            //     'req.sub_category_id as sub_category_id',  
-            //     'req.utilisation_per_year as utilisation_per_year',  
-            //     'req.start_date as start_date',
-            //     'req.end_date as end_date', 
-            //     'req.status as status',                  
-            //     'req.created_at as created_at',
-            //     'req.updated_at as updated_at',
-            // ])
+            .select([           
+                'req.client_name as client_name',                              
+                'req.amc_name as amc_name',
+                'c.category as category',  
+                'sc.subcategory as subcategory',  
+                'req.area_in_sqft as area_in_sqft',              
+                'req.utilisation_per_year as utilisation_per_year',  
+                'req.start_date as start_date',
+                'req.end_date as end_date', 
+                'req.status as status',                  
+                'req.created_at as created_on',            
+            ])
             
 
         if (fromDate && toDate) {
@@ -389,8 +387,21 @@ public async getAllAMCsBPForDownload(query: any) {
             .createQueryBuilder('req')
             .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
             .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+            .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })          
-            .andWhere('req.client_id = :client_id', { client_id: params.userId })   
+            .andWhere('req.client_id = :client_id', { client_id: params.userId }) 
+            .select([           
+                'req.client_name as client_name',                              
+                'req.amc_name as amc_name',
+                'c.category as category',  
+                'sc.subcategory as subcategory',  
+                'req.area_in_sqft as area_in_sqft',              
+                'req.utilisation_per_year as utilisation_per_year',  
+                'req.start_date as start_date',
+                'req.end_date as end_date', 
+                'req.status as status',                  
+                'req.created_at as created_on',            
+            ])  
 
         if (fromDate && toDate) {
             qb.andWhere('req.start_date >= :fromDate AND req.end_date <= :toDate', {
