@@ -420,7 +420,8 @@ class RequestRepository {
     
             const qb = requestRepository
                 .createQueryBuilder('req')               
-                .where('req.is_deleted = :is_deleted', { is_deleted: false })              
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })  
+                 .andWhere('req.client_id = :client_id', { client_id: params.userId })             
                .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
                     .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
                     .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')                   
@@ -528,6 +529,35 @@ class RequestRepository {
             throw new Error('Failed to get status counts');
         }
     }  
+    public async getTotalRequestsCount() {
+        try {
+            const qb = requestRepository
+                .createQueryBuilder('req')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .select([
+                    'req.id AS id'
+                ])
+
+            return await qb.getCount()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    public async getTotalClientRequestsCount(client:any) {
+        try {
+            const qb = requestRepository
+                .createQueryBuilder('req')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.client_id = :client_id', { client_id: client })   
+                .select([
+                    'req.id AS id'
+                ])
+
+            return await qb.getCount()
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
 }
