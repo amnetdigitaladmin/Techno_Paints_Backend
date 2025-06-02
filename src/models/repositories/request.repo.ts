@@ -389,9 +389,7 @@ class RequestRepository {
                 .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
                 .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
                 .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
-                .select([
-                    'ROW_NUMBER() OVER (ORDER BY req.id) AS sno',
-                    'req.id AS id',
+                .select([                      
                     'client.company AS company',
                     'approver.full_name AS approver_name',       // ✅ fixed
                     'amc.amc_name AS amc',
@@ -435,15 +433,13 @@ class RequestRepository {
                 .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
                 .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
                 .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
-                .select([
-                    'ROW_NUMBER() OVER (ORDER BY req.id) AS sno',
-                    'req.id AS id',
+                .select([                                  
                     'client.company AS company',
                     'approver.full_name AS approver_name',       // ✅ fixed
                     'amc.amc_name AS amc',
                     'amc.area_in_sqft AS total_sqft',            // ✅ fixed
                     'req.required_date AS requested_date',       // ✅ fixed
-                    'req.requestAreaInsqft AS request_area_in_sqft', // ✅ fixed
+                    'req.requestAreaInsqft AS request_area(sqft)', // ✅ fixed
                     'req.approved_at AS approved_at',
                     'req.status AS status',
                     'req.client_rating AS client_rating',
