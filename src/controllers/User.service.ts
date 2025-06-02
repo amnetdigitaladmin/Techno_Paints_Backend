@@ -217,12 +217,12 @@ class UserService {
         }
         )
         KPIs.push({
-          name: 'Total Contracts',
+          name: `Total AMC's`,
           Count: await amcRepository.getTotalContracts()
         }
         )
         KPIs.push({
-          name: 'Active Contracts',
+          name: `Active AMC's`,
           Count: await amcRepository.getActiveContracts()
         }
         )
@@ -238,13 +238,13 @@ class UserService {
         })
 
         KPIs.push({
-          name: 'Total Contracts',
+          name:  `Total AMC's`,
           Count: await amcRepository.getBPTotalContracts(+req.meta.userId)
         }
         )
 
         KPIs.push({
-          name: 'Active Contracts',
+          name:  `Active AMC's`,
           Count: await amcRepository.getBPActiveContracts(+req.meta.userId)
         })
           KPIs.push({
