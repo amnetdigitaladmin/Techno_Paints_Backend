@@ -572,7 +572,8 @@ public async getAMCChartData(filter: any) {
                 return await AMCRepository
                     .createQueryBuilder('req')
                     .where('req.client_id = :client_id', { client_id: query.meta.userId })
-                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })                               
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('req.status = :status', { status: 'Active' })                                 
                     .getMany();
             
         } catch (error) {
