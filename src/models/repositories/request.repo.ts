@@ -12,20 +12,20 @@ const workflowRepository = AppDataSource.getRepository(Workflow);
 class RequestRepository {
 
     public async save(obj: any) {
-        try{
+        try {
             return await requestRepository.save(obj)
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            
+
         }
     }
 
     public async workflowSave(obj: any) {
-        try{
+        try {
             return await workflowRepository.save(obj)
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            
+
         }
     }
 
@@ -106,33 +106,33 @@ class RequestRepository {
             if (params.search_text) {
                 const searchText = params.search_text ? `%${params.search_text.toLowerCase()}%` : '%%';
                 return await requestRepository
-                  .createQueryBuilder('req')
-                  .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
-                  .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
-                  .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
-                  .where('LOWER(amc.amc_name) LIKE :searchText', { searchText })
-                  .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
-                  .select([
-                    'req.id AS id',
-                    'client.company AS company',
-                    'approver.first_name AS approver_first_name',
-                    'approver.last_name AS approver_last_name',
-                    'approver.full_name AS approver_full_name',
-                    'amc.amc_name AS amc_name',
-                    'amc.area_in_sqft AS total_sqft',
-                    'req.required_date AS required_date',
-                    'req.created_by AS created_by',
-                    'req.requestAreaInsqft AS request_area_in_sqft',
-                    'req.approved_at AS approved_at',
-                    'req.status AS status',
-                    'req.client_comments AS client_comments',
-                    'req.client_rating AS client_rating',
-                    'req.completed_on AS completed_on'
-                  ])
-                  .orderBy(`req.${order_by}`, sort_order)
-                  .skip(offSet - 1)
-                  .take(Limit)
-                  .getRawMany();
+                    .createQueryBuilder('req')
+                    .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
+                    .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
+                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
+                    .where('LOWER(amc.amc_name) LIKE :searchText', { searchText })
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    .select([
+                        'req.id AS id',
+                        'client.company AS company',
+                        'approver.first_name AS approver_first_name',
+                        'approver.last_name AS approver_last_name',
+                        'approver.full_name AS approver_full_name',
+                        'amc.amc_name AS amc_name',
+                        'amc.area_in_sqft AS total_sqft',
+                        'req.required_date AS required_date',
+                        'req.created_by AS created_by',
+                        'req.requestAreaInsqft AS request_area_in_sqft',
+                        'req.approved_at AS approved_at',
+                        'req.status AS status',
+                        'req.client_comments AS client_comments',
+                        'req.client_rating AS client_rating',
+                        'req.completed_on AS completed_on'
+                    ])
+                    .orderBy(`req.${order_by}`, sort_order)
+                    .skip(offSet - 1)
+                    .take(Limit)
+                    .getRawMany();
             } else {
                 return await requestRepository
                     .createQueryBuilder('req')
@@ -280,9 +280,9 @@ class RequestRepository {
                     .createQueryBuilder('req')
                     .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
-                   .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
+                    .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
                     .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
-                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')                   
+                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .select([
                         'req.id as id',
                         'client.company AS company',
@@ -299,7 +299,7 @@ class RequestRepository {
                         'req.client_comments AS client_comments',
                         'req.client_rating AS client_rating',
                         'req.completed_on AS completed_on'
-                    ])                  
+                    ])
                     .orderBy(`req.${order_by}`, sort_order)  // Use template literals for safety
                     .skip(offSet - 1)
                     .take(Limit)
@@ -316,7 +316,7 @@ class RequestRepository {
             if (params.search_text) {
                 return await requestRepository
                     .createQueryBuilder('req')
-                   .where(
+                    .where(
                         `LOWER(amc.amc_name) LIKE :searchText `,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
@@ -346,11 +346,11 @@ class RequestRepository {
             } else {
                 return await requestRepository
                     .createQueryBuilder('req')
-                   .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
+                    .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
                     .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
-                   .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
+                    .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
                     .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
-                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')                   
+                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                     .select([
                         'req.id AS id',
                         'client.company AS company',
@@ -390,19 +390,16 @@ class RequestRepository {
                 .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
                 .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
                 .select([
+                    'ROW_NUMBER() OVER (ORDER BY req.id) AS sno',
                     'req.id AS id',
                     'client.company AS company',
-                    'approver.first_name AS approver_first_name',
-                    'approver.last_name AS approver_last_name',
-                    'approver.full_name AS approver_full_name',
-                    'amc.amc_name AS amc_name',
-                    'amc.area_in_sqft AS total_sqft',
-                    'req.required_date AS required_date',
-                    'req.created_by AS created_by',
-                    'req.requestAreaInsqft AS request_area_in_sqft',
+                    'approver.full_name AS approver_name',       // ✅ fixed
+                    'amc.amc_name AS amc',
+                    'amc.area_in_sqft AS total_sqft',            // ✅ fixed
+                    'req.required_date AS requested_date',       // ✅ fixed
+                    'req.requestAreaInsqft AS request_area_in_sqft', // ✅ fixed
                     'req.approved_at AS approved_at',
                     'req.status AS status',
-                    'req.client_comments AS client_comments',
                     'req.client_rating AS client_rating',
                     'req.completed_on AS completed_on'
                 ])
@@ -430,42 +427,39 @@ class RequestRepository {
             let Limit = params.limit ? params.limit : 10000;
             let order_by = params.order_by ? params.order_by : 'updated_at';
             let sort_order = params.sort_order ? params.sort_order : 'DESC';
-    
+
             const qb = requestRepository
-                .createQueryBuilder('req')               
-                .where('req.is_deleted = :is_deleted', { is_deleted: false })  
-                 .andWhere('req.client_id = :client_id', { client_id: params.userId })             
-               .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
-                    .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
-                    .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')                   
-                    .select([
-                        'req.id AS id',
-                        'client.company AS company',
-                        'approver.first_name AS approver_first_name',
-                        'approver.last_name AS approver_last_name',
-                        'approver.full_name AS approver_full_name',
-                        'amc.amc_name AS amc_name',
-                        'amc.area_in_sqft AS total_sqft',
-                        'req.required_date AS required_date',
-                        'req.created_by AS created_by',
-                        'req.requestAreaInsqft AS request_area_in_sqft',
-                        'req.approved_at AS approved_at',
-                        'req.status AS status',
-                        'req.client_comments AS client_comments',
-                        'req.client_rating AS client_rating',
-                        'req.completed_on AS completed_on'
-                    ])
+                .createQueryBuilder('req')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.client_id = :client_id', { client_id: params.userId })
+                .leftJoinAndMapOne('req.amc', 'AMCs', 'amc', 'req.amc_id = amc.id')
+                .leftJoinAndMapOne('req.client', 'users', 'client', 'req.client_id = client.id')
+                .leftJoinAndMapOne('req.approver', 'users', 'approver', 'req.approved_by = approver.id')
+                .select([
+                    'ROW_NUMBER() OVER (ORDER BY req.id) AS sno',
+                    'req.id AS id',
+                    'client.company AS company',
+                    'approver.full_name AS approver_name',       // ✅ fixed
+                    'amc.amc_name AS amc',
+                    'amc.area_in_sqft AS total_sqft',            // ✅ fixed
+                    'req.required_date AS requested_date',       // ✅ fixed
+                    'req.requestAreaInsqft AS request_area_in_sqft', // ✅ fixed
+                    'req.approved_at AS approved_at',
+                    'req.status AS status',
+                    'req.client_rating AS client_rating',
+                    'req.completed_on AS completed_on'
+                ])
                 .orderBy(`req.${order_by}`, sort_order)
                 .skip(offSet - 1)
                 .take(Limit);
-    
+
             // Optional date range filter
             if (params.from_date && params.to_date) {
                 qb.andWhere('req.required_date BETWEEN :from AND :to', {
                     from: params.from_date,
                     to: params.to_date,
                 });
-            }    
+            }
             return await qb.getRawMany();
         } catch (error) {
             console.log(error);
@@ -486,7 +480,7 @@ class RequestRepository {
                 .createQueryBuilder('req')
                 .select(`req.status`, 'status')
                 .addSelect('COUNT(*)', 'count')
-                .where('req.is_deleted = :is_deleted', { is_deleted: false })                
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
                 .groupBy('req.status')
                 .getRawMany();
 
@@ -521,7 +515,7 @@ class RequestRepository {
                 .createQueryBuilder('req')
                 .select(`req.status`, 'status')
                 .addSelect('COUNT(*)', 'count')
-                .where('req.is_deleted = :is_deleted', { is_deleted: false })               
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
                 .groupBy('req.status')
                 .getRawMany();
 
@@ -541,7 +535,7 @@ class RequestRepository {
             console.error(error);
             throw new Error('Failed to get status counts');
         }
-    }  
+    }
     public async getTotalRequestsCount() {
         try {
             const qb = requestRepository
@@ -556,12 +550,12 @@ class RequestRepository {
             console.log(error);
         }
     }
-    public async getTotalClientRequestsCount(client:any) {
+    public async getTotalClientRequestsCount(client: any) {
         try {
             const qb = requestRepository
                 .createQueryBuilder('req')
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })
-                .andWhere('req.client_id = :client_id', { client_id: client })   
+                .andWhere('req.client_id = :client_id', { client_id: client })
                 .select([
                     'req.id AS id'
                 ])
