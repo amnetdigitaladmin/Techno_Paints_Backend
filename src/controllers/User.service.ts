@@ -226,6 +226,11 @@ class UserService {
           Count: await amcRepository.getActiveContracts()
         }
         )
+         KPIs.push({
+          name: 'Total Requests',
+          Count: await requestRepository.getTotalRequestsCount()
+        }
+        )
       } else { 
         KPIs.push({
           name: 'Total area in sqft',
@@ -242,6 +247,11 @@ class UserService {
           name: 'Active Contracts',
           Count: await amcRepository.getBPActiveContracts(+req.meta.userId)
         })
+          KPIs.push({
+          name: 'Total Requests',
+          Count: await requestRepository.getTotalClientRequestsCount(+req.meta.userId)
+        }
+        )
       }
 
 
@@ -334,14 +344,14 @@ class UserService {
       if (Role == contextType.ADMIN) {
         if (req.query.type == 'AMC') {
           data = await amcRepository.getAllAMCsForDownload(req.query)
-        } else if (req.query.type == 'Material Requests') {
+        } else if (req.query.type == 'Client Requests') {
           data = await requestRepository.getAllRequestsDownload(req.query)
         } 
       }else{
         req.query.userId = req.meta.userId
         if (req.query.type == 'AMC') {        
           data = await amcRepository.getAllAMCsBPForDownload(req.query)
-        } else if (req.query.type == 'Material Requests') {
+        } else if (req.query.type == 'Client Requests') {
           data = await requestRepository.getAllBPRequestsDownload(req.query)
         } 
       }    
