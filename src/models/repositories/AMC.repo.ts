@@ -390,7 +390,7 @@ public async getAllAMCsBPForDownload(query: any) {
             .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
             .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
             .where('req.is_deleted = :is_deleted', { is_deleted: false })          
-            
+            .andWhere('req.client_id = :client_id', { client_id: params.userId })   
 
         if (fromDate && toDate) {
             qb.andWhere('req.start_date >= :fromDate AND req.end_date <= :toDate', {
