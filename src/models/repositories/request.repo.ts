@@ -510,7 +510,7 @@ class RequestRepository {
     public async getRequestBPStatusCounts(user: number): Promise<any> {
         try {
             // Define expected statuses
-            const expectedStatuses = ['Pending', 'Accepted', 'Rejected'];
+            const expectedStatuses =  ['Pending', 'Accepted', 'Rejected','In-Progress','Completed'];
 
             // Initialize counts to 0
             const statusMap: Record<string, number> = {};
