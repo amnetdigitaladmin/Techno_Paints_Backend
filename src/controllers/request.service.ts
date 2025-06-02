@@ -81,6 +81,9 @@ class RequestService {
         let statusText: any = reqInfo.status === 'Accepted' ? 'Approved' : 'Rejected';
         return res.status(500).json({ status: "failed", message: `Request Already ${statusText}` });
       }
+      if (params.status === 'Accepted') {
+        reqInfo.workflow_status = 'In-Progress';
+      }
       reqInfo = { ...reqInfo, ...params };
       await RequestRepository.save(reqInfo);
       if (params.status === 'Accepted') {
@@ -270,6 +273,7 @@ class RequestService {
         if (workflowInfo.title === 'Work Completed') {
           reqInfo.completed_on = moment().format('YYYY-MM-DD');
           reqInfo.updated_by = req.meta.userId;
+          reqInfo.workflow_status = 'Completed';
           reqInfo.id = +reqInfo.id;
           await RequestRepository.save(reqInfo);
         }

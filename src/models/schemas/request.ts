@@ -13,6 +13,7 @@ import { Column, Entity ,BeforeInsert,BeforeUpdate } from "typeorm";
 import { BaseModel } from './BaseModel';
 import { float } from "aws-sdk/clients/cloudfront";
 export type status_Type = "Pending" | "Accepted" | "Rejected";
+export type workflow_status_Type = "Pending" | "In-Progress" | "Completed";
 // import bcrypt from "bcrypt-nodejs";
 
 @Entity({ name: 'requests' })
@@ -45,6 +46,13 @@ export class Request extends BaseModel {
         default: "Pending"
 	})
 	status?: status_Type;
+
+    @Column({
+		type: 'enum',
+		enum: ['Pending', 'In-Progress', 'Completed'],
+        default: "Pending"
+	})
+	workflow_status?: workflow_status_Type;
 
     @Column({ nullable: true })
     client_comments: string;
