@@ -465,14 +465,14 @@ class RequestRepository {
     public async getRequestStatusCounts(): Promise<any> {
         try {
             // Define expected statuses
-            const expectedStatuses = ['Pending', 'Accepted', 'Rejected'];
+            const expectedStatuses = ['Pending', 'Accepted', 'Rejected','In-Progress','Completed'];
 
             // Initialize counts to 0
             const statusMap: Record<string, number> = {};
             expectedStatuses.forEach(status => statusMap[status] = 0);
 
             // Fetch actual counts from DB
-            const result = await requestRepository
+            let result:any = await requestRepository
                 .createQueryBuilder('req')
                 .select(`req.status`, 'status')
                 .addSelect('COUNT(*)', 'count')
@@ -480,6 +480,16 @@ class RequestRepository {
                 .groupBy('req.status')
                 .getRawMany();
 
+     
+            const workflowresult = await requestRepository
+                .createQueryBuilder('req')
+                .select(`req.workflow_status`, 'status')
+                .addSelect('COUNT(*)', 'count')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .where('req.workflow_status IN (:...status)', { status: ['In-Progress', 'Completed'] })
+                .groupBy('req.workflow_status')
+                .getRawMany();
+            result = result.concat(workflowresult)   
             // Overwrite counts where data exists
             for (const row of result) {
                 if (statusMap.hasOwnProperty(row.status)) {
@@ -507,14 +517,24 @@ class RequestRepository {
             expectedStatuses.forEach(status => statusMap[status] = 0);
 
             // Fetch actual counts from DB
-            const result = await requestRepository
+            let result:any = await requestRepository
                 .createQueryBuilder('req')
                 .select(`req.status`, 'status')
                 .addSelect('COUNT(*)', 'count')
                 .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.client_id = :client_id', { client_id: user })  
                 .groupBy('req.status')
                 .getRawMany();
-
+                  const workflowresult = await requestRepository
+                .createQueryBuilder('req')
+                .select(`req.workflow_status`, 'status')
+                .addSelect('COUNT(*)', 'count')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.client_id = :client_id', { client_id: user })  
+                .andWhere('req.workflow_status IN (:...status)', { status: ['In-Progress', 'Completed'] })
+                .groupBy('req.workflow_status')
+                .getRawMany();           
+                result = result.concat(workflowresult)
             // Overwrite counts where data exists
             for (const row of result) {
                 if (statusMap.hasOwnProperty(row.status)) {
