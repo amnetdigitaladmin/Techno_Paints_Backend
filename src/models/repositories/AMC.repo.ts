@@ -276,7 +276,7 @@ class amcRepository {
         try {
             return await AMCRepository
             .createQueryBuilder('req')
-            .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
+            .select('SUM(CAST(req.area_in_sqft AS DECIMAL))', 'total')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })
             .andWhere('req.status = :status', { status: 'Active' })
             .getRawOne();
@@ -285,11 +285,12 @@ class amcRepository {
         }
     }
 
-    public async getBPActiveContracts(bpId:any) {
+    public async getBPActiveContracts(client_id:any) {
         try {
             return await AMCRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .andWhere('req.client_id = :client_id', { client_id: client_id })     
                 .andWhere('req.status =:status', { status: 'Active' })
                 .getCount();
         } catch (err) {
@@ -297,23 +298,25 @@ class amcRepository {
         }
     }
 
-    public async getBPTotalContracts(bpId:any) {
+    public async getBPTotalContracts(client_id:any) {
         try {
             return await AMCRepository
                 .createQueryBuilder('req')               
                 .where('req.is_deleted =:is_deleted', { is_deleted: false }) 
+                .andWhere('req.client_id = :client_id', { client_id: client_id })     
                 .getCount();
         } catch (err) {
             console.log(err);
         }
     }
 
-    public async getBPAmountContracts(bpId:any) {
+    public async getBPAmountContracts(client_id:any) {
         try {
             return await AMCRepository
             .createQueryBuilder('req')
-            .select('SUM(CAST(req.amount AS DECIMAL))', 'total')
-            .where('req.is_deleted = :is_deleted', { is_deleted: false })          
+            .select('SUM(CAST(req.area_in_sqft AS DECIMAL))', 'total')
+            .where('req.is_deleted = :is_deleted', { is_deleted: false })   
+            .andWhere('req.client_id = :client_id', { client_id: client_id })       
             .andWhere('req.status = :status', { status: 'Active' })
             .getRawOne();
         } catch (err) {
