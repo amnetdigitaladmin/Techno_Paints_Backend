@@ -162,6 +162,15 @@ class RequestService {
       let requestId: any = +req.params.id;
       let params: any = req.body;
       let reqInfo: any = await RequestRepository.getReqById(requestId);
+      let workflowData: any = await RequestRepository.findWorkflowByReqId(requestId);
+      if (workflowData && workflowData.length > 0) {
+        let filterData: any = workflowData.filter((item: any) => item.status === 'Completed');
+        if (filterData.length !== workflowData.length) {
+          return res
+            .status(500)
+            .json({ status: "failed", message: "Feedback submission is not allowed until the workflow is completed." });
+        }
+      }
       let workflowInfo: any = await RequestRepository.getWorkflowByReqId(requestId, params.order);
       if (workflowInfo) {
         const { title } = workflowInfo;
