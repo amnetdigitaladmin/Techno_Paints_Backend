@@ -205,20 +205,14 @@ class UserService {
       if (Role == contextType.ADMIN) {
         let ClientRole = (roles.find((item: any) => { return item.name == contextType.CLIENT })).hasOwnProperty('name') ?
           (roles.find((item: any) => { return item.name == contextType.CLIENT })).id : 3
-        let BPRole = (roles.find((item: any) => { return item.name == contextType.BUSINESS_PARTNER })).hasOwnProperty('name') ?
-          (roles.find((item: any) => { return item.name == contextType.BUSINESS_PARTNER })).id : 2
+      
         KPIs.push({
           name: 'Total Clients',
           Count: await UserRepository.getCountByRole(ClientRole)
         }
-        )
+        )    
         KPIs.push({
-          name: 'Total Business Partners',
-          Count: await UserRepository.getCountByRole(BPRole)
-        }
-        )
-        KPIs.push({
-          name: 'Total Contract Value',
+          name: 'Total area in sqft',
           Count: +(await amcRepository.getAmountContracts()).total
         }
         )
@@ -232,15 +226,9 @@ class UserService {
           Count: await amcRepository.getActiveContracts()
         }
         )
-      } else {
-
+      } else { 
         KPIs.push({
-          name: 'Total Clients',
-          Count: await UserRepository.getClientCountByBPId(+req.meta.userId)
-        })
-
-        KPIs.push({
-          name: 'Total Contract Value',
+          name: 'Total area in sqft',
           Count: +(await amcRepository.getBPAmountContracts(+req.meta.userId)).total
         })
 
