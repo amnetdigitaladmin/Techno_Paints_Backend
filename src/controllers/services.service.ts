@@ -163,6 +163,28 @@ class RequestService {
         }
     }
 
+    public async updateCategoryByCategoryId(req: Request, res: Response) {
+        try {
+            logger.info({ params: '', init: "updateCategoryByCategoryId" }, "updateCategoryByCategoryId method called");
+            let category: any = +req.params.id;
+            let params: any = req.body;
+            let categoryInfo: any = await ServiceRepository.getCategoryByCategoryId(category);
+            if (categoryInfo && categoryInfo.id) {
+                categoryInfo.updated_by = req.meta.userId;
+                categoryInfo = { ...categoryInfo, ...params };
+                await ServiceRepository.categorySave(categoryInfo);
+                res.status(200).json({ status: 'success', message: 'Category updated successfully' });
+            } else {
+                res.status(500).json({ status: 'failed', message: 'Category updated failed' });
+            }
+        } catch (error) {
+            logger.error({ params: '', error: "updateCategoryByCategoryId" }, "updateCategoryByCategoryId method error: " + JSON.stringify(error));
+            return res
+                .status(500)
+                .json({ status: "failed", message: "Internal Server Error" });
+        }
+    }
+
 }
 
 export default new RequestService();
