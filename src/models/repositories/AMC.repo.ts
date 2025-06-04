@@ -46,6 +46,134 @@ class amcRepository {
         }
     }
 
+    public async getAllClientAMCs(query: any) {
+        try {
+            let params: any = query.query
+            let offSet = params.offset ? params.offset : 1;
+            let Limit = params.limit ? params.limit : 10000;
+            let order_by = params.order_by ? params.order_by : 'updated_at';
+            let sort_order = params.sort_order ? params.sort_order : 'DESC';
+            if (params.search_text) {
+                return await AMCRepository
+                    .createQueryBuilder('req')
+                    .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+                    .where(
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    // .select([
+                    //     'req.id as id',
+                    //     'req.client_name as client_name',
+                    //     'req.client_id as client_id',                       
+                    //     'req.amc_name as amc_name',
+                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.category_id as category_id',  
+                    //     'req.sub_category_id as sub_category_id',  
+                    //     'req.utilisation_per_year as utilisation_per_year',  
+                    //     'req.start_date as start_date',
+                    //     'req.end_date as end_date', 
+                    //     'req.status as status',                  
+                    //     'req.created_at as created_at',
+                    //     'req.updated_at as updated_at',
+                    // ])
+                    .orderBy(`req.${order_by}`, sort_order)
+                    .skip(offSet - 1) // Assuming `offSet` is zero-based
+                    .take(Limit)
+                    .getMany();
+            } else {
+                return await AMCRepository
+                    .createQueryBuilder('req')
+                    .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+                    .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
+                    // .select([
+                    //     'req.id as id',
+                    //     'req.client_name as client_name',
+                    //     'req.client_id as client_id',                       
+                    //     'req.amc_name as amc_name',
+                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'c.category_id as category_id',  
+                    //     'sc.sub_category_id as sub_category_id',  
+                    //     'req.utilisation_per_year as utilisation_per_year',  
+                    //     'req.start_date as start_date',
+                    //     'req.end_date as end_date', 
+                    //     'req.status as status',                  
+                    //     'req.created_at as created_at',
+                    //     'req.updated_at as updated_at',
+                    // ])
+                    .orderBy(`req.${order_by}`, sort_order)  // Use template literals for safety
+                    .skip(offSet - 1)
+                    .take(Limit)
+                    .getMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async getAllClientAMCsCount(query: any) {
+        try {
+            let params: any = query.query
+            if (params.search_text) {
+                return await AMCRepository
+                    .createQueryBuilder('req')
+                    .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+                    .where(
+                        `LOWER(req.client_name) LIKE :searchText or LOWER(req.amc_name) LIKE :searchText`,
+                        { searchText: `%${params.search_text.toLowerCase()}%` },
+                    )
+                    .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
+                    .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                    // .select([
+                    //     'req.id as id',
+                    //     'req.client_name as client_name',
+                    //     'req.client_id as client_id',                       
+                    //     'req.amc_name as amc_name',
+                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.category_id as category_id',  
+                    //     'req.sub_category_id as sub_category_id',  
+                    //     'req.utilisation_per_year as utilisation_per_year',  
+                    //     'req.start_date as start_date',
+                    //     'req.end_date as end_date', 
+                    //     'req.status as status',                  
+                    //     'req.created_at as created_at',
+                    //     'req.updated_at as updated_at',
+                    // ])
+                    .getMany();
+            } else {
+                return await AMCRepository
+                    .createQueryBuilder('req')
+                    .leftJoinAndMapOne('req.category_id', Category, 'c', `req.category_id = c.id`)
+                    .leftJoinAndMapOne('req.sub_category_id', SubCategory, 'sc', `req.sub_category_id = sc.id`)
+                    .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                    .andWhere('req.client_id = :client_id', { client_id: query.meta.userId })
+                    // .select([
+                    //     'req.id as id',
+                    //     'req.client_name as client_name',
+                    //     'req.client_id as client_id',                       
+                    //     'req.amc_name as amc_name',
+                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.category_id as category_id',  
+                    //     'req.sub_category_id as sub_category_id',  
+                    //     'req.utilisation_per_year as utilisation_per_year',  
+                    //     'req.start_date as start_date',
+                    //     'req.end_date as end_date', 
+                    //     'req.status as status',                  
+                    //     'req.created_at as created_at',
+                    //     'req.updated_at as updated_at',
+                    // ])
+                    .getMany();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     public async getAllAMCs(query: any) {
         try {
             let params: any = query.query

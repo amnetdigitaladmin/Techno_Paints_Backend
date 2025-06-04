@@ -161,6 +161,10 @@ export class APIGATEWAY {
             AMCService.getAllClientAMCs(req, res);
         });
 
+        this.router.get("/client/AMCs/listing", vefiryToken, (req: Request, res: Response) => {
+            AMCService.getAllClientAMCsListing(req, res);
+        });
+
         this.router.post("/AMC", vefiryToken, ValidateJoi(schema.AMCSchema), (req: Request, res: Response) => {
             AMCService.createAMC(req, res);
         });
