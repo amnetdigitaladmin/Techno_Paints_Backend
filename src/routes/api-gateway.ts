@@ -246,5 +246,9 @@ export class APIGATEWAY {
             categoryService.deleteCategoryByCategoryId(req, res);
         });
 
+        this.router.put("/category/:id", vefiryToken, ValidateJoi(schema.categorySchema), (req: Request, res: Response) => {
+            categoryService.updateCategoryByCategoryId(req, res);
+        });
+
     }
 }

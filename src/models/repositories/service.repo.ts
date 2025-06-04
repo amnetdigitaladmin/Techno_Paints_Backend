@@ -154,6 +154,18 @@ class serviceRepository {
         }
     }
 
+    public async getCategoryByCategoryId(id: number) {
+        try {
+            return await categoryRepository
+                .createQueryBuilder('req')
+                .where('req.is_deleted =:is_deleted', { is_deleted: false })
+                .andWhere('req.id =:id', { id: id })
+                .getOne();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
 }
 
