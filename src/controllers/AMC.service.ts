@@ -146,10 +146,28 @@ class RequestService {
       if (AMCInfo && AMCInfo.length > 0) {
         res.status(200).json({ status: 'success', data: AMCInfo });
       } else {
-        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+        res.status(200).json({ status: 'success', data: [] });
       }
     } catch (error) {
       logger.error({ params: '', error: "getAllClientAMCs" }, "getAllClientAMCs method error: " + JSON.stringify(error));
+      return res
+        .status(500)
+        .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async getAllClientAMCsListing(req: Request, res: Response) {
+    try {
+      logger.info({ params: '', init: "getAllClientAMCsListing" }, "getAllClientAMCsListing method called");
+      let AMCInfo: any = await AMCRepository.getAllClientAMCs(req);
+      let count: any = await AMCRepository.getAllClientAMCsCount(req);
+      if (AMCInfo && AMCInfo.length > 0) {
+        res.status(200).json({ status: 'success', data: AMCInfo, total_count: count.length });
+      } else {
+        res.status(200).json({ status: 'success', data: [], total_count: 0 });
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "getAllClientAMCsListing" }, "getAllClientAMCsListing method error: " + JSON.stringify(error));
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });
