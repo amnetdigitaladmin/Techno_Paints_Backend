@@ -282,6 +282,7 @@ class UserRepository {
                     .where(
                         `(LOWER(user.full_name) LIKE :searchText or 
                         LOWER(user.mobile) LIKE :searchText or 
+                        LOWER(user.email) LIKE :searchText or 
                         LOWER(user.company) LIKE :searchText)`,
                         { searchText: `%${params.search_text.toLowerCase()}%` },
                     )
