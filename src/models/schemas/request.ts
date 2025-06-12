@@ -29,6 +29,12 @@ export class Request extends BaseModel {
     requestAreaInsqft: string;
 
     @Column({ nullable: true })
+    utilized_percentage: number;
+
+    @Column({ nullable: true })
+    utilized_year: string;
+
+    @Column({ nullable: true })
     approved_by: number;
 
     @Column({ nullable: true })
@@ -74,7 +80,9 @@ export class Request extends BaseModel {
         comments: string,
         client_comments:string,
         client_rating:float,
-        completed_on:string
+        completed_on:string,
+        utilized_percentage:number,
+        utilized_year:string
     ) {
         super(); 
         this.client_id = client_id,
@@ -86,7 +94,9 @@ export class Request extends BaseModel {
         this.comments = comments,
         this.client_comments = client_comments,
         this.client_rating = client_rating,
-        this.completed_on = completed_on
+        this.completed_on = completed_on,
+        this.utilized_percentage = utilized_percentage,
+        this.utilized_year = utilized_year
     }
 }
 
