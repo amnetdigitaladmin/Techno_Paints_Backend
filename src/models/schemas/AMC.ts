@@ -59,16 +59,16 @@ export class AMC extends BaseModel {
     @JoinColumn({ name: 'sub_category_id' })
     sub_category_id: SubCategory;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 5 })
     utilisation_per_year: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 0 })
     utilized_percentage: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 5 })
     remaining_utilize_percentage: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 0 })
     carry_forwarded_percentage: number;
 
     constructor(  
