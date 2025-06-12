@@ -494,6 +494,9 @@ public async getAllAMCsForDownload(query: any) {
                 toDate
             });
         }
+        if (params.client_id) {
+            qb.andWhere('req.client_id = :client_id', { client_id: params.client_id });
+        }
         return await qb
             .orderBy(`req.${order_by}`, sort_order)
             .skip(offSet - 1)

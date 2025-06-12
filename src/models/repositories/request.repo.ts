@@ -475,6 +475,9 @@ class RequestRepository {
                     to: params.to_date,
                 });
             }
+            if (params.client_id) {
+                qb.andWhere('req.client_id = :client_id', { client_id: params.client_id });
+            }
             return await qb.getRawMany();
         } catch (error) {
             console.log(error);
