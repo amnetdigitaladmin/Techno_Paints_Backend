@@ -69,7 +69,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -95,7 +95,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'c.category_id as category_id',  
                     //     'sc.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -134,7 +134,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -157,7 +157,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -196,7 +196,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -221,7 +221,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'c.category_id as category_id',  
                     //     'sc.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -259,7 +259,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -281,7 +281,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -320,7 +320,7 @@ class amcRepository {
                     //     'req.client_name as client_name',
                     //     'req.client_id as client_id',                       
                     //     'req.amc_name as amc_name',
-                    //     'req.area_in_sqft as area_in_sqft',
+                    //     'req.total_area_in_sqft as total_area_in_sqft',
                     //     'req.category_id as category_id',  
                     //     'req.sub_category_id as sub_category_id',  
                     //     'req.utilisation_per_year as utilisation_per_year',  
@@ -404,7 +404,7 @@ class amcRepository {
         try {
             return await AMCRepository
             .createQueryBuilder('req')
-            .select('SUM(CAST(req.area_in_sqft AS DECIMAL))', 'total')
+            .select('SUM(CAST(req.total_area_in_sqft AS DECIMAL))', 'total')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })
             .andWhere('req.status = :status', { status: 'Active' })
             .getRawOne();
@@ -442,7 +442,7 @@ class amcRepository {
         try {
             return await AMCRepository
             .createQueryBuilder('req')
-            .select('SUM(CAST(req.area_in_sqft AS DECIMAL))', 'total')
+            .select('SUM(CAST(req.total_area_in_sqft AS DECIMAL))', 'total')
             .where('req.is_deleted = :is_deleted', { is_deleted: false })   
             .andWhere('req.client_id = :client_id', { client_id: client_id })       
             .andWhere('req.status = :status', { status: 'Active' })
@@ -474,7 +474,12 @@ public async getAllAMCsForDownload(query: any) {
                 'req.amc_name as amc_name',
                 'c.category as category',  
                 'sc.subcategory as subcategory',  
-                'req.area_in_sqft as area_in_sqft',              
+                'req.total_area_in_sqft as total_area_in_sqft',
+                'req.requested_area_in_sqft as requested_area_in_sqft',
+                'req.remaining_area_in_sqft as remaining_area_in_sqft', 
+                'req.utilized_percentage as utilized_percentage', 
+                'req.carry_forwarded_percentage as carry_forwarded_percentage', 
+                'req.remaining_utilize_percentage as remaining_utilize_percentage',              
                 'req.utilisation_per_year as utilisation_per_year',  
                 'req.start_date as start_date',
                 'req.end_date as end_date', 
@@ -523,7 +528,12 @@ public async getAllAMCsBPForDownload(query: any) {
                 'req.amc_name as amc_name',
                 'c.category as category',  
                 'sc.subcategory as subcategory',  
-                'req.area_in_sqft as area_in_sqft',              
+                'req.total_area_in_sqft as total_area_in_sqft', 
+                'req.requested_area_in_sqft as requested_area_in_sqft',
+                'req.remaining_area_in_sqft as remaining_area_in_sqft', 
+                'req.utilized_percentage as utilized_percentage', 
+                'req.remaining_utilize_percentage as remaining_utilize_percentage',
+                'req.carry_forwarded_percentage as carry_forwarded_percentage',             
                 'req.utilisation_per_year as utilisation_per_year',  
                 'req.start_date as start_date',
                 'req.end_date as end_date', 

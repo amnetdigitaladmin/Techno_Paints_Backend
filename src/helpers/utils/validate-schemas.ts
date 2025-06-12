@@ -14,6 +14,7 @@ class validateParameters {
         email: Joi.string().email().required(),
         first_name: Joi.string().min(3).max(30),
         company: Joi.string().min(3).max(30),
+        contact_person: Joi.string().min(3).max(30),
         last_name: Joi.string().min(3).max(30),
         mobile: Joi.string().regex(/^[0-9]{10}$/).messages({'string.pattern.base': `Phone number must have 10 digits.`}).required(),
         address:Joi.string().required(),
@@ -29,6 +30,7 @@ class validateParameters {
         first_name: Joi.string().min(3).max(30),
         last_name: Joi.string().min(3).max(30),
         company: Joi.string().min(3).max(30),
+        contact_person: Joi.string().min(3).max(30),
         mobile: Joi.string().regex(/^[0-9]{10}$/).messages({'string.pattern.base': `Phone number must have 10 digits.`}).required(),        address:Joi.string().required(),
         city:Joi.string().required(),
         state:Joi.string().required(),
@@ -89,12 +91,16 @@ class validateParameters {
   requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
     'string.pattern.base': 'requestAreaInsqft must be a number in string format',
   }),
+  utilized_percentage: Joi.number().required(),
+  utilized_year: Joi.string().required(),
   });
 
   requestUpdateSchema = Joi.object({
      requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
     'string.pattern.base': 'requestAreaInsqft must be a number in string format',
   }),
+  utilized_percentage: Joi.number().required(),
+  utilized_year: Joi.string().required(),
   });
 
   AMCSchema = Joi.object({
@@ -103,7 +109,11 @@ class validateParameters {
     client_id: Joi.number().required(),
     start_date: Joi.string().required(),
     end_date: Joi.string().required(),
-    area_in_sqft: Joi.number().required(),
+    total_area_in_sqft: Joi.number().required(),
+    requested_area_in_sqft: Joi.number().required(),
+    remaining_area_in_sqft: Joi.number().required(),
+    utilized_percentage: Joi.number().required(),
+    remaining_utilize_percentage: Joi.number().required(),
     category_id: Joi.number().required(),
     sub_category_id: Joi.number().required(),
     utilisation_per_year: Joi.number().required(),
@@ -114,7 +124,11 @@ class validateParameters {
     client_id: Joi.number().required(),
     start_date: Joi.string().required(),
     end_date: Joi.string().required(),
-    area_in_sqft: Joi.number().required(),
+    total_area_in_sqft: Joi.number().required(),
+    requested_area_in_sqft: Joi.number().required(),
+    remaining_area_in_sqft: Joi.number().required(),
+    utilized_percentage: Joi.number().required(),
+    remaining_utilize_percentage: Joi.number().required(),
     category_id: Joi.number().required(),
     sub_category_id: Joi.number().required(),
     utilisation_per_year: Joi.number().required(),
