@@ -59,8 +59,18 @@ class RequestService {
       let AMCId: any = +req.params.id;
       let params: any = req.body;
       let AMCInfo: any = await AMCRepository.getAMCById(AMCId);
-      AMCInfo = { ...AMCInfo, ...params };
-      await AMCRepository.save(AMCInfo);
+      if (AMCInfo.start_date !== params.start_date && AMCInfo.end_date !== params.end_date) {
+        AMCInfo = { ...AMCInfo, ...params };
+        AMCInfo.remaining_area_in_sqft = AMCInfo.total_area_in_sqft;
+        AMCInfo.utilized_percentage = 0;
+        AMCInfo.remaining_utilize_percentage = 5;
+        AMCInfo.carry_forwarded_percentage = 0;
+        AMCInfo.updated_by = req.meta.userId || 0;
+        await AMCRepository.save(AMCInfo);
+      } else {
+        AMCInfo = { ...AMCInfo, ...params };
+        await AMCRepository.save(AMCInfo);
+      }
       res.status(200).json({ status: 'success', message: 'AMC Updated Successfully' });
     } catch (error) {
       logger.error({ params: '', error: "updateAMC" }, "updateAMC method error: " + JSON.stringify(error));
