@@ -44,7 +44,7 @@ export class AMC extends BaseModel {
     @Column({ nullable: true })
     total_area_in_sqft: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: '0' })
     requested_area_in_sqft: string;
 
     @Column({ nullable: true })
