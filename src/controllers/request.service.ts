@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import logger from '../middlewares/logger';
 import RequestRepository from '../models/repositories/request.repo';
+import AMCRepository from '../models/repositories/AMC.repo';
 import userRepository from '../models/repositories/user.repo';
 import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import EmailService from './notification.service';
@@ -16,7 +17,18 @@ class RequestService {
       params.created_by = req.meta.userId;
       params.client_id = req.meta.userId;
       params.required_date = moment().format('YYYY-MM-DD');
-      await RequestRepository.save(params);
+      let result:any = await RequestRepository.save(params);
+      if (result && result.id) {
+        //update AMC Information
+        let AMCInfo: any = await AMCRepository.getAMCById(params.amc_id);
+        AMCInfo.id = +AMCInfo.id;
+        AMCInfo.requested_area_in_sqft = +params.requestAreaInsqft;
+        AMCInfo.remaining_area_in_sqft = (AMCInfo.total_area_in_sqft - (parseInt(params.requestAreaInsqft)));
+        AMCInfo.utilized_percentage = params.utilized_percentage;
+        AMCInfo.remaining_utilize_percentage = AMCInfo.utilisation_per_year - params.utilized_percentage;
+        AMCInfo.updated_by = req.meta.userId || 0;
+        await AMCRepository.save(AMCInfo);
+      }
        let userDetails: any = await userRepository.getById(+req.meta.userId)
       let admins: any = await userRepository.getAdminUsers()
       if (admins && admins.length > 0) {
@@ -136,6 +148,16 @@ class RequestService {
           requestId: +req.params.id
         }]
         await RequestRepository.workflowSave(myArray);
+      } else {
+        //update AMC Information
+        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+        AMCInfo.id = +AMCInfo.id;
+        AMCInfo.requested_area_in_sqft = AMCInfo.requested_area_in_sqft - reqInfo.requestAreaInsqft;
+        AMCInfo.remaining_area_in_sqft = AMCInfo.remaining_area_in_sqft + reqInfo.requestAreaInsqft;
+        AMCInfo.utilized_percentage = AMCInfo.utilized_percentage - reqInfo.utilized_percentage;
+        AMCInfo.remaining_utilize_percentage = AMCInfo.remaining_utilize_percentage + reqInfo.utilized_percentage;
+        AMCInfo.updated_by = req.meta.userId || 0;
+        await AMCRepository.save(AMCInfo);
       }
       const notificationPayload: any = [];
       notificationPayload.push({

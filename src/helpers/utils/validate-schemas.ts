@@ -86,21 +86,21 @@ class validateParameters {
       password: Joi.string().required(),
   });
 
-  requestSchema = Joi.object({     
-   amc_id: Joi.number().integer().positive().required(),
-  requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
-    'string.pattern.base': 'requestAreaInsqft must be a number in string format',
-  }),
-  utilized_percentage: Joi.number().required(),
-  utilized_year: Joi.string().required(),
+  requestSchema = Joi.object({
+    amc_id: Joi.number().integer().positive().required(),
+    requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
+      'string.pattern.base': 'requestAreaInsqft must be a number in string format',
+    }),
+    utilized_percentage: Joi.number().required(),
+    utilized_year: Joi.string().required(),
   });
 
   requestUpdateSchema = Joi.object({
-     requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
-    'string.pattern.base': 'requestAreaInsqft must be a number in string format',
-  }),
-  utilized_percentage: Joi.number().required(),
-  utilized_year: Joi.string().required(),
+    requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
+      'string.pattern.base': 'requestAreaInsqft must be a number in string format',
+    }),
+    utilized_percentage: Joi.number().required(),
+    utilized_year: Joi.string().required(),
   });
 
   AMCSchema = Joi.object({
