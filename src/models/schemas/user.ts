@@ -67,6 +67,9 @@ export class User extends BaseModel {
     @Column({ nullable: true })
     company: string;
 
+    @Column({ nullable: true })
+    contact_person: string;
+
     constructor(     
         first_name: string,
         last_name: string, 
@@ -84,7 +87,8 @@ export class User extends BaseModel {
         roleId: number,
         // contract_start_date: string,
         // contract_end_date: string,
-        company: string
+        company: string,
+        contact_person: string
 
     ) {
         super();     
@@ -104,7 +108,8 @@ export class User extends BaseModel {
         this.roleId = roleId,
         // this.contract_start_date = contract_start_date,
         // this.contract_end_date = contract_end_date,
-        this.company = company
+        this.company = company,
+        this.contact_person = contact_person
     }
 }
 
