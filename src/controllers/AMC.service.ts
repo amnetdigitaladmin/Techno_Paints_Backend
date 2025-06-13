@@ -4,6 +4,7 @@ import AMCRepository from '../models/repositories/AMC.repo';
 import userRepository from '../models/repositories/user.repo';
 import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import EmailService from './notification.service';
+import common from "../helpers/utils/common";
 
 
 class RequestService {
@@ -17,8 +18,8 @@ class RequestService {
       if (amcInfo && amcInfo.amc_name) {
         return res.status(400).json({ status: 'Failed', message: "AMC Name already exists" });
       }
-      params.remaining_area_in_sqft = params.total_area_in_sqft;
-      params.remaining_utilize_percentage = params.utilisation_per_year;
+      params.cumulative_free_area_in_sqft = params.total_area_in_sqft * 0.25;
+      // params.remaining_utilize_percentage = params.utilisation_per_year;
       params.utilized_percentage = 0;
       await AMCRepository.save(params);
        let ClientDetails: any = await userRepository.getById(+req.body.client_id)
@@ -64,9 +65,10 @@ class RequestService {
       let AMCInfo: any = await AMCRepository.getAMCById(AMCId);
       if (AMCInfo.start_date !== params.start_date && AMCInfo.end_date !== params.end_date) {
         AMCInfo = { ...AMCInfo, ...params };
-        AMCInfo.remaining_area_in_sqft = AMCInfo.total_area_in_sqft;
-        AMCInfo.utilized_percentage = 0;
-        AMCInfo.remaining_utilize_percentage = 5;
+        AMCInfo.cumulative_free_area_in_sqft = AMCInfo.total_area_in_sqft * 0.25;
+        // AMCInfo.payable_area_in_sqft = 0;
+        // AMCInfo.utilized_percentage = 0;
+        // AMCInfo.remaining_utilize_percentage = 5;
         AMCInfo.carry_forwarded_percentage = 0;
         AMCInfo.updated_by = req.meta.userId || 0;
         await AMCRepository.save(AMCInfo);
@@ -184,6 +186,41 @@ class RequestService {
       return res
         .status(500)
         .json({ status: "failed", message: "Internal Server Error" });
+    }
+  }
+
+  public async inactiveAMCsAfterSubscriptionEnded() {
+    try {
+      logger.info({ params: '', init: "inactiveAMCsAfterSubscriptionEnded" }, "inactiveAMCsAfterSubscriptionEnded method called");
+      let AMCInfo: any = await AMCRepository.getAllExpiredAMCs();
+      if (AMCInfo && AMCInfo.length > 0) {
+        await common.asyncForEach(AMCInfo, async (record: any) => {
+          record.status = 'InActive';
+          record.updated_by = 0;
+          await AMCRepository.save(record);
+        })
+        return 'success'
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "inactiveAMCsAfterSubscriptionEnded" }, "inactiveAMCsAfterSubscriptionEnded method error: " + JSON.stringify(error));
+    }
+  }
+
+  public async carryForwardSchedular() {
+    try {
+      logger.info({ params: '', init: "carryForwardSchedular" }, "carryForwardSchedular method called");
+      let AMCInfo: any = await AMCRepository.getAllAMCsSchedular();
+      if (AMCInfo && AMCInfo.length > 0) {
+        await common.asyncForEach(AMCInfo, async (record: any) => {
+          // record.carry_forwarded_percentage = record.remaining_utilize_percentage;
+          // record.remaining_utilize_percentage = record.remaining_utilize_percentage + (process.env.OFFERED_PERCENTAGE || 5);
+          record.updated_by = 0;
+          await AMCRepository.save(record);
+        })
+        return 'success'
+      }
+    } catch (error) {
+      logger.error({ params: '', error: "carryForwardSchedular" }, "carryForwardSchedular method error: " + JSON.stringify(error));
     }
   }
 

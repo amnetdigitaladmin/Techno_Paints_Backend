@@ -17,42 +17,41 @@ class RequestService {
       params.created_by = req.meta.userId;
       params.client_id = req.meta.userId;
       params.required_date = moment().format('YYYY-MM-DD');
-      let result:any = await RequestRepository.save(params);
-      if (result && result.id) {
-        //update AMC Information
-        let AMCInfo: any = await AMCRepository.getAMCById(params.amc_id);
-        AMCInfo.id = +AMCInfo.id;
-        AMCInfo.requested_area_in_sqft = +params.requestAreaInsqft;
-        AMCInfo.remaining_area_in_sqft = (AMCInfo.total_area_in_sqft - (parseInt(params.requestAreaInsqft)));
-        AMCInfo.utilized_percentage = params.utilized_percentage;
-        AMCInfo.remaining_utilize_percentage = AMCInfo.utilisation_per_year - params.utilized_percentage;
-        AMCInfo.updated_by = req.meta.userId || 0;
-        await AMCRepository.save(AMCInfo);
+      let AMCInfo: any = await AMCRepository.getAMCById(params.amc_id);
+      const percentage = (params.requestAreaInsqft / AMCInfo.cumulative_free_area_in_sqft) * 100;
+      let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(params.amc_id, AMCInfo.client_id);
+      if ((AMCTransactionInfo && AMCTransactionInfo.total_utilized + percentage) < 5) { //5% 
+        params.payable_area_in_sqft = 0;
+      } else {
+        let finalper: any = AMCTransactionInfo.total_utilized - 5;
+        let payable: any = (params.requestAreaInSqft * finalper) / 100;
+        params.payable_area_in_sqft = payable;
       }
-       let userDetails: any = await userRepository.getById(+req.meta.userId)
+      await RequestRepository.save(params);
+      let userDetails: any = await userRepository.getById(+req.meta.userId)
       let admins: any = await userRepository.getAdminUsers()
       if (admins && admins.length > 0) {
         const notificationPayload: any = [];
-        await admins.map((item:any)=>{
+        await admins.map((item: any) => {
           notificationPayload.push({
-          empId: +item.id,
-          type: NotificationRequestType.request_raised,
-          request_group: RequestGroup.CLIENT,
-          content: {
-            title: `Raised Request`,
-            data: `${userDetails && userDetails.full_name ? userDetails.full_name : 'NA'} created a service request for ${params.requestAreaInsqft}sqft on ${ params.required_date}.`
-          },         
+            empId: +item.id,
+            type: NotificationRequestType.request_raised,
+            request_group: RequestGroup.CLIENT,
+            content: {
+              title: `Raised Request`,
+              data: `${userDetails && userDetails.full_name ? userDetails.full_name : 'NA'} created a service request for ${params.requestAreaInsqft}sqft on ${params.required_date}.`
+            },
+          })
         })
-        })    
-          notificationPayload.push({
+        notificationPayload.push({
           empId: + req.meta.userId,
           type: NotificationRequestType.request_raised,
           request_group: RequestGroup.CLIENT,
           content: {
             title: `Raised Request`,
-            data: `created a service request for ${params.requestAreaInsqft} sqft on ${ params.required_date} .`
-          },         
-        }) 
+            data: `created a service request for ${params.requestAreaInsqft} sqft on ${params.required_date} .`
+          },
+        })
         await EmailService.sendMessage({ payload: notificationPayload })
       }
       res.status(200).json({ status: 'success', message: 'Request Created Successfully' });
@@ -148,16 +147,34 @@ class RequestService {
           requestId: +req.params.id
         }]
         await RequestRepository.workflowSave(myArray);
+        //update AMC Information
+        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
+        if (AMCTransactionInfo && AMCTransactionInfo.total_utilized < 5) { //5% 
+          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+          AMCInfo.id = +AMCInfo.id;
+          AMCInfo.cumulative_free_area_in_sqft = (AMCInfo.cumulative_free_area_in_sqft - (parseInt(params.requestAreaInsqft)));
+          AMCInfo.updated_by = req.meta.userId || 0;
+          await AMCRepository.save(AMCInfo);
+        }
+        //insert transaction data
+        let myObj:any = {};
+        myObj.amc_id = reqInfo.amc_id;
+        myObj.request_id = +req.params.id;
+        myObj.client_id = reqInfo.client_id;
+        myObj.requested_area_in_sqft = reqInfo.requestAreaInsqft;
+        myObj.utilized_percentage = reqInfo.utilized_percentage;
+        myObj.year = new Date().getFullYear();
+        await AMCRepository.transactionSave(myObj);
       } else {
         //update AMC Information
-        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-        AMCInfo.id = +AMCInfo.id;
-        AMCInfo.requested_area_in_sqft = AMCInfo.requested_area_in_sqft - reqInfo.requestAreaInsqft;
-        AMCInfo.remaining_area_in_sqft = AMCInfo.remaining_area_in_sqft + reqInfo.requestAreaInsqft;
-        AMCInfo.utilized_percentage = AMCInfo.utilized_percentage - reqInfo.utilized_percentage;
-        AMCInfo.remaining_utilize_percentage = AMCInfo.remaining_utilize_percentage + reqInfo.utilized_percentage;
-        AMCInfo.updated_by = req.meta.userId || 0;
-        await AMCRepository.save(AMCInfo);
+        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
+        if (AMCTransactionInfo && AMCTransactionInfo.total_utilized < 5) {
+          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+          AMCInfo.id = +AMCInfo.id;
+          AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft + reqInfo.requestAreaInsqft;
+          AMCInfo.updated_by = req.meta.userId || 0;
+          await AMCRepository.save(AMCInfo);
+        }
       }
       const notificationPayload: any = [];
       notificationPayload.push({

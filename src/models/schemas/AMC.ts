@@ -44,11 +44,14 @@ export class AMC extends BaseModel {
     @Column({ nullable: true })
     total_area_in_sqft: string;
 
-    @Column({ nullable: true, default: '0' })
-    requested_area_in_sqft: string;
+    // @Column({ nullable: true, default: '0' })
+    // requested_area_in_sqft: string;
 
     @Column({ nullable: true })
-    remaining_area_in_sqft: string;
+    cumulative_free_area_in_sqft: string;
+
+    // @Column({ nullable: true, default: '0' })
+    // payable_area_in_sqft: string;
 
 //    relationships
     @ManyToOne(() => Category)
@@ -62,11 +65,11 @@ export class AMC extends BaseModel {
     @Column({ nullable: true, default: 5 })
     utilisation_per_year: number;
 
-    @Column({ nullable: true, default: 0 })
-    utilized_percentage: number;
+    // @Column({ nullable: true, default: 0 })
+    // utilized_percentage: number;
 
-    @Column({ nullable: true, default: 5 })
-    remaining_utilize_percentage: number;
+    // @Column({ nullable: true, default: 5 })
+    // remaining_utilize_percentage: number;
 
     @Column({ nullable: true, default: 0 })
     carry_forwarded_percentage: number;
@@ -78,13 +81,14 @@ export class AMC extends BaseModel {
         start_date: string,
         end_date: string,
         total_area_in_sqft: string,
-        requested_area_in_sqft: string,
-        remaining_area_in_sqft: string,
+        // requested_area_in_sqft: string,
+        cumulative_free_area_in_sqft: string,
+        // payable_area_in_sqft: string,
         category_id: Category,
         sub_category_id: SubCategory,
         utilisation_per_year: number,
-        utilized_percentage: number,
-        remaining_utilize_percentage: number,
+        // utilized_percentage: number,
+        // remaining_utilize_percentage: number,
         carry_forwarded_percentage: number,
     ) {
         super();     
@@ -94,13 +98,14 @@ export class AMC extends BaseModel {
         this.start_date = start_date,
         this.end_date = end_date,
         this.total_area_in_sqft = total_area_in_sqft,
-        this.requested_area_in_sqft = requested_area_in_sqft,
-        this.remaining_area_in_sqft = remaining_area_in_sqft,
+        // this.requested_area_in_sqft = requested_area_in_sqft,
+        this.cumulative_free_area_in_sqft = cumulative_free_area_in_sqft,
+        // this.payable_area_in_sqft = payable_area_in_sqft,
         this.category_id = category_id,
         this.sub_category_id = sub_category_id,
         this.utilisation_per_year = utilisation_per_year,
-        this.utilized_percentage = utilized_percentage,
-        this.remaining_utilize_percentage = remaining_utilize_percentage,
+        // this.utilized_percentage = utilized_percentage,
+        // this.remaining_utilize_percentage = remaining_utilize_percentage,
         this.carry_forwarded_percentage = carry_forwarded_percentage
     }
 }
