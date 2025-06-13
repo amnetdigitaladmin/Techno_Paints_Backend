@@ -91,7 +91,7 @@ class validateParameters {
     requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
       'string.pattern.base': 'requestAreaInsqft must be a number in string format',
     }),
-    utilized_percentage: Joi.number().required(),
+    // utilized_percentage: Joi.number().required(),
     utilized_year: Joi.string().required(),
   });
 
@@ -99,7 +99,7 @@ class validateParameters {
     requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
       'string.pattern.base': 'requestAreaInsqft must be a number in string format',
     }),
-    utilized_percentage: Joi.number().required(),
+    // utilized_percentage: Joi.number().required(),
     utilized_year: Joi.string().required(),
   });
 

@@ -20,7 +20,7 @@ class RequestService {
       }
       params.cumulative_free_area_in_sqft = params.total_area_in_sqft * 0.25;
       // params.remaining_utilize_percentage = params.utilisation_per_year;
-      params.utilized_percentage = 0;
+      // params.utilized_percentage = 0;
       await AMCRepository.save(params);
        let ClientDetails: any = await userRepository.getById(+req.body.client_id)
             let admins: any = await userRepository.getAdminUsers()
