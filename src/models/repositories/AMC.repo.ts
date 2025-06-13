@@ -34,7 +34,7 @@ class amcRepository {
     public async getAMCByAmcIdAndClientId(amc_id: number, client_id: number) {
         try {
             const currentYear = new Date().getFullYear();
-            const result = await AMCRepository
+            const result = await AMCTransactionsRepository
                 .createQueryBuilder('req')
                 .select('SUM(req.utilized_percentage)', 'total_utilized')
                 .where('req.amc_id = :amc_id', { amc_id })

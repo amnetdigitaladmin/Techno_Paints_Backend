@@ -18,13 +18,13 @@ class RequestService {
       params.client_id = req.meta.userId;
       params.required_date = moment().format('YYYY-MM-DD');
       let AMCInfo: any = await AMCRepository.getAMCById(params.amc_id);
-      const percentage = (params.requestAreaInsqft / AMCInfo.cumulative_free_area_in_sqft) * 100;
+      const percentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
       let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(params.amc_id, AMCInfo.client_id);
-      if ((AMCTransactionInfo && AMCTransactionInfo.total_utilized + percentage) < 5) { //5% 
+      if ((AMCTransactionInfo + percentage) < 5) { //5% 
         params.payable_area_in_sqft = 0;
       } else {
-        let finalper: any = AMCTransactionInfo.total_utilized - 5;
-        let payable: any = (params.requestAreaInSqft * finalper) / 100;
+        let finalper: any = (AMCTransactionInfo + percentage) - 5;
+        let payable: any = (parseInt(params.requestAreaInsqft) * finalper) / 100;
         params.payable_area_in_sqft = payable;
       }
       await RequestRepository.save(params);
