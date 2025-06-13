@@ -8,6 +8,7 @@ import { APIGATEWAY } from './routes/api-gateway';
 import { Server } from 'socket.io';
 import http from 'http';
 import UserService from '../src/controllers/User.service' 
+import Schedulars from '../src/controllers/schedular.service';
 
 // import Schedulars from './controllers/schedular.service';
 // import passport from './middlewares/passport'
@@ -109,12 +110,12 @@ class Application {
     }
 
     initialiseSchedular() {
-        // Schedulars.runSchedulars()
+        Schedulars.runSchedulars()
     }
 }
 
 const app = new Application();
-// app.initialiseSchedular();
+app.initialiseSchedular();
 app.connectDB();
 app.start();
 app.settings();
