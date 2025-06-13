@@ -18,15 +18,38 @@ class RequestService {
       params.client_id = req.meta.userId;
       params.required_date = moment().format('YYYY-MM-DD');
       let AMCInfo: any = await AMCRepository.getAMCById(params.amc_id);
+      let offer_percentage:any = AMCInfo.carry_forwarded_percentage + 5;
       const percentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
       let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(params.amc_id, AMCInfo.client_id);
-      if ((AMCTransactionInfo + percentage) < 5) { //5% 
-        params.payable_area_in_sqft = 0;
-      } else {
-        let finalper: any = (AMCTransactionInfo + percentage) - 5;
+      let clientUtilizedPercentage:any = 0;
+      if (AMCTransactionInfo === 0) {
+        if (percentage > offer_percentage) {
+          clientUtilizedPercentage = offer_percentage;
+          let finalper: any = percentage - offer_percentage;
+          let payable: any = (parseInt(params.requestAreaInsqft) * finalper) / 100;
+          params.payable_area_in_sqft = payable;
+        } else {
+          clientUtilizedPercentage = offer_percentage;
+          params.payable_area_in_sqft = 0;
+        }
+      } else if (AMCTransactionInfo > 0 && AMCTransactionInfo < offer_percentage) {
+        let finalper: any = offer_percentage - AMCTransactionInfo;
+        clientUtilizedPercentage = finalper;
         let payable: any = (parseInt(params.requestAreaInsqft) * finalper) / 100;
-        params.payable_area_in_sqft = payable;
+        let mypercen: any = parseInt(params.requestAreaInsqft) - payable;
+        params.payable_area_in_sqft = mypercen;
+      } else {
+        clientUtilizedPercentage = 0;
+        params.payable_area_in_sqft = 0;
       }
+      // if ((AMCTransactionInfo + percentage) < 5) { //5% 
+      //   params.payable_area_in_sqft = 0;
+      // } else {
+      //   let finalper: any = (AMCTransactionInfo + percentage) - 5;
+      //   let payable: any = (parseInt(params.requestAreaInsqft) * finalper) / 100;
+      //   params.payable_area_in_sqft = payable;
+      // }
+      params.utilized_percentage = clientUtilizedPercentage;
       await RequestRepository.save(params);
       let userDetails: any = await userRepository.getById(+req.meta.userId)
       let admins: any = await userRepository.getAdminUsers()
