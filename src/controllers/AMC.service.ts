@@ -212,8 +212,13 @@ class RequestService {
       let AMCInfo: any = await AMCRepository.getAllAMCsSchedular();
       if (AMCInfo && AMCInfo.length > 0) {
         await common.asyncForEach(AMCInfo, async (record: any) => {
-          // record.carry_forwarded_percentage = record.remaining_utilize_percentage;
-          // record.remaining_utilize_percentage = record.remaining_utilize_percentage + (process.env.OFFERED_PERCENTAGE || 5);
+          let AMCTransactionInfo: any = await AMCRepository.getPreviousYearAMCByAmcId(record.id);
+          if (AMCTransactionInfo < 5) {
+            let mypercen: any = 5 - AMCTransactionInfo;
+            record.carry_forwarded_percentage = record.carry_forwarded_percentage + mypercen;
+          } else {
+            record.carry_forwarded_percentage = record.carry_forwarded_percentage + 0;
+          }
           record.updated_by = 0;
           await AMCRepository.save(record);
         })

@@ -47,7 +47,27 @@ class amcRepository {
             console.log(err);
             throw err;
         }
-    }    
+    }
+    
+    public async getPreviousYearAMCByAmcId(amc_id: number) {
+        try {
+            const previousYear = new Date().getFullYear() - 1;
+    
+            const result = await AMCTransactionsRepository
+                .createQueryBuilder('req')
+                .select('SUM(req.utilized_percentage)', 'total_utilized')
+                .where('req.amc_id = :amc_id', { amc_id })
+                .andWhere('req.year = :year', { year: previousYear })
+                .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                .getRawOne();
+    
+            return result.total_utilized || 0; // return 0 if null
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+       
 
     public async getAMCById(id: number) {
         try {
