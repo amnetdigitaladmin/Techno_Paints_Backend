@@ -17,6 +17,7 @@ class RequestService {
       if (amcInfo && amcInfo.amc_name) {
         return res.status(400).json({ status: 'Failed', message: "AMC Name already exists" });
       }
+      params.remaining_area_in_sqft = params.total_area_in_sqft;
       await AMCRepository.save(params);
        let ClientDetails: any = await userRepository.getById(+req.body.client_id)
             let admins: any = await userRepository.getAdminUsers()
