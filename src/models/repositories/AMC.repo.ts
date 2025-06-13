@@ -1,4 +1,5 @@
 import { AMC } from '../schemas/AMC';
+import { AMCTransactions } from '../schemas/AMC-transactions';
 import AppDataSource from "../../config/db";
 import common from "../../helpers/utils/common";
 import moment from 'moment';
@@ -8,6 +9,7 @@ import { Category } from '../schemas/categories';
 import { SubCategory } from '../schemas/subcategories';
 
 const AMCRepository = AppDataSource.getRepository(AMC);
+const AMCTransactionsRepository = AppDataSource.getRepository(AMCTransactions);
 
 class amcRepository {
 
@@ -19,6 +21,33 @@ class amcRepository {
             
         }
     }
+
+    public async transactionSave(obj: any) {
+        try{
+            return await AMCTransactionsRepository.save(obj)
+        }catch(err){
+            console.log(err);
+            
+        }
+    }
+
+    public async getAMCByAmcIdAndClientId(amc_id: number, client_id: number) {
+        try {
+            const currentYear = new Date().getFullYear();
+            const result = await AMCRepository
+                .createQueryBuilder('req')
+                .select('SUM(req.utilized_percentage)', 'total_utilized')
+                .where('req.amc_id = :amc_id', { amc_id })
+                .andWhere('req.client_id = :client_id', { client_id })
+                .andWhere('req.year = :year', { year: currentYear })
+                .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
+                .getRawOne();
+            return result.total_utilized || 0; // return 0 if null
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }    
 
     public async getAMCById(id: number) {
         try {
@@ -475,11 +504,11 @@ public async getAllAMCsForDownload(query: any) {
                 'c.category as category',  
                 'sc.subcategory as subcategory',  
                 'req.total_area_in_sqft as total_area_in_sqft',
-                'req.requested_area_in_sqft as requested_area_in_sqft',
-                'req.remaining_area_in_sqft as remaining_area_in_sqft', 
-                'req.utilized_percentage as utilized_percentage', 
+                // 'req.requested_area_in_sqft as requested_area_in_sqft',
+                'req.cumulative_free_area_in_sqft as cumulative_free_area_in_sqft', 
+                // 'req.utilized_percentage as utilized_percentage', 
                 'req.carry_forwarded_percentage as carry_forwarded_percentage', 
-                'req.remaining_utilize_percentage as remaining_utilize_percentage',              
+                // 'req.remaining_utilize_percentage as remaining_utilize_percentage',              
                 'req.utilisation_per_year as utilisation_per_year',  
                 'req.start_date as start_date',
                 'req.end_date as end_date', 
@@ -532,10 +561,10 @@ public async getAllAMCsBPForDownload(query: any) {
                 'c.category as category',  
                 'sc.subcategory as subcategory',  
                 'req.total_area_in_sqft as total_area_in_sqft', 
-                'req.requested_area_in_sqft as requested_area_in_sqft',
-                'req.remaining_area_in_sqft as remaining_area_in_sqft', 
-                'req.utilized_percentage as utilized_percentage', 
-                'req.remaining_utilize_percentage as remaining_utilize_percentage',
+                // 'req.requested_area_in_sqft as requested_area_in_sqft',
+                'req.cumulative_free_area_in_sqft as cumulative_free_area_in_sqft', 
+                // 'req.utilized_percentage as utilized_percentage', 
+                // 'req.remaining_utilize_percentage as remaining_utilize_percentage',
                 'req.carry_forwarded_percentage as carry_forwarded_percentage',             
                 'req.utilisation_per_year as utilisation_per_year',  
                 'req.start_date as start_date',
@@ -732,7 +761,34 @@ public async getAMCChartData(filter: any) {
             console.log(error);
         }
     }
-  
+    public async getAllExpiredAMCs() {
+        try {
+            const currentDate = new Date();
+            return await AMCRepository
+                .createQueryBuilder('req')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.status = :status', { status: 'Active' })
+                .andWhere('req.end_date < :currentDate', { currentDate }) // expired if end_date is before today
+                .getMany();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    public async getAllAMCsSchedular() {
+        try {
+            const currentDate = new Date();
+            return await AMCRepository
+                .createQueryBuilder('req')
+                .where('req.is_deleted = :is_deleted', { is_deleted: false })
+                .andWhere('req.status = :status', { status: 'Active' })
+                .getMany();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    
 
 
 }

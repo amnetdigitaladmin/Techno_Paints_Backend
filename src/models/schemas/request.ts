@@ -27,6 +27,9 @@ export class Request extends BaseModel {
 
     @Column({ nullable: true })
     requestAreaInsqft: string;
+    
+    @Column({ nullable: true })
+    payable_area_in_sqft: string;
 
     @Column({ nullable: true })
     utilized_percentage: number;
@@ -74,6 +77,7 @@ export class Request extends BaseModel {
         client_id: number, 
         amc_id:number,
         requestAreaInsqft:string,
+        payable_area_in_sqft:string,
         approved_by:number,
         approved_at:string,
         required_date: string,
@@ -88,6 +92,7 @@ export class Request extends BaseModel {
         this.client_id = client_id,
         this.amc_id = amc_id,
         this.requestAreaInsqft = requestAreaInsqft,
+        this.payable_area_in_sqft = payable_area_in_sqft,
         this.approved_by = approved_by,
         this.approved_at = approved_at,
         this.required_date = required_date,

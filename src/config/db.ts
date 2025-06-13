@@ -11,6 +11,7 @@ import { Notifications } from '../models/schemas/notifications';
 import { Category } from '../models/schemas/categories';
 import { SubCategory } from '../models/schemas/subcategories';
 import { Workflow } from '../models/schemas/workflow';
+import { AMCTransactions } from '../models/schemas/AMC-transactions';
 dotenv.config();
 
 
@@ -27,7 +28,7 @@ while (retries) {
             database: process.env.TYPEORM_DATABASE,
             synchronize: true,
             logging: false,
-            entities: [User, userSessions, ImportEntity, Role, Request, Notifications, AMC, Category, SubCategory, Workflow]
+            entities: [User, userSessions, ImportEntity, Role, Request, Notifications, AMC, Category, SubCategory, Workflow, AMCTransactions]
         });
         AppDataSource.initialize()
             .then(() => {
