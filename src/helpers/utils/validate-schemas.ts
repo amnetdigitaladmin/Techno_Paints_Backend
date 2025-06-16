@@ -93,7 +93,7 @@ class validateParameters {
     }),
     // utilized_percentage: Joi.number().required(),
     utilized_year: Joi.string().required(),
-    document: Joi.string().required(),
+    document: Joi.string().allow('', null).required(),
   });
 
   requestUpdateSchema = Joi.object({
@@ -103,7 +103,7 @@ class validateParameters {
     }),
     // utilized_percentage: Joi.number().required(),
     utilized_year: Joi.string().required(),
-    document: Joi.string().required(),
+    document: Joi.string().allow('', null).required(),
   });
 
   AMCSchema = Joi.object({
