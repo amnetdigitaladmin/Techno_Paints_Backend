@@ -11,7 +11,7 @@ class schedularService {
         }, {
             timezone: 'Asia/Kolkata'
         }),
-        cron.schedule('0 12 * * *', async () => {  // Every start of the year first day
+        cron.schedule('0 0 1 1 *', async () => {  // Every start of the year first day
             console.log('Carry Forward Schedular Started', moment().format("DD-MM-YYYY HH:mm:ss"));
             await AMCService.carryForwardSchedular()
             console.log('Carry ForwardSchedular Schedular Completed', moment().format("DD-MM-YYYY HH:mm:ss"));
