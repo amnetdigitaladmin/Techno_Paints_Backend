@@ -7,7 +7,7 @@ import notificationService from '../controllers/notification.service';
 import requestService from '../controllers/request.service';
 import AMCService from '../controllers/AMC.service';
 import categoryService from '../controllers/services.service';
-// import S3Service from '../controllers/s3.service';
+import s3Service from '../controllers/s3.service';
 // import notificationService from '../controllers/notification.service';
 import vefiryToken from  '../middlewares/auth';
 import schema  from '../helpers/utils/validate-schemas';
@@ -252,6 +252,10 @@ export class APIGATEWAY {
 
         this.router.put("/category/:id", vefiryToken, ValidateJoi(schema.categorySchema), (req: Request, res: Response) => {
             categoryService.updateCategoryByCategoryId(req, res);
+        });
+
+        this.router.post("/upload",vefiryToken,(req: Request, res: Response) => {
+            s3Service.upload(req, res);
         });
 
     }
