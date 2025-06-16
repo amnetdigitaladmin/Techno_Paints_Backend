@@ -537,12 +537,13 @@ public async getAllAMCsForDownload(query: any) {
             ])
             
 
-        if (fromDate && toDate) {
-            qb.andWhere('req.start_date >= :fromDate AND req.end_date <= :toDate', {
-                fromDate,
-                toDate
-            });
-        }
+            if (fromDate && toDate) {
+                qb.andWhere('req.start_date <= :toDate AND req.end_date >= :fromDate', {
+                    fromDate,
+                    toDate
+                });
+            }
+            
         if (params.client_id) {
             qb.andWhere('req.client_id = :client_id', { client_id: params.client_id });
         }
@@ -593,12 +594,12 @@ public async getAllAMCsBPForDownload(query: any) {
                 'req.created_at as created_on',            
             ])  
 
-        if (fromDate && toDate) {
-            qb.andWhere('req.start_date >= :fromDate AND req.end_date <= :toDate', {
-                fromDate,
-                toDate
-            });
-        }
+            if (fromDate && toDate) {
+                qb.andWhere('req.start_date <= :toDate AND req.end_date >= :fromDate', {
+                    fromDate,
+                    toDate
+                });
+            }
         return await qb
             .orderBy(`req.${order_by}`, sort_order)
             .skip(offSet - 1)
