@@ -170,15 +170,14 @@ class RequestService {
         }]
         await RequestRepository.workflowSave(myArray);
         //update AMC Information
-        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
-        if (AMCTransactionInfo) { //5% 
-          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-          AMCInfo.id = +AMCInfo.id;
-          let offeredArea:any = (parseInt(reqInfo.utilized_percentage) * (parseInt(params.requestAreaInsqft)) / 100);
-          AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft - offeredArea;
-          AMCInfo.updated_by = req.meta.userId || 0;
-          await AMCRepository.save(AMCInfo);
-        }
+        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+        AMCInfo.id = +AMCInfo.id;
+        let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
+        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - offeredArea;
+        AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
+        AMCInfo.updated_by = req.meta.userId || 0;
+        await AMCRepository.save(AMCInfo);
+
         //insert transaction data
         let myObj:any = {};
         myObj.amc_id = reqInfo.amc_id;
@@ -191,15 +190,13 @@ class RequestService {
         await AMCRepository.transactionSave(myObj);
       } else {
         //update AMC Information
-        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
-        if (AMCTransactionInfo) {
-          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-          AMCInfo.id = +AMCInfo.id;
-          let offeredArea:any = (parseInt(reqInfo.utilized_percentage) * (parseInt(params.requestAreaInsqft)) / 100);
-          AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft + offeredArea;
-          AMCInfo.updated_by = req.meta.userId || 0;
-          await AMCRepository.save(AMCInfo);
-        }
+        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+        AMCInfo.id = +AMCInfo.id;
+        let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
+        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - offeredArea;
+        AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
+        AMCInfo.updated_by = req.meta.userId || 0;
+        await AMCRepository.save(AMCInfo);
       }
       const notificationPayload: any = [];
       notificationPayload.push({
