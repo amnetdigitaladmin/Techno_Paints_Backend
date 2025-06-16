@@ -34,6 +34,9 @@ export class Request extends BaseModel {
     @Column({ nullable: true, default: 0 })
     utilized_percentage: number;
 
+    @Column({ nullable: true, default: 0 })
+    utilized_area: string;
+
     @Column({ nullable: true })
     utilized_year: string;
 
@@ -90,6 +93,7 @@ export class Request extends BaseModel {
         completed_on:string,
         utilized_percentage:number,
         utilized_year:string,
+        utilized_area:string,
         document:string
     ) {
         super(); 
@@ -105,6 +109,7 @@ export class Request extends BaseModel {
         this.client_rating = client_rating,
         this.completed_on = completed_on,
         this.utilized_percentage = utilized_percentage,
+        this.utilized_area = utilized_area,
         this.utilized_year = utilized_year,
         this.document = document
     }
