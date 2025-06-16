@@ -96,6 +96,7 @@ class validateParameters {
   });
 
   requestUpdateSchema = Joi.object({
+    amc_id: Joi.number().integer().positive().required(),
     requestAreaInsqft: Joi.string().pattern(/^\d+$/).required().messages({
       'string.pattern.base': 'requestAreaInsqft must be a number in string format',
     }),
