@@ -24,7 +24,7 @@ class RequestService {
       let clientUtilizedPercentage:any = 0;
       let decValue:any = `${offer_percentage}`;
       if (AMCTransactionInfo === 0) {
-        const PercentageOfferArea = (parseFloat(decValue) * parseInt(params.requestAreaInsqft)) / 100;
+        const PercentageOfferArea = (parseFloat(decValue) * parseInt(AMCInfo.total_area_in_sqft)) / 100;
         const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
         if (PercentageOfferArea > parseInt(params.requestAreaInsqft)) {
           clientUtilizedPercentage = offer_percentage - requestedPercentage;
@@ -35,7 +35,7 @@ class RequestService {
         }
       } else if (AMCTransactionInfo > 0 && AMCTransactionInfo < offer_percentage) {
         let finalper: any = offer_percentage - AMCTransactionInfo;
-        const PercentageOfferArea = (parseInt(AMCInfo.total_area_in_sqft) * parseFloat(finalper)) / 100;
+        const PercentageOfferArea = (parseFloat(finalper) * parseInt(AMCInfo.total_area_in_sqft)) / 100;
         const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
         if (finalper > requestedPercentage) {
           params.payable_area_in_sqft = 0;
