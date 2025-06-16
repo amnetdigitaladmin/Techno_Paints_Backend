@@ -21,9 +21,9 @@ class RequestService {
       let offer_percentage:any = AMCInfo.carry_forwarded_percentage + 5;
       let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(params.amc_id, AMCInfo.client_id);
       let clientUtilizedPercentage:any = 0;
-      let decValue:any = `0.0${offer_percentage}`;
+      let decValue:any = `${offer_percentage}`;
       if (AMCTransactionInfo === 0) {
-        const PercentageOfferArea = (parseInt(AMCInfo.total_area_in_sqft) * parseFloat(decValue)) / 100;
+        const PercentageOfferArea = (parseFloat(decValue) * parseInt(AMCInfo.requestAreaInsqft)) / 100;
         const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
         if (PercentageOfferArea > parseInt(params.requestAreaInsqft)) {
           clientUtilizedPercentage = offer_percentage - requestedPercentage;
