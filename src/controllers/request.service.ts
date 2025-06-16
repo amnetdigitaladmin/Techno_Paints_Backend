@@ -24,7 +24,7 @@ class RequestService {
       let clientUtilizedPercentage:any = 0;
       let decValue:any = `${offer_percentage}`;
       if (AMCTransactionInfo === 0) {
-        const PercentageOfferArea = (parseFloat(decValue) * parseInt(AMCInfo.requestAreaInsqft)) / 100;
+        const PercentageOfferArea = (parseFloat(decValue) * parseInt(params.requestAreaInsqft)) / 100;
         const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
         if (PercentageOfferArea > parseInt(params.requestAreaInsqft)) {
           clientUtilizedPercentage = offer_percentage - requestedPercentage;
