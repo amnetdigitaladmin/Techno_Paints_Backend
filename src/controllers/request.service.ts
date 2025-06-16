@@ -169,15 +169,16 @@ class RequestService {
           requestId: +req.params.id
         }]
         await RequestRepository.workflowSave(myArray);
-        // //update AMC Information
-        // let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
-        // if (AMCTransactionInfo < 5) { //5% 
-        //   let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-        //   AMCInfo.id = +AMCInfo.id;
-        //   AMCInfo.cumulative_free_area_in_sqft = (AMCInfo.cumulative_free_area_in_sqft - (parseInt(params.requestAreaInsqft)));
-        //   AMCInfo.updated_by = req.meta.userId || 0;
-        //   await AMCRepository.save(AMCInfo);
-        // }
+        //update AMC Information
+        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
+        if (AMCTransactionInfo) { //5% 
+          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+          AMCInfo.id = +AMCInfo.id;
+          let offeredArea:any = (parseInt(reqInfo.utilized_percentage) * (parseInt(params.requestAreaInsqft)) / 100);
+          AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft - offeredArea;
+          AMCInfo.updated_by = req.meta.userId || 0;
+          await AMCRepository.save(AMCInfo);
+        }
         //insert transaction data
         let myObj:any = {};
         myObj.amc_id = reqInfo.amc_id;
@@ -188,18 +189,18 @@ class RequestService {
         myObj.created_by = req.meta.userId;
         myObj.year = new Date().getFullYear();
         await AMCRepository.transactionSave(myObj);
-      } 
-      // else {
-      //   //update AMC Information
-      //   let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
-      //   if (AMCTransactionInfo && AMCTransactionInfo.total_utilized < 5) {
-      //     let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-      //     AMCInfo.id = +AMCInfo.id;
-      //     AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft + reqInfo.requestAreaInsqft;
-      //     AMCInfo.updated_by = req.meta.userId || 0;
-      //     await AMCRepository.save(AMCInfo);
-      //   }
-      // }
+      } else {
+        //update AMC Information
+        let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
+        if (AMCTransactionInfo) {
+          let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
+          AMCInfo.id = +AMCInfo.id;
+          let offeredArea:any = (parseInt(reqInfo.utilized_percentage) * (parseInt(params.requestAreaInsqft)) / 100);
+          AMCInfo.cumulative_free_area_in_sqft = AMCInfo.cumulative_free_area_in_sqft + offeredArea;
+          AMCInfo.updated_by = req.meta.userId || 0;
+          await AMCRepository.save(AMCInfo);
+        }
+      }
       const notificationPayload: any = [];
       notificationPayload.push({
         empId: reqInfo.client_id,
