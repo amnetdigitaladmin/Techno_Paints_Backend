@@ -22,15 +22,18 @@ class RequestService {
       let offer_percentage:any = AMCInfo.carry_forwarded_percentage + 5;
       let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(params.amc_id, AMCInfo.client_id);
       let clientUtilizedPercentage:any = 0;
+      let clientUtilizedArea:any = 0;
       let decValue:any = `${offer_percentage}`;
       if (AMCTransactionInfo === 0) {
         const PercentageOfferArea = (parseFloat(decValue) * parseInt(AMCInfo.total_area_in_sqft)) / 100;
         const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
         if (PercentageOfferArea > parseInt(params.requestAreaInsqft)) {
           clientUtilizedPercentage = offer_percentage - requestedPercentage;
+          clientUtilizedArea = PercentageOfferArea - parseInt(params.requestAreaInsqft);
           params.payable_area_in_sqft = 0;
         } else {
           clientUtilizedPercentage = offer_percentage;
+          clientUtilizedArea = PercentageOfferArea;
           params.payable_area_in_sqft = parseInt(params.requestAreaInsqft) - PercentageOfferArea;
         }
       } else if (AMCTransactionInfo > 0 && AMCTransactionInfo < offer_percentage) {
@@ -40,15 +43,19 @@ class RequestService {
         if (finalper > requestedPercentage) {
           params.payable_area_in_sqft = 0;
           clientUtilizedPercentage = finalper - requestedPercentage;
+          clientUtilizedArea = PercentageOfferArea - parseInt(params.requestAreaInsqft);
         } else {
           params.payable_area_in_sqft = parseInt(params.requestAreaInsqft) -  PercentageOfferArea;
           clientUtilizedPercentage = offer_percentage;
+          clientUtilizedArea = PercentageOfferArea;
         }
       } else {
         clientUtilizedPercentage = 0;
+        clientUtilizedArea = 0;
         params.payable_area_in_sqft = parseInt(params.requestAreaInsqft);
       }
       params.utilized_percentage = clientUtilizedPercentage;
+      params.utilized_area = clientUtilizedArea.toString();
       await RequestRepository.save(params);
       let userDetails: any = await userRepository.getById(+req.meta.userId)
       let admins: any = await userRepository.getAdminUsers()
@@ -172,8 +179,8 @@ class RequestService {
         //update AMC Information
         let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
         AMCInfo.id = +AMCInfo.id;
-        let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
-        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - offeredArea;
+        // let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
+        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - parseInt(reqInfo.utilized_area);
         AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
         AMCInfo.updated_by = req.meta.userId || 0;
         await AMCRepository.save(AMCInfo);
@@ -192,8 +199,8 @@ class RequestService {
         //update AMC Information
         let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
         AMCInfo.id = +AMCInfo.id;
-        let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
-        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - offeredArea;
+        // let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
+        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) + parseInt(reqInfo.utilized_area);
         AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
         AMCInfo.updated_by = req.meta.userId || 0;
         await AMCRepository.save(AMCInfo);
