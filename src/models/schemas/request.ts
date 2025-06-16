@@ -72,6 +72,9 @@ export class Request extends BaseModel {
      @Column({ nullable: true })
     completed_on: string;
 
+    @Column({ nullable: true })
+    document: string;
+
 
     constructor(  
         client_id: number, 
@@ -86,7 +89,8 @@ export class Request extends BaseModel {
         client_rating:float,
         completed_on:string,
         utilized_percentage:number,
-        utilized_year:string
+        utilized_year:string,
+        document:string
     ) {
         super(); 
         this.client_id = client_id,
@@ -101,7 +105,8 @@ export class Request extends BaseModel {
         this.client_rating = client_rating,
         this.completed_on = completed_on,
         this.utilized_percentage = utilized_percentage,
-        this.utilized_year = utilized_year
+        this.utilized_year = utilized_year,
+        this.document = document
     }
 }
 
