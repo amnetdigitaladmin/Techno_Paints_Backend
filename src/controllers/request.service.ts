@@ -389,7 +389,7 @@ class RequestService {
       logger.info({ params: '', init: "getRequestById" }, "getRequestById method called");
       let reqId: any = +req.params.id;
       let reqInfo: any = await RequestRepository.getReqById(reqId);
-      if(reqInfo && reqInfo.document){
+      if(reqInfo && reqInfo.document && reqInfo.document !== ''){
         let signedURL = await s3service.getSignedUrlMethod('getObject', process.env.AWS_IMAGE_UPLOADS!, reqInfo.document.split("/").pop(), 604800);
         reqInfo.document_signedurl = signedURL;
       }
