@@ -5,6 +5,7 @@ import AMCRepository from '../models/repositories/AMC.repo';
 import userRepository from '../models/repositories/user.repo';
 import { NotificationRequestType, RequestGroup } from '../helpers/utils/enum' 
 import EmailService from './notification.service';
+import s3service from "./s3.service";
 import moment from "moment";
 
 
@@ -388,6 +389,10 @@ class RequestService {
       logger.info({ params: '', init: "getRequestById" }, "getRequestById method called");
       let reqId: any = +req.params.id;
       let reqInfo: any = await RequestRepository.getReqById(reqId);
+      if(reqInfo && reqInfo.document){
+        let signedURL = await s3service.getSignedUrlMethod('getObject', process.env.AWS_IMAGE_UPLOADS!, reqInfo.document.split("/").pop(), 604800);
+        reqInfo.document_signedurl = signedURL;
+      }
       res.status(200).json({ status: 'success', data: reqInfo.id ? reqInfo : {} });
     } catch (error) {
       logger.error({ params: '', error: "getRequestById" }, "getRequestById method error: " + JSON.stringify(error));
