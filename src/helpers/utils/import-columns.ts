@@ -25,6 +25,7 @@ class ImportColumns {
 
   client = [       
     {display_name: "Company",column_name: "company", is_optional: false},
+    {display_name: "Contact Person",column_name: "contact_person", is_optional: false},
     {display_name: "Email Id",column_name: "email", is_optional: false},
     {display_name: "Mobile Number",column_name: "mobile", is_optional: false},
     {display_name: "Address",column_name: "address", is_optional: true},   
