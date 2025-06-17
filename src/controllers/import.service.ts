@@ -183,8 +183,8 @@ export class ImportService {
           let roles = await rolesRepo.getRolesForImport()
           let adminRole = (roles.find((item:any)=>{return item.name == contextType.ADMIN})).hasOwnProperty('id') ?  
           (roles.find((item:any)=>{return item.name == contextType.ADMIN})).id : 1   
-          let bpRole = (roles.find((item:any)=>{return item.name == contextType.BUSINESS_PARTNER})).hasOwnProperty('id') ?  
-          (roles.find((item:any)=>{return item.name == contextType.BUSINESS_PARTNER})).id : 1   
+          // let bpRole = (roles.find((item:any)=>{return item.name == contextType.BUSINESS_PARTNER})).hasOwnProperty('id') ?  
+          // (roles.find((item:any)=>{return item.name == contextType.BUSINESS_PARTNER})).id : 1   
           let clientRole = (roles.find((item:any)=>{return item.name == contextType.CLIENT})).hasOwnProperty('id') ?  
           (roles.find((item:any)=>{return item.name == contextType.CLIENT})).id : 1    
           await common.asyncForEach(output, async (record: any) => {
@@ -201,12 +201,12 @@ export class ImportService {
                   payloadObj.type = ImportType.admin
                   response = await UserRepository.ImportUser(payloadObj);
                 }else if(req.body.import_type  == ImportType.business_partner){
-                   payloadObj.roleId = bpRole
+                  //  payloadObj.roleId = bpRole
                    payloadObj.type = ImportType.business_partner
                   response = await UserRepository.ImportUser(payloadObj);
                 }else{
                   payloadObj.roleId = clientRole
-                  payloadObj.Bp_role_id = bpRole
+                  // payloadObj.Bp_role_id = bpRole
                   payloadObj.type = ImportType.client
                   response = await UserRepository.ImportUser(payloadObj);
                 }
