@@ -61,7 +61,7 @@ class amcRepository {
                 .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                 .getRawOne();
     
-            return result.total_utilized || 0; // return 0 if null
+            return Number(result.total_utilized) || 0; // return 0 if null
         } catch (err) {
             console.log(err);
             throw err;
