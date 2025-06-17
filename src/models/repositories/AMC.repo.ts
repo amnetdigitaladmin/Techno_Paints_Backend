@@ -42,7 +42,7 @@ class amcRepository {
                 .andWhere('req.year = :year', { year: currentYear })
                 .andWhere('req.is_deleted = :is_deleted', { is_deleted: false })
                 .getRawOne();
-            return result.total_utilized || 0; // return 0 if null
+            return Number(result.total_utilized) || 0;
         } catch (err) {
             console.log(err);
             throw err;

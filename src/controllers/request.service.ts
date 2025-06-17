@@ -185,17 +185,6 @@ class RequestService {
         AMCInfo.updated_by = req.meta.userId || 0;
         await AMCRepository.save(AMCInfo);
 
-        //insert transaction data
-        let myObj:any = {};
-        myObj.amc_id = reqInfo.amc_id;
-        myObj.request_id = +req.params.id;
-        myObj.client_id = reqInfo.client_id;
-        myObj.requested_area_in_sqft = reqInfo.requestAreaInsqft;
-        myObj.utilized_percentage = reqInfo.utilized_percentage;
-        myObj.created_by = req.meta.userId;
-        myObj.year = new Date().getFullYear();
-        await AMCRepository.transactionSave(myObj);
-
         let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
         let offer_percentage: any = AMCInfo.carry_forwarded_percentage + 5;
         let clientUtilizedPercentage: any = 0;
@@ -203,33 +192,33 @@ class RequestService {
         let payableArea: any = 0;
         if (AMCTransactionInfo === 0) {
           const PercentageOfferArea = (parseInt(offer_percentage) * parseInt(AMCInfo.total_area_in_sqft)) / 100;
-          const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
-          if (PercentageOfferArea > parseInt(params.requestAreaInsqft)) {
+          const requestedPercentage = (parseInt(reqInfo.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
+          if (PercentageOfferArea > parseInt(reqInfo.requestAreaInsqft)) {
             clientUtilizedPercentage = offer_percentage - requestedPercentage;
-            clientUtilizedArea = PercentageOfferArea - parseInt(params.requestAreaInsqft);
+            clientUtilizedArea = PercentageOfferArea - parseInt(reqInfo.requestAreaInsqft);
             payableArea = 0;
           } else {
             clientUtilizedPercentage = offer_percentage;
             clientUtilizedArea = PercentageOfferArea;
-            payableArea = parseInt(params.requestAreaInsqft) - PercentageOfferArea;
+            payableArea = parseInt(reqInfo.requestAreaInsqft) - PercentageOfferArea;
           }
         } else if (AMCTransactionInfo > 0 && AMCTransactionInfo < offer_percentage) {
           let finalper: any = offer_percentage - AMCTransactionInfo;
           const PercentageOfferArea = (parseInt(finalper) * parseInt(AMCInfo.total_area_in_sqft)) / 100;
-          const requestedPercentage = (parseInt(params.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
+          const requestedPercentage = (parseInt(reqInfo.requestAreaInsqft) / parseInt(AMCInfo.total_area_in_sqft)) * 100;
           if (finalper > requestedPercentage) {
             payableArea = 0;
             clientUtilizedPercentage = finalper - requestedPercentage;
-            clientUtilizedArea = PercentageOfferArea - parseInt(params.requestAreaInsqft);
+            clientUtilizedArea = PercentageOfferArea - parseInt(reqInfo.requestAreaInsqft);
           } else {
-            payableArea = parseInt(params.requestAreaInsqft) - PercentageOfferArea;
+            payableArea = parseInt(reqInfo.requestAreaInsqft) - PercentageOfferArea;
             clientUtilizedPercentage = offer_percentage;
             clientUtilizedArea = PercentageOfferArea;
           }
         } else {
           clientUtilizedPercentage = 0;
           clientUtilizedArea = 0;
-          payableArea = parseInt(params.requestAreaInsqft);
+          payableArea = parseInt(reqInfo.requestAreaInsqft);
         }
         let reqInfoData: any = await RequestRepository.getReqById(requestId);
         if (reqInfoData && reqInfoData.id) {
@@ -241,6 +230,16 @@ class RequestService {
           await RequestRepository.save(reqInfoData);
         }
 
+        //insert transaction data
+        let myObj: any = {};
+        myObj.amc_id = reqInfo.amc_id;
+        myObj.request_id = +req.params.id;
+        myObj.client_id = reqInfo.client_id;
+        myObj.requested_area_in_sqft = reqInfo.requestAreaInsqft;
+        myObj.utilized_percentage = reqInfo.utilized_percentage;
+        myObj.created_by = req.meta.userId;
+        myObj.year = new Date().getFullYear();
+        await AMCRepository.transactionSave(myObj);
       } else {
         //update AMC Information
         let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
