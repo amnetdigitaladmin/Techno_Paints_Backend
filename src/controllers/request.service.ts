@@ -176,15 +176,8 @@ class RequestService {
           requestId: +req.params.id
         }]
         await RequestRepository.workflowSave(myArray);
-        //update AMC Information
-        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
-        AMCInfo.id = +AMCInfo.id;
-        // let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
-        let cumulativeArea:any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - parseInt(reqInfo.utilized_area);
-        AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
-        AMCInfo.updated_by = req.meta.userId || 0;
-        await AMCRepository.save(AMCInfo);
 
+        let AMCInfo: any = await AMCRepository.getAMCById(reqInfo.amc_id);
         let AMCTransactionInfo: any = await AMCRepository.getAMCByAmcIdAndClientId(reqInfo.amc_id, reqInfo.client_id);
         let offer_percentage: any = AMCInfo.carry_forwarded_percentage + 5;
         let clientUtilizedPercentage: any = 0;
@@ -228,6 +221,16 @@ class RequestService {
           reqInfoData.utilized_area = clientUtilizedArea.toString();
           reqInfoData.payable_area_in_sqft = payableArea.toString();
           await RequestRepository.save(reqInfoData);
+        }
+
+        //update AMC Information
+        if (clientUtilizedPercentage > 0 && clientUtilizedArea > 0) {
+          AMCInfo.id = +AMCInfo.id;
+          // let offeredArea: any = (parseInt(reqInfo.utilized_percentage) * (parseInt(reqInfo.requestAreaInsqft)) / 100);
+          let cumulativeArea: any = parseInt(AMCInfo.cumulative_free_area_in_sqft) - parseInt(clientUtilizedArea);
+          AMCInfo.cumulative_free_area_in_sqft = cumulativeArea.toString();
+          AMCInfo.updated_by = req.meta.userId || 0;
+          await AMCRepository.save(AMCInfo);
         }
 
         //insert transaction data
