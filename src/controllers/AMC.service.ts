@@ -18,7 +18,7 @@ class RequestService {
       if (amcInfo && amcInfo.amc_name) {
         return res.status(400).json({ status: 'Failed', message: "AMC Name already exists" });
       }
-      params.cumulative_free_area_in_sqft = params.total_area_in_sqft * 0.25;
+      params.cumulative_free_area_in_sqft = (25 / 100) * parseInt(params.total_area_in_sqft);
       // params.remaining_utilize_percentage = params.utilisation_per_year;
       // params.utilized_percentage = 0;
       await AMCRepository.save(params);
@@ -65,7 +65,7 @@ class RequestService {
       let AMCInfo: any = await AMCRepository.getAMCById(AMCId);
       if (AMCInfo.start_date !== params.start_date && AMCInfo.end_date !== params.end_date) {
         AMCInfo = { ...AMCInfo, ...params };
-        AMCInfo.cumulative_free_area_in_sqft = AMCInfo.total_area_in_sqft * 0.25;
+        AMCInfo.cumulative_free_area_in_sqft = (25 / 100) * parseInt(AMCInfo.total_area_in_sqft);
         // AMCInfo.payable_area_in_sqft = 0;
         // AMCInfo.utilized_percentage = 0;
         // AMCInfo.remaining_utilize_percentage = 5;
