@@ -38,7 +38,7 @@ class RequestService {
               })
               })    
                 notificationPayload.push({
-                empId: + req.meta.userId,
+                empId: +req.body.client_id,
                 type: NotificationRequestType.request_raised,
                 request_group: RequestGroup.CLIENT,
                 content: {
