@@ -43,7 +43,7 @@ class RequestService {
                 request_group: RequestGroup.CLIENT,
                 content: {
                   title: `Raised Request`,
-                  data: `AMC ${req.body.amc_name} created for ${req.body.total_area_in_sqft} sqft for the duration ${req.body.start_date} - ${req.body.end_date}.`
+                  data: `Created an AMC named "${req.body.amc_name}" for ${req.body.total_area_in_sqft} sqft for the duration ${req.body.start_date} - ${req.body.end_date}.`
                 },         
               }) 
               await EmailService.sendMessage({ payload: notificationPayload })
