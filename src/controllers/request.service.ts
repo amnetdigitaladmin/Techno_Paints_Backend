@@ -68,7 +68,7 @@ class RequestService {
             request_group: RequestGroup.CLIENT,
             content: {
               title: `Raised Request`,
-              data: `${userDetails && userDetails.full_name ? userDetails.full_name : 'NA'} created a service request for ${params.requestAreaInsqft}sqft on ${params.required_date}.`
+              data: `${userDetails && userDetails.company ? userDetails.company : 'NA'} created a service request for ${params.requestAreaInsqft}sqft on ${params.required_date}.`
             },
           })
         })
