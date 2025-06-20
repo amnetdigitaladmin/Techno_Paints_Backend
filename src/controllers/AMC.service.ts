@@ -33,7 +33,7 @@ class RequestService {
                 request_group: RequestGroup.CLIENT,
                 content: {
                   title: `AMC created `,
-                  data: `Created an AMC named "${req.body.amc_name}" for ${req.body.total_area_in_sqft} sqft. Duration: ${req.body.start_date} to ${req.body.end_date}. Client: ${ClientDetails?.full_name || 'NA'}.`
+                  data: `Created an AMC named "${req.body.amc_name}" for ${req.body.total_area_in_sqft} sqft. Duration: ${req.body.start_date} to ${req.body.end_date}. Client: ${ClientDetails?.company || 'NA'}.`
                 },         
               })
               })    
